@@ -46,7 +46,9 @@ def text_hash(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def shingles(text: str, size: int = DEFAULT_SHINGLE_WORDS) -> set[int]:
+def shingles(
+    text: str, size: int = DEFAULT_SHINGLE_WORDS, max_shingles: int | None = 400
+) -> set[int]:
     """Word-level n-gram fingerprints of a document.
 
     Word shingles are used rather than character shingles: they are far cheaper
@@ -65,8 +67,17 @@ def shingles(text: str, size: int = DEFAULT_SHINGLE_WORDS) -> set[int]:
             )
         } if words else set()
 
+    # Long documents are subsampled with a fixed stride. Hashing every shingle
+    # of a 20,000-word Wikisource page costs far more than it adds: a few
+    # hundred evenly spaced shingles estimate Jaccard similarity just as well,
+    # and the stride keeps the choice deterministic.
+    total = len(words) - size + 1
+    stride = 1
+    if max_shingles is not None and total > max_shingles:
+        stride = total // max_shingles + 1
+
     result = set()
-    for index in range(len(words) - size + 1):
+    for index in range(0, total, stride):
         gram = " ".join(words[index : index + size]).encode("utf-8")
         result.add(int.from_bytes(hashlib.blake2b(gram, digest_size=4).digest(), "big"))
     return result
@@ -118,6 +129,89 @@ class DedupResult:
     exact_dropped: int
     near_dropped: int
     clusters: int
+
+
+@dataclass
+class DocFeatures:
+    """Everything dedup needs about a document, without holding its text.
+
+    Text is the memory hog: a full Hindi corpus with CC-100 does not fit in
+    RAM. Extracting these features in a streaming first pass lets dedup run on
+    a few hundred bytes per document instead of a few kilobytes, and the text
+    is re-read from disk only for the documents that survive.
+    """
+
+    exact_hash: str
+    signature: np.ndarray
+    is_manual: bool
+    n_chars: int
+
+
+def _pick(indices: list[int], features: list[DocFeatures]) -> int:
+    """Cluster representative: manual first, then longest (see module docstring)."""
+    return max(indices, key=lambda i: (features[i].is_manual, features[i].n_chars))
+
+
+def deduplicate_features(
+    features: list[DocFeatures], bands: int = DEFAULT_BANDS
+) -> DedupResult:
+    """Deduplicate from precomputed features rather than from records."""
+    if not features:
+        return DedupResult([], 0, 0, 0)
+
+    num_perm = len(features[0].signature)
+    if num_perm % bands:
+        raise ValueError(f"num_perm ({num_perm}) must be divisible by bands ({bands})")
+    rows = num_perm // bands
+
+    # --- exact duplicates -------------------------------------------------
+    by_hash: dict[str, list[int]] = {}
+    for index, feature in enumerate(features):
+        by_hash.setdefault(feature.exact_hash, []).append(index)
+
+    survivors: list[int] = []
+    exact_dropped = 0
+    for group in by_hash.values():
+        survivors.append(_pick(group, features) if len(group) > 1 else group[0])
+        exact_dropped += len(group) - 1
+    survivors.sort()
+    del by_hash
+    log.info("exact dedup: %d -> %d documents", len(features), len(survivors))
+
+    # --- near duplicates via LSH -----------------------------------------
+    signatures = np.stack([features[i].signature for i in survivors])
+    union = UnionFind(len(survivors))
+    for band in range(bands):
+        buckets: dict[bytes, int] = {}
+        block = np.ascontiguousarray(signatures[:, band * rows : (band + 1) * rows])
+        for position in range(len(survivors)):
+            key = block[position].tobytes()
+            first = buckets.get(key)
+            if first is None:
+                buckets[key] = position
+            else:
+                union.union(first, position)
+    del signatures
+
+    clusters: dict[int, list[int]] = {}
+    for position in range(len(survivors)):
+        clusters.setdefault(union.find(position), []).append(position)
+
+    keep: list[int] = []
+    near_dropped = 0
+    multi = 0
+    for members in clusters.values():
+        original = [survivors[p] for p in members]
+        if len(original) > 1:
+            multi += 1
+            near_dropped += len(original) - 1
+        keep.append(_pick(original, features))
+    keep.sort()
+
+    log.info(
+        "near dedup: %d -> %d documents (%d clusters)", len(survivors), len(keep), multi
+    )
+    return DedupResult(keep, exact_dropped, near_dropped, multi)
 
 
 def _representative(indices: list[int], records: list[dict]) -> int:

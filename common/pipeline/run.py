@@ -1,8 +1,24 @@
 """Build a language's final corpus: normalise -> dedup -> split.
 
-Reads every ``*.jsonl.gz`` under the language's ``interim/`` tree (Wikipedia
-dumps and scraped sites alike, since both emit the same schema) and writes
-``processed/{train,validation,test}.jsonl.gz`` plus a statistics file.
+Reads every ``*.jsonl.gz`` under the language's ``interim/`` tree -- Wikipedia
+dumps, scraped sites and downloaded corpora alike, since all three emit the same
+schema -- and writes ``processed/{train,validation,test}.jsonl.gz`` plus a
+statistics file.
+
+**Why this is a two-pass design.** The obvious implementation loads every
+document into a list and deduplicates that. The Hindi corpus with CC-100 is
+several gigabytes of text, so that list does not fit in memory. Instead:
+
+  pass 1  stream the interim files, normalise, quality-filter, write the
+          survivors to a temporary file, and keep only a fingerprint per
+          document (a hash, a 128-value MinHash signature, its length, and
+          whether it was manually collected) -- a few hundred bytes each
+          instead of a few kilobytes.
+  dedup   run entirely on those fingerprints.
+  pass 2  stream the temporary file again and write out only the survivors.
+
+Peak memory is therefore set by the number of documents, not by the size of the
+corpus.
 
 Run from the repository root::
 
@@ -12,15 +28,24 @@ Run from the repository root::
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import logging
+import os
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from common.pipeline.dedup import deduplicate
+from common.pipeline.dedup import (
+    DocFeatures,
+    MinHasher,
+    deduplicate_features,
+    shingles,
+    text_hash,
+)
 from common.pipeline.normalize import NormalizeConfig, normalize_text, quality_verdict
 from common.pipeline.split import SplitConfig, assign_split
-from common.scrape.io_utils import atomic_write_bytes, read_jsonl, utc_now, write_jsonl
+from common.scrape.io_utils import atomic_write_bytes, read_jsonl, utc_now
 
 log = logging.getLogger("pipeline")
 
@@ -29,16 +54,8 @@ log = logging.getLogger("pipeline")
 CHARS_PER_TOKEN_ESTIMATE = 3.5
 
 
-def load_interim(data_root: Path) -> list[dict]:
-    """Load every interim document for one language."""
-    records: list[dict] = []
-    for path in sorted((data_root / "interim").rglob("*.jsonl.gz")):
-        count = 0
-        for record in read_jsonl(path):
-            records.append(record)
-            count += 1
-        log.info("loaded %-45s %8d docs", str(path.relative_to(data_root)), count)
-    return records
+def interim_files(data_root: Path) -> list[Path]:
+    return sorted((data_root / "interim").rglob("*.jsonl.gz"))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -48,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--val-fraction", type=float, default=0.01)
     parser.add_argument("--test-fraction", type=float, default=0.01)
     parser.add_argument("--min-chars", type=int, default=200)
-    parser.add_argument("--no-dedup", action="store_true", help="skip dedup (debugging only)")
+    parser.add_argument("--no-dedup", action="store_true", help="debugging only")
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -62,87 +79,133 @@ def main(argv: list[str] | None = None) -> int:
         val_fraction=args.val_fraction, test_fraction=args.test_fraction
     )
     boilerplate = norm_cfg.compiled_boilerplate()
+    hasher = MinHasher()
 
     stats: Counter[str] = Counter()
     per_source: dict[str, Counter[str]] = defaultdict(Counter)
 
-    # --- load + normalise -------------------------------------------------
-    raw_records = load_interim(args.data_root)
-    stats["docs_loaded"] = len(raw_records)
-    log.info("loaded %d documents total", len(raw_records))
+    out_dir = args.data_root / "processed"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    scratch = args.data_root / "interim" / "_normalised.tmp.jsonl.gz"
 
-    kept: list[dict] = []
-    for record in raw_records:
-        source = record.get("source_name", "unknown")
-        per_source[source]["in"] += 1
+    sources = interim_files(args.data_root)
+    if not sources:
+        log.error("no interim files under %s", args.data_root / "interim")
+        return 1
+    for path in sources:
+        log.info("input: %s", path.relative_to(args.data_root))
 
-        text = normalize_text(record.get("text", ""), norm_cfg, boilerplate)
-        reason = quality_verdict(text, norm_cfg)
-        if reason is not None:
-            stats[f"dropped_{reason}"] += 1
-            per_source[source][f"dropped_{reason}"] += 1
-            continue
+    # --- pass 1: normalise, filter, fingerprint ---------------------------
+    started = time.time()
+    features: list[DocFeatures] = []
 
-        record["text"] = text
-        kept.append(record)
-        stats["docs_normalised"] += 1
+    with gzip.open(scratch, "wt", encoding="utf-8") as sink:
+        for path in sources:
+            for record in read_jsonl(path):
+                source = record.get("source_name", "unknown")
+                stats["docs_loaded"] += 1
+                per_source[source]["in"] += 1
 
-    del raw_records
-    log.info("after normalise/filter: %d documents", len(kept))
+                text = normalize_text(record.get("text", ""), norm_cfg, boilerplate)
+                reason = quality_verdict(text, norm_cfg)
+                if reason is not None:
+                    stats[f"dropped_{reason}"] += 1
+                    per_source[source][f"dropped_{reason}"] += 1
+                    continue
 
-    # --- dedup ------------------------------------------------------------
+                record["text"] = text
+                sink.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+                features.append(
+                    DocFeatures(
+                        exact_hash=text_hash(text),
+                        signature=hasher.signature(shingles(text)),
+                        is_manual=record.get("collection_method") == "manual",
+                        n_chars=len(text),
+                    )
+                )
+                stats["docs_normalised"] += 1
+
+                if stats["docs_normalised"] % 50000 == 0:
+                    log.info(
+                        "  normalised %s docs (%.1f min)",
+                        f"{stats['docs_normalised']:,}", (time.time() - started) / 60,
+                    )
+
+    log.info(
+        "pass 1 done: %s docs kept of %s (%.1f min)",
+        f"{stats['docs_normalised']:,}", f"{stats['docs_loaded']:,}",
+        (time.time() - started) / 60,
+    )
+
+    # --- dedup on fingerprints only ---------------------------------------
     if args.no_dedup:
-        deduped = kept
+        keep = set(range(len(features)))
     else:
-        result = deduplicate(kept)
+        result = deduplicate_features(features)
         stats["dropped_exact_duplicate"] = result.exact_dropped
         stats["dropped_near_duplicate"] = result.near_dropped
         stats["near_duplicate_clusters"] = result.clusters
-        deduped = [kept[i] for i in result.keep_indices]
-    del kept
+        keep = set(result.keep_indices)
+    del features
 
-    stats["docs_after_dedup"] = len(deduped)
-    log.info("after dedup: %d documents", len(deduped))
+    stats["docs_after_dedup"] = len(keep)
 
-    # --- split ------------------------------------------------------------
-    buckets: dict[str, list[dict]] = {"train": [], "validation": [], "test": []}
-    for record in deduped:
-        record["split"] = assign_split(record["id"], split_cfg)
-        buckets[record["split"]].append(record)
+    # --- pass 2: write the splits -----------------------------------------
+    handles = {
+        name: gzip.open(out_dir / f"{name}.jsonl.gz", "wt", encoding="utf-8")
+        for name in ("train", "validation", "test")
+    }
+    summary = {
+        name: {"documents": 0, "characters": 0, "manual_documents": 0, "manual_characters": 0}
+        for name in handles
+    }
 
-    out_dir = args.data_root / "processed"
-    summary: dict[str, dict] = {}
-    for name, items in buckets.items():
-        path = out_dir / f"{name}.jsonl.gz"
-        write_jsonl(path, items)
-        chars = sum(len(item["text"]) for item in items)
-        manual = sum(1 for item in items if item.get("collection_method") == "manual")
-        manual_chars = sum(
-            len(item["text"]) for item in items if item.get("collection_method") == "manual"
-        )
-        summary[name] = {
-            "documents": len(items),
-            "characters": chars,
-            "est_tokens": int(chars / CHARS_PER_TOKEN_ESTIMATE),
-            "manual_documents": manual,
-            "manual_characters": manual_chars,
-            "manual_char_fraction": round(manual_chars / chars, 4) if chars else 0.0,
-        }
+    try:
+        for index, record in enumerate(read_jsonl(scratch)):
+            if index not in keep:
+                continue
+            split = assign_split(record["id"], split_cfg)
+            record["split"] = split
+            handles[split].write(json.dumps(record, ensure_ascii=False) + "\n")
+
+            row = summary[split]
+            row["documents"] += 1
+            row["characters"] += len(record["text"])
+            if record.get("collection_method") == "manual":
+                row["manual_documents"] += 1
+                row["manual_characters"] += len(record["text"])
+    finally:
+        for handle in handles.values():
+            handle.close()
+        if scratch.exists():
+            os.remove(scratch)
+
+    for name, row in summary.items():
+        chars = row["characters"]
+        row["est_tokens"] = int(chars / CHARS_PER_TOKEN_ESTIMATE)
+        row["manual_char_fraction"] = round(row["manual_characters"] / chars, 4) if chars else 0.0
         log.info(
-            "%-11s %7d docs  %13s chars  manual %.1f%%",
-            name, len(items), f"{chars:,}", 100 * summary[name]["manual_char_fraction"],
+            "%-11s %8d docs  %15s chars  manual %.1f%%",
+            name, row["documents"], f"{chars:,}", 100 * row["manual_char_fraction"],
         )
 
     # --- statistics report -------------------------------------------------
+    total_chars = sum(r["characters"] for r in summary.values())
+    manual_chars = sum(r["manual_characters"] for r in summary.values())
     report = {
         "lang": args.lang,
         "generated_at": utc_now(),
-        "config": {
-            "normalize": norm_cfg.__dict__,
-            "split": split_cfg.__dict__,
-        },
+        "config": {"normalize": norm_cfg.__dict__, "split": split_cfg.__dict__},
         "totals": dict(sorted(stats.items())),
         "splits": summary,
+        "corpus": {
+            "documents": sum(r["documents"] for r in summary.values()),
+            "characters": total_chars,
+            "est_tokens": int(total_chars / CHARS_PER_TOKEN_ESTIMATE),
+            "manual_characters": manual_chars,
+            "manual_char_fraction": round(manual_chars / total_chars, 4) if total_chars else 0.0,
+        },
         "per_source": {k: dict(sorted(v.items())) for k, v in sorted(per_source.items())},
     }
     stats_path = out_dir / "_stats_pipeline.json"
@@ -150,16 +213,15 @@ def main(argv: list[str] | None = None) -> int:
         stats_path, json.dumps(report, indent=2, ensure_ascii=False).encode("utf-8")
     )
 
-    total_chars = sum(s["characters"] for s in summary.values())
-    manual_chars = sum(s["manual_characters"] for s in summary.values())
-    log.info("=" * 70)
+    log.info("=" * 72)
     log.info(
-        "CORPUS %s: %d docs, %s chars (~%s tokens), manual %.1f%%",
+        "CORPUS %s: %s docs, %s chars (~%s tokens), manual %.1f%%  [%.1f min]",
         args.lang,
-        sum(s["documents"] for s in summary.values()),
+        f"{report['corpus']['documents']:,}",
         f"{total_chars:,}",
-        f"{int(total_chars / CHARS_PER_TOKEN_ESTIMATE):,}",
-        100 * manual_chars / total_chars if total_chars else 0,
+        f"{report['corpus']['est_tokens']:,}",
+        100 * report["corpus"]["manual_char_fraction"],
+        (time.time() - started) / 60,
     )
     log.info("stats -> %s", stats_path)
     return 0

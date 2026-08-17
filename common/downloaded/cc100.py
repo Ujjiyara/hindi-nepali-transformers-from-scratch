@@ -40,16 +40,12 @@ CHUNK_BYTES = 1 << 20  # 1 MiB of compressed data per read
 MIN_DEVANAGARI_RATIO = 0.60
 
 
-def stream_documents(url: str, user_agent: str, min_chars: int):
-    """Yield documents from a remote ``.xz`` corpus without storing the archive.
-
-    CC-100 separates documents with a blank line. Decompression is incremental,
-    so memory stays flat regardless of archive size, and the generator can be
-    abandoned early -- closing the response mid-stream stops the transfer.
-    """
+def _stream_once(url: str, user_agent: str, min_chars: int, skip: int):
+    """One pass over the archive, yielding documents after skipping ``skip`` of them."""
     decompressor = lzma.LZMADecompressor()
     pending = ""
     buffer: list[str] = []
+    seen = 0
 
     with requests.get(
         url, stream=True, timeout=(10, 120), headers={"User-Agent": user_agent}
@@ -72,13 +68,49 @@ def stream_documents(url: str, user_agent: str, min_chars: int):
                 elif buffer:
                     text = "\n".join(buffer)
                     buffer = []
-                    if len(text) >= min_chars:
+                    if len(text) < min_chars:
+                        continue
+                    seen += 1
+                    if seen > skip:
                         yield text
 
     if buffer:
         text = "\n".join(buffer)
         if len(text) >= min_chars:
-            yield text
+            seen += 1
+            if seen > skip:
+                yield text
+
+
+def stream_documents(url: str, user_agent: str, min_chars: int, max_attempts: int = 5):
+    """Yield documents from a remote ``.xz`` corpus without storing the archive.
+
+    CC-100 separates documents with a blank line. Decompression is incremental,
+    so memory stays flat regardless of archive size, and the generator can be
+    abandoned early -- closing the response mid-stream stops the transfer.
+
+    The link to data.statmt.org is slow and drops connections, so a broken
+    stream is retried. An xz stream cannot be resumed from the middle, so a
+    retry re-reads from the start and skips the documents already emitted;
+    document order is deterministic, so nothing is duplicated or missed.
+    """
+    emitted = 0
+    for attempt in range(1, max_attempts + 1):
+        try:
+            for text in _stream_once(url, user_agent, min_chars, skip=emitted):
+                emitted += 1
+                yield text
+            return
+        except (requests.RequestException, lzma.LZMAError, EOFError) as exc:
+            if attempt == max_attempts:
+                log.error("giving up after %d attempts: %s", attempt, exc)
+                return
+            wait = min(60, 5 * 2 ** (attempt - 1))
+            log.warning(
+                "stream failed after %d docs (%s); retrying in %ds (attempt %d/%d)",
+                emitted, type(exc).__name__, wait, attempt + 1, max_attempts,
+            )
+            time.sleep(wait)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -95,6 +127,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--min-chars", type=int, default=300)
     parser.add_argument(
+        "--shard-chars",
+        type=int,
+        default=50_000_000,
+        help="seal a shard after this many characters, so partial progress survives",
+    )
+    parser.add_argument(
         "--user-agent",
         default="IIIT-LMA-corpus-research/1.0 (sakshamgoyal.sgm27@gmail.com)",
     )
@@ -109,13 +147,26 @@ def main(argv: list[str] | None = None) -> int:
     source = args.source or f"cc100_{args.lang}"
     stats = Stats("downloaded", source)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    tmp_path = args.out.with_suffix(args.out.suffix + ".tmp")
+    stem = args.out.name.split(".")[0]
 
     kept = 0
     chars = 0
+    shard_index = 0
+    shard_chars = 0
     started = time.time()
 
-    with gzip.open(tmp_path, "wt", encoding="utf-8") as handle:
+    def open_shard(index: int):
+        """Output is sharded so partial progress survives an interruption.
+
+        A single file renamed only at the end means a kill after five hours
+        leaves nothing. Each completed shard is a valid .jsonl.gz, and the
+        pipeline globs *.jsonl.gz, so shards are consumed with no extra work.
+        """
+        path = args.out.parent / f"{stem}.part{index:04d}.jsonl.gz"
+        return path, gzip.open(path, "wt", encoding="utf-8")
+
+    shard_path, handle = open_shard(shard_index)
+    try:
         for text in stream_documents(args.url, args.user_agent, args.min_chars):
             stats.bump("docs_seen")
 
@@ -145,27 +196,42 @@ def main(argv: list[str] | None = None) -> int:
             )
             kept += 1
             chars += len(text)
+            shard_chars += len(text)
             stats.bump("kept")
 
+            if shard_chars >= args.shard_chars:
+                handle.close()
+                log.info("sealed %s (%s chars so far)", shard_path.name, f"{chars:,}")
+                shard_index += 1
+                shard_chars = 0
+                shard_path, handle = open_shard(shard_index)
+                stats.bump("chars_kept", 0)
+                stats.counts["chars_kept"] = chars
+                stats.save(args.out.parent / f"_stats_downloaded_{source}.json")
+
             if kept % 50000 == 0:
-                rate = chars / max(time.time() - started, 1e-6) / 1e6
+                elapsed = max(time.time() - started, 1e-6)
                 log.info(
-                    "%s docs, %.0fM chars (%.1f MB/s of text), %.0f%% of target",
-                    f"{kept:,}", chars / 1e6, rate, 100 * chars / args.target_chars,
+                    "%s docs, %.0fM chars, %.2f MB text/min, %.1f%% of target",
+                    f"{kept:,}", chars / 1e6, chars / elapsed * 60 / 1e6,
+                    100 * chars / args.target_chars,
                 )
 
             if chars >= args.target_chars:
                 log.info("reached target of %s chars", f"{args.target_chars:,}")
                 break
+    finally:
+        handle.close()
+        if shard_chars == 0 and shard_path.exists():
+            os.remove(shard_path)  # empty trailing shard
 
-    os.replace(tmp_path, args.out)
-    stats.bump("chars_kept", chars)
+    stats.counts["chars_kept"] = chars
     stats.save(args.out.parent / f"_stats_downloaded_{source}.json")
 
     log.info(
-        "%s: %s docs, %s chars (~%s tokens) in %.1f min -> %s",
+        "%s: %s docs, %s chars (~%s tokens) in %.1f min -> %s.part*.jsonl.gz",
         source, f"{kept:,}", f"{chars:,}", f"{int(chars / 3.5):,}",
-        (time.time() - started) / 60, args.out,
+        (time.time() - started) / 60, stem,
     )
     return 0
 
