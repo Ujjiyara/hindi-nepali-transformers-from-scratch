@@ -1,0 +1,128 @@
+"""Extract a Wikimedia dump into the project's document schema.
+
+Run from the repository root::
+
+    python -m common.wiki.run \
+        --dump Nepali/data/raw/wikipedia/newiki-latest-pages-articles.xml.bz2 \
+        --out  Nepali/data/interim/wikipedia/newiki.jsonl.gz \
+        --lang ne --site ne.wikipedia.org --source newiki --workers 4
+
+``--limit`` processes only the first N articles, for a quick sanity check
+before committing to a full pass.
+"""
+
+from __future__ import annotations
+
+import argparse
+import gzip
+import json
+import logging
+import os
+import time
+from pathlib import Path
+
+from common.scrape.io_utils import Stats, devanagari_ratio, doc_id, utc_now
+from common.wiki.dump import article_url, iter_stripped
+
+log = logging.getLogger("wiki")
+
+# Articles shorter than this after stripping are stubs or disambiguation
+# pages: a title, an infobox and a sentence. They add little signal and a lot
+# of near-duplicate boilerplate.
+MIN_ARTICLE_CHARS = 300
+MIN_DEVANAGARI_RATIO = 0.60
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Extract a Wikimedia XML dump to JSONL.")
+    parser.add_argument("--dump", required=True, type=Path)
+    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--lang", required=True, help="ISO code recorded on each document")
+    parser.add_argument("--site", required=True, help="e.g. ne.wikipedia.org")
+    parser.add_argument("--source", required=True, help="source_name, e.g. newiki")
+    parser.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
+    parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--min-chars", type=int, default=MIN_ARTICLE_CHARS)
+    parser.add_argument(
+        "--namespaces",
+        default="0",
+        help="comma-separated dump namespaces. Default '0' (articles). "
+        "Wikisource needs '250': its ns 0 holds only transclusion shells.",
+    )
+    args = parser.parse_args(argv)
+    namespaces = frozenset(n.strip() for n in args.namespaces.split(",") if n.strip())
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)-7s %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
+    stats = Stats("wikipedia", args.source)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = args.out.with_suffix(args.out.suffix + ".tmp")
+
+    started = time.time()
+    kept = 0
+    total_chars = 0
+
+    with gzip.open(tmp_path, "wt", encoding="utf-8") as handle:
+        for page_id, title, text in iter_stripped(
+            args.dump, workers=args.workers, namespaces=namespaces
+        ):
+            stats.bump("pages_in")
+
+            if stats.counts["pages_in"] % 20000 == 0:
+                rate = stats.counts["pages_in"] / max(time.time() - started, 1e-6)
+                log.info(
+                    "%d pages read, %d kept, %.0f pages/s",
+                    stats.counts["pages_in"], kept, rate,
+                )
+
+            if len(text) < args.min_chars:
+                stats.bump("dropped_too_short")
+            elif devanagari_ratio(text) < MIN_DEVANAGARI_RATIO:
+                stats.bump("dropped_wrong_script")
+            else:
+                url = article_url(args.site, title)
+                record = {
+                    "id": doc_id(url),
+                    "text": text,
+                    "source_name": args.source,
+                    "source_url": url,
+                    # Parsed and cleaned by us from a raw dump, so this counts
+                    # toward the >=20% manual requirement.
+                    "collection_method": "manual",
+                    "lang": args.lang,
+                    "fetched_at": utc_now(),
+                    "meta": {
+                        "wiki_page_id": page_id,
+                        "title": title,
+                        "n_chars": len(text),
+                    },
+                }
+                handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+                kept += 1
+                total_chars += len(text)
+                stats.bump("kept")
+
+            if args.limit is not None and stats.counts["pages_in"] >= args.limit:
+                break
+
+    os.replace(tmp_path, args.out)
+
+    stats.bump("chars_kept", total_chars)
+    stats.save(args.out.parent / f"_stats_wikipedia_{args.source}.json")
+
+    elapsed = time.time() - started
+    log.info(stats.summary())
+    log.info(
+        "%s: %d articles, %s chars (~%s tokens at 3.5 chars/token) in %.1f min -> %s",
+        args.source, kept, f"{total_chars:,}",
+        f"{int(total_chars / 3.5):,}", elapsed / 60, args.out,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
