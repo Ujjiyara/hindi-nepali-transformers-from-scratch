@@ -1,12 +1,19 @@
 # Hindi (Model H) scrape configuration.
 #
-# Candidates only -- triage first:
+# Verified 17 Aug 2026 by triage. Unlike the Nepali sites, these publish real
+# sitemaps in robots.txt, so discovery is sitemap-driven rather than crawl-driven.
 #
-#   python -m common.scrape.run triage --config Hindi/configs/scrape_sites.yaml
+#   amarujala      DROPPED -- homepage rendered only 0.27 Devanagari ratio
+#   livehindustan  sitemap-index.xml -> 363 date-partitioned daily archives,
+#                  ~9,000 articles/day, ~3.3M articles total. Primary source.
+#   jagran         sitemap.xml lists only 129 category pages -> crawl
+#   navbharattimes sitemapxml.cms lists 527 section roots -> crawl
 #
-# Hindi Wikipedia is already covered by the dump pipeline, not by this scraper.
-# These sites exist to raise the *manual* token count, which is what sets the
-# corpus ceiling under the 20% manual rule (corpus <= 5 x manual tokens).
+# Sizing: hiwiki already banked ~66M manual tokens, giving a 330M corpus ceiling
+# under the 20% rule (corpus <= 5 x manual). Reaching the ~500M target needs
+# ~100M manual, i.e. ~34M more, i.e. ~35,000 more articles at ~3,400 chars each.
+# livehindustan alone covers that; jagran and navbharattimes add source
+# diversity, which matters for the corpus-statistics section of the report.
 
 lang: hi
 data_root: Hindi/data
@@ -17,38 +24,53 @@ max_retries: 3
 min_chars: 200
 
 sites:
-  - name: amarujala
-    base_url: "https://www.amarujala.com"
-    url_exclude:
-      - "/photo-gallery/"
-      - "/video/"
-      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
-    delay_seconds: 1.5
-
+  # Article URLs have two shapes:
+  #   /bihar/khagaria/story-khagaria-police-arrests-...
+  #   /lifestyle/recipe/aloo-ka-halwa-recipe-in-just-5-simple-steps-201786974
+  # so match either the /story- marker or a long trailing numeric id.
   - name: livehindustan
     base_url: "https://www.livehindustan.com"
+    strategies: ["sitemap"]
+    sitemap_urls:
+      - "https://www.livehindustan.com/sitemap-index.xml"
+      - "https://www.livehindustan.com/news-sitemap.xml"
+    url_include:
+      - "/story-"
+      - "-\\d{7,}"
     url_exclude:
-      - "/photo/"
-      - "/video/"
+      - "/tag/"
+      - "/topic/"
+      - "/photos?/"
+      - "/videos?/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 40000
     delay_seconds: 1.5
 
   - name: jagran
     base_url: "https://www.jagran.com"
+    strategies: ["sitemap", "crawl"]
+    url_include:
+      - "-\\d{7,}\\.html$"
     url_exclude:
       - "/photo-gallery/"
-      - "/videos/"
+      - "/videos?/"
+      - "/topic/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 8000
     delay_seconds: 2.0
+    crawl_max_pages: 1200
+    crawl_max_depth: 3
 
   - name: navbharattimes
     base_url: "https://navbharattimes.indiatimes.com"
+    strategies: ["sitemap", "crawl"]
+    url_include:
+      - "/articleshow/\\d+\\.cms$"
     url_exclude:
       - "/photomazza/"
-      - "/video/"
+      - "/videos?/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 8000
     delay_seconds: 2.0
+    crawl_max_pages: 1200
+    crawl_max_depth: 3
