@@ -1,0 +1,22 @@
+# Model L tokenizer, selected from the vocabulary sweep in report/phase1.md.
+#
+# 8,000 rather than 16,000 or 32,000: it is the only swept size where most of
+# the vocabulary is exercised by held-out text (83.7%, against 62.6% at 16k and
+# 39.2% at 32k). Larger vocabularies lower fertility but spend embedding
+# parameters on entries that receive almost no gradient signal.
+#
+# The smaller vocabulary than Model H is the intended consequence of the
+# smaller corpus, not an inconsistency between the two models.
+lang: ne
+model_type: unigram
+vocab_size: 8000
+character_coverage: 0.9995
+byte_fallback: true
+model_path: Nepali/tokenizer/ne_unigram_8000.model
+vocab_path: Nepali/tokenizer/ne_unigram_8000.vocab
+measured:
+  fertility: 1.689
+  chars_per_token: 3.95
+  unknown_rate: 0.0
+  byte_fallback_rate: 0.00242
+  vocab_utilisation: 0.837

@@ -1,0 +1,19 @@
+# Model H tokenizer, selected from the vocabulary sweep in report/phase1.md.
+#
+# 16,000 rather than 32,000: fertility is within 6% of the 32k value while
+# vocabulary utilisation is at its peak (98.2%), and the embedding table costs
+# 6.1M instead of 12.3M parameters -- roughly a quarter of the ~25M Phase 2
+# budget rather than half of it.
+lang: hi
+model_type: unigram
+vocab_size: 16000
+character_coverage: 0.9995
+byte_fallback: true
+model_path: Hindi/tokenizer/hi_unigram_16000.model
+vocab_path: Hindi/tokenizer/hi_unigram_16000.vocab
+measured:
+  fertility: 1.428
+  chars_per_token: 3.68
+  unknown_rate: 0.0
+  byte_fallback_rate: 0.00342
+  vocab_utilisation: 0.982

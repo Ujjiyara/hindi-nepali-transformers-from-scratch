@@ -54,8 +54,27 @@ log = logging.getLogger("pipeline")
 CHARS_PER_TOKEN_ESTIMATE = 3.5
 
 
-def interim_files(data_root: Path) -> list[Path]:
-    return sorted((data_root / "interim").rglob("*.jsonl.gz"))
+def interim_files(data_root: Path, exclude: list[str] | None = None) -> list[Path]:
+    """All interim shards, minus any whose path contains an excluded substring."""
+    paths = sorted((data_root / "interim").rglob("*.jsonl.gz"))
+    if exclude:
+        paths = [p for p in paths if not any(token in str(p) for token in exclude)]
+    return paths
+
+
+def read_jsonl_tolerant(path: Path):
+    """Stream a shard, surviving a truncated tail.
+
+    An ingester may still be writing its newest shard when a pipeline run
+    starts. A half-written gzip member raises partway through; the documents
+    read up to that point are valid, so the error is logged and the file is
+    abandoned rather than failing the whole run.
+    """
+    try:
+        yield from read_jsonl(path)
+    except (EOFError, OSError, json.JSONDecodeError) as exc:
+        log.warning("%s: truncated or unreadable (%s) -- using what was read",
+                    path.name, type(exc).__name__)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -66,6 +85,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--test-fraction", type=float, default=0.01)
     parser.add_argument("--min-chars", type=int, default=200)
     parser.add_argument("--no-dedup", action="store_true", help="debugging only")
+    parser.add_argument(
+        "--exclude",
+        nargs="*",
+        default=[],
+        help="skip interim files whose path contains any of these substrings",
+    )
     args = parser.parse_args(argv)
 
     logging.basicConfig(
@@ -88,7 +113,7 @@ def main(argv: list[str] | None = None) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     scratch = args.data_root / "interim" / "_normalised.tmp.jsonl.gz"
 
-    sources = interim_files(args.data_root)
+    sources = interim_files(args.data_root, args.exclude)
     if not sources:
         log.error("no interim files under %s", args.data_root / "interim")
         return 1
@@ -101,7 +126,7 @@ def main(argv: list[str] | None = None) -> int:
 
     with gzip.open(scratch, "wt", encoding="utf-8") as sink:
         for path in sources:
-            for record in read_jsonl(path):
+            for record in read_jsonl_tolerant(path):
                 source = record.get("source_name", "unknown")
                 stats["docs_loaded"] += 1
                 per_source[source]["in"] += 1

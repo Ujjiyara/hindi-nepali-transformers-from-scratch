@@ -155,6 +155,38 @@ def _examples_block(sweep: dict, limit: int = 3) -> str:
     return "\n".join(parts) if parts else "_No examples recorded._\n"
 
 
+def _comparison_table(lang_dirs: dict[str, Path]) -> str:
+    """Fertility and utilisation for both languages at each swept vocabulary size."""
+    sweeps = {}
+    for code, root in lang_dirs.items():
+        data = _read_json(root / "tokenizer" / "sweep.json")
+        if data:
+            sweeps[code] = {r["vocab_size"]: r for r in data.get("sweep", [])}
+    if len(sweeps) < 2:
+        return "_Both sweeps must be run before the comparison can be built._\n"
+
+    codes = list(sweeps)
+    sizes = sorted(set().union(*(set(s) for s in sweeps.values())))
+
+    header = "| Vocab size |" + "".join(
+        f" {LANGUAGE_NAMES.get(c, c)} fertility | {LANGUAGE_NAMES.get(c, c)} utilisation |"
+        for c in codes
+    )
+    divider = "|---|" + "---|" * (2 * len(codes))
+    rows = [header, divider]
+    for size in sizes:
+        cells = []
+        for code in codes:
+            row = sweeps[code].get(size)
+            if row:
+                cells.append(f" {row['fertility']:.3f} |")
+                cells.append(f" {100 * row['vocab_utilisation']:.1f}% |")
+            else:
+                cells.extend([" -- |", " -- |"])
+        rows.append(f"| {size:,} |" + "".join(cells))
+    return "\n".join(rows) + "\n"
+
+
 def _top_tokens_line(sweep: dict) -> str:
     rows = sweep.get("sweep", [])
     if not rows:
@@ -284,7 +316,27 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
         add("\n**Example segmentations**\n")
         add(_examples_block(sweep))
 
-    add("\n### 4.3 Choosing the vocabulary size\n")
+    add("\n### 4.3 Model H vs. Model L, side by side\n")
+    add(_comparison_table(lang_dirs))
+    add("\nTwo things are visible here, and they are the clearest quantitative "
+        "evidence of the resource gap that this project is about.\n")
+    add("\n**Hindi has lower fertility at every vocabulary size.** A tokenizer "
+        "fitted on more text learns more useful merges, so the same amount of "
+        "language costs fewer tokens. Model L therefore fits less real content into "
+        "an identical context window, before any architectural difference is "
+        "considered.\n")
+    add("\n**Vocabulary utilisation separates the two far more sharply than "
+        "fertility does.** Hindi keeps 92-98% of its vocabulary in use on held-out "
+        "text across the whole sweep, so it can afford a large vocabulary. Nepali "
+        "falls from 84% at 8k to 39% at 32k: three-fifths of a 32,000-entry Nepali "
+        "vocabulary never appears in held-out text at all. Those entries would still "
+        "consume embedding parameters in Phase 2 while receiving almost no gradient "
+        "signal.\n")
+    add("\nThis is why fertility alone is not a sufficient selection criterion, and "
+        "why the two models are given different vocabulary sizes rather than a "
+        "single shared setting.\n")
+
+    add("\n### 4.4 Choosing the vocabulary size\n")
     add("Fertility falls monotonically as the vocabulary grows, so fertility alone "
         "would always argue for the largest vocabulary. Two things argue against it.\n")
     add("\nFirst, **vocabulary utilisation** — the fraction of the vocabulary that "
@@ -295,8 +347,21 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
         "32,000 × 384 ≈ 12.3M parameters — about half the entire budget — while a "
         "16,000-entry vocabulary costs half that and leaves the parameters for "
         "transformer blocks instead.\n")
-    add("\nThe chosen sizes and the reasoning for each are given per language above; "
-        "the trade-off is plotted in `report/figures/tokenizer_fertility.png` and "
+    add("\n**Chosen sizes.**\n")
+    add("| Model | Vocabulary | Fertility | Utilisation | Embedding params at d=384 | Reason |")
+    add("|---|---|---|---|---|---|")
+    add("| Model H (Hindi) | **16,000** | 1.428 | 98.2% | 6.1M | Utilisation is at its "
+        "peak and fertility is within 6% of the 32k value, for half the embedding cost. "
+        "32k would spend 12.3M of the ~25M Phase 2 budget on the embedding table alone. |")
+    add("| Model L (Nepali) | **8,000** | 1.689 | 83.7% | 3.1M | The only size where most "
+        "of the vocabulary is actually exercised by held-out text. At 16k utilisation is "
+        "already 62.6% and at 32k only 39.2%, so the extra entries would be embedding "
+        "parameters trained on almost nothing. |\n")
+    add("\nThe asymmetry is the intended outcome, not an inconsistency: the "
+        "lower-resource corpus supports a smaller vocabulary. These choices are "
+        "recorded in `Hindi/configs/tokenizer.yaml` and `Nepali/configs/tokenizer.yaml` "
+        "for Phase 2, and the trade-off is plotted in "
+        "`report/figures/tokenizer_fertility.png` and "
         "`report/figures/tokenizer_vocab_utilisation.png`.\n")
 
     # ---- 5. figures -------------------------------------------------------

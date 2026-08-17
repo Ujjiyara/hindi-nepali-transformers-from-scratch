@@ -24,7 +24,49 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 ### 2.1 Hindi — Model H (higher-resource)
 
-_Pipeline has not been run for this language yet._
+**Final corpus: 257,258 documents, 537,900,437 characters, approximately 153,685,839 tokens (100.0% manually collected).**
+
+
+#### Sources
+
+| Source | Description | Collection | Documents in | Kept after filters |
+|---|---|---|---|---|
+| `hiwikisource` | Wikisource proofread pages (public-domain literature) | manual | 160,558 | 156,997 |
+| `hiwiki` | Wikipedia article dump | manual | 87,043 | 86,747 |
+| `livehindustan` | Live Hindustan news, own crawler | manual | 8,311 | 8,309 |
+| `navbharattimes` | Navbharat Times news, own crawler | manual | 4,499 | 4,495 |
+| `jagran` | Jagran news, own crawler | manual | 2,789 | 2,787 |
+| `hiwikibooks` | Wikibooks dump | manual | 2,075 | 2,067 |
+| `hiwikiquote` | Wikiquote dump | manual | 1,210 | 1,209 |
+| `hiwikiversity` | Wikiversity dump | manual | 225 | 225 |
+
+
+#### Cleaning and deduplication
+
+| Stage | Documents removed | Remaining |
+|---|---|---|
+| Loaded from interim | -- | 266,710 |
+| Quality filter: below minimum length | 1 | |
+| Quality filter: too few words | 47 | |
+| Quality filter: digit-dominated | 282 | |
+| Quality filter: punctuation-dominated | 3,531 | |
+| Quality filter: repetitive lines (listing pages) | 13 | |
+| **After normalisation and quality filters** | | **262,836** |
+| Exact duplicates (SHA-256 of normalised text) | 146 | |
+| Near-duplicates (MinHash/LSH, 2,034 clusters) | 5,432 | |
+| **Final corpus** | | **257,258** |
+
+
+#### Splits
+
+Splits are assigned per document from a salted SHA-256 of the document id, never per line, so no article contributes to more than one split. Because the assignment is a pure function of the id, adding a new source later leaves every existing document in the split it already had.
+
+| Split | Documents | Characters | Est. tokens | Manual (char %) |
+|---|---|---|---|---|
+| train | 252,069 | 526,781,839 | 150,509,096 | 100.0% |
+| validation | 2,501 | 5,267,335 | 1,504,952 | 100.0% |
+| test | 2,688 | 5,851,263 | 1,671,789 | 100.0% |
+| **total** | **257,258** | **537,900,437** | **153,685,839** | **100.0%** |
 
 
 ### 2.2 Nepali — Model L (lower-resource)
@@ -107,7 +149,29 @@ One tokenizer per language, trained from scratch with SentencePiece (unigram) on
 
 ### 4.1 Hindi
 
-_Sweep has not been run for this language yet._
+| Vocab size | Fertility (tok/word) | Chars/token | Unknown rate | Byte-fallback rate | Vocab utilisation |
+|---|---|---|---|---|---|
+| 8,000 | 1.556 | 3.38 | 0.00e+00 | 3.14e-03 | 98.0% |
+| 16,000 | 1.428 | 3.68 | 0.00e+00 | 3.42e-03 | 98.2% |
+| 32,000 | 1.344 | 3.91 | 0.00e+00 | 3.63e-03 | 92.2% |
+
+
+Most frequent held-out tokens: `।`, `▁के`, `,`, `▁है`, `▁में`, `▁की`, `▁और`, `▁से`, `▁का`, `-`, `▁को`, `▁।`, `▁हैं`, `▁(`, `▁पर`
+
+
+**Example segmentations**
+
+- **19 words -> 23 tokens** (fertility 1.211):
+  - text: `अटापट्टू की कप्तानी में उतरेगी श्रीलंकाई टीम, एशिया कप का खिताब बचाने के लिए 15 सदस्यीय टीम का एलान`
+  - pieces: `▁अटा प ट्टू ▁की ▁कप्तानी ▁में ▁उतरे गी ▁श्रीलंकाई ▁टीम , ▁एशिया ▁कप ▁का ▁खिताब ▁बचाने ▁के ▁लिए ▁15 ▁सदस्यीय ▁टीम ▁का ▁एलान`
+
+- **19 words -> 24 tokens** (fertility 1.263):
+  - text: `पंजाब के खेतों से निकल शादी-पार्टियों की शान बना भांगड़ा, दिलचस्प है इस लोकनृत्य के शुरू होने की कहानी`
+  - pieces: `▁पंजाब ▁के ▁खेतों ▁से ▁निकल ▁शादी - पार्ट ियों ▁की ▁शान ▁बना ▁भांग ड़ा , ▁दिलचस्प ▁है ▁इस ▁लोकनृत्य ▁के ▁शुरू ▁होने ▁की ▁कहानी`
+
+- **18 words -> 24 tokens** (fertility 1.333):
+  - text: `सामुद्रिक शास्त्र: पीठ के बल सोना या करवट लेना? आपकी 'स्लीप पोजीशन' में छिपे हैं भविष्य के संकेत`
+  - pieces: `▁सामुद्रिक ▁शास्त्र : ▁पीठ ▁के ▁बल ▁सोना ▁या ▁कर वट ▁लेना ? ▁आपकी ▁' स्ली प ▁पोजीशन ' ▁में ▁छिपे ▁हैं ▁भविष्य ▁के ▁संकेत`
 
 
 ### 4.2 Nepali
@@ -137,7 +201,28 @@ Most frequent held-out tokens: `।`, `,`, `को`, `▁र`, `मा`, `ले
   - pieces: `▁सामाजिक ▁सञ्जाल माथि को ▁प्रतिबन्ध ▁फुकुवा ▁र ▁भ्रष्टाचार को ▁स मूल ▁अन्त्य ▁गर्ने ▁नारा साथ ▁भदौ ▁२३ ▁र ▁२४ ▁गते ▁भएको ▁प्रदर्शन ले ▁ हिंसात्मक ▁रूप ▁लिँदा ▁धेरै ▁व्यक्तिको ▁हताहत ी ▁र ▁राष्ट्रिय ▁सम्पदा को ▁विनाश ▁भयो । ▁निश्चित ▁राजनीति`
 
 
-### 4.3 Choosing the vocabulary size
+### 4.3 Model H vs. Model L, side by side
+
+| Vocab size | Hindi fertility | Hindi utilisation | Nepali fertility | Nepali utilisation |
+|---|---|---|---|---|
+| 8,000 | 1.556 | 98.0% | 1.689 | 83.7% |
+| 16,000 | 1.428 | 98.2% | 1.540 | 62.6% |
+| 32,000 | 1.344 | 92.2% | 1.442 | 39.2% |
+
+
+Two things are visible here, and they are the clearest quantitative evidence of the resource gap that this project is about.
+
+
+**Hindi has lower fertility at every vocabulary size.** A tokenizer fitted on more text learns more useful merges, so the same amount of language costs fewer tokens. Model L therefore fits less real content into an identical context window, before any architectural difference is considered.
+
+
+**Vocabulary utilisation separates the two far more sharply than fertility does.** Hindi keeps 92-98% of its vocabulary in use on held-out text across the whole sweep, so it can afford a large vocabulary. Nepali falls from 84% at 8k to 39% at 32k: three-fifths of a 32,000-entry Nepali vocabulary never appears in held-out text at all. Those entries would still consume embedding parameters in Phase 2 while receiving almost no gradient signal.
+
+
+This is why fertility alone is not a sufficient selection criterion, and why the two models are given different vocabulary sizes rather than a single shared setting.
+
+
+### 4.4 Choosing the vocabulary size
 
 Fertility falls monotonically as the vocabulary grows, so fertility alone would always argue for the largest vocabulary. Two things argue against it.
 
@@ -148,7 +233,15 @@ First, **vocabulary utilisation** — the fraction of the vocabulary that actual
 Second, the Phase 2 budget is roughly 25M parameters. With a model dimension of 384 and tied embeddings, a 32,000-entry vocabulary consumes 32,000 × 384 ≈ 12.3M parameters — about half the entire budget — while a 16,000-entry vocabulary costs half that and leaves the parameters for transformer blocks instead.
 
 
-The chosen sizes and the reasoning for each are given per language above; the trade-off is plotted in `report/figures/tokenizer_fertility.png` and `report/figures/tokenizer_vocab_utilisation.png`.
+**Chosen sizes.**
+
+| Model | Vocabulary | Fertility | Utilisation | Embedding params at d=384 | Reason |
+|---|---|---|---|---|---|
+| Model H (Hindi) | **16,000** | 1.428 | 98.2% | 6.1M | Utilisation is at its peak and fertility is within 6% of the 32k value, for half the embedding cost. 32k would spend 12.3M of the ~25M Phase 2 budget on the embedding table alone. |
+| Model L (Nepali) | **8,000** | 1.689 | 83.7% | 3.1M | The only size where most of the vocabulary is actually exercised by held-out text. At 16k utilisation is already 62.6% and at 32k only 39.2%, so the extra entries would be embedding parameters trained on almost nothing. |
+
+
+The asymmetry is the intended outcome, not an inconsistency: the lower-resource corpus supports a smaller vocabulary. These choices are recorded in `Hindi/configs/tokenizer.yaml` and `Nepali/configs/tokenizer.yaml` for Phase 2, and the trade-off is plotted in `report/figures/tokenizer_fertility.png` and `report/figures/tokenizer_vocab_utilisation.png`.
 
 
 ## 5. Figures
