@@ -1,0 +1,6 @@
+# Phase 1 -- data collection and tokenizer construction
+requests>=2.31
+PyYAML>=6.0
+trafilatura>=1.8          # article-body extraction / boilerplate removal
+beautifulsoup4>=4.12      # extraction fallback
+lxml>=4.9                 # parser backend used by trafilatura

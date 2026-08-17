@@ -1,0 +1,110 @@
+# Nepali (Model L) scrape configuration.
+#
+# Verified 17 Aug 2026 by triage:
+#   - all five sites are server-rendered Devanagari (visible-text ratio 0.84-0.96)
+#   - robots.txt permits crawling on all five
+#   - NONE of them publish an article sitemap. setopati has a sitemap tree but it
+#     only lists category/tag/author pages, so `crawl` does the real work and
+#     `sitemap`/`rss` mainly supply seed URLs.
+#
+# Usage:
+#   python -m common.scrape.run triage   --config Nepali/configs/scrape_sites.yaml
+#   python -m common.scrape.run discover --config Nepali/configs/scrape_sites.yaml --site onlinekhabar
+#   python -m common.scrape.run fetch    --config Nepali/configs/scrape_sites.yaml --site onlinekhabar --limit 5
+#   python -m common.scrape.run extract  --config Nepali/configs/scrape_sites.yaml --site onlinekhabar
+#
+# NOTE: setopati stopped accepting connections after an early run fetched its
+# sitemap tree too fast. The politeness delay now applies to every request, but
+# give that host time before retrying it.
+
+lang: ne
+data_root: Nepali/data
+user_agent: "IIIT-LMA-corpus-research/1.0 (sakshamgoyal.sgm27@gmail.com)"
+
+request_timeout: [5.0, 30.0]
+max_retries: 3
+min_chars: 200
+
+sites:
+  # Article URLs look like /2026/08/1998011/some-slug
+  - name: onlinekhabar
+    base_url: "https://www.onlinekhabar.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/\\d{4}/\\d{2}/\\d{5,}"
+    url_exclude:
+      - "/tag/"
+      - "/author/"
+      - "/category/"
+      - "/page/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 40000
+    delay_seconds: 1.5
+    crawl_max_pages: 3000
+    crawl_max_depth: 3
+
+  # Article URLs look like /politics/396098  (category + numeric id)
+  - name: setopati
+    base_url: "https://www.setopati.com"
+    strategies: ["sitemap", "rss", "crawl"]
+    url_include:
+      - "/\\d{5,}$"
+    url_exclude:
+      - "/tag/"
+      - "/author/"
+      - "/pages/"
+      - "/sitemap"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 40000
+    delay_seconds: 2.0
+    crawl_max_pages: 3000
+    crawl_max_depth: 3
+
+  # robots.txt declares Crawl-delay: 20, which the fetcher honours. That caps
+  # this source at ~180 pages/hour, so treat it as a small supplementary source
+  # rather than a main one.
+  - name: ratopati
+    base_url: "https://www.ratopati.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/story/\\d+"
+      - "/\\d{5,}$"
+    url_exclude:
+      - "/tag/"
+      - "/category/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 3000
+    delay_seconds: 20.0
+    crawl_max_pages: 200
+    crawl_max_depth: 3
+
+  # Article URLs look like /health/some-slug-23-55.html  (slug + two numeric
+  # segments + .html), NOT a long numeric id -- verified against its RSS feed.
+  - name: nagariknews
+    base_url: "https://nagariknews.nagariknetwork.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "-\\d+-\\d+\\.html$"
+    url_exclude:
+      - "/tag/"
+      - "/category/"
+      - "/feed"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 40000
+    delay_seconds: 2.0
+    crawl_max_pages: 3000
+    crawl_max_depth: 3
+
+  - name: ekantipur
+    base_url: "https://ekantipur.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/\\d{4}/\\d{2}/\\d{2}/"
+      - "/news/\\d+"
+    url_exclude:
+      - "/tag/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 40000
+    delay_seconds: 2.0
+    crawl_max_pages: 3000
+    crawl_max_depth: 3

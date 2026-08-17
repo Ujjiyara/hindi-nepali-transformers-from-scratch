@@ -1,0 +1,54 @@
+# Hindi (Model H) scrape configuration.
+#
+# Candidates only -- triage first:
+#
+#   python -m common.scrape.run triage --config Hindi/configs/scrape_sites.yaml
+#
+# Hindi Wikipedia is already covered by the dump pipeline, not by this scraper.
+# These sites exist to raise the *manual* token count, which is what sets the
+# corpus ceiling under the 20% manual rule (corpus <= 5 x manual tokens).
+
+lang: hi
+data_root: Hindi/data
+user_agent: "IIIT-LMA-corpus-research/1.0 (sakshamgoyal.sgm27@gmail.com)"
+
+request_timeout: [5.0, 30.0]
+max_retries: 3
+min_chars: 200
+
+sites:
+  - name: amarujala
+    base_url: "https://www.amarujala.com"
+    url_exclude:
+      - "/photo-gallery/"
+      - "/video/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 1.5
+
+  - name: livehindustan
+    base_url: "https://www.livehindustan.com"
+    url_exclude:
+      - "/photo/"
+      - "/video/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 1.5
+
+  - name: jagran
+    base_url: "https://www.jagran.com"
+    url_exclude:
+      - "/photo-gallery/"
+      - "/videos/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+
+  - name: navbharattimes
+    base_url: "https://navbharattimes.indiatimes.com"
+    url_exclude:
+      - "/photomazza/"
+      - "/video/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
