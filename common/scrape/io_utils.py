@@ -14,6 +14,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import logging
 import os
 import re
 import unicodedata
@@ -21,6 +22,8 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
+
+log = logging.getLogger(__name__)
 
 # Devanagari block, used for the script-ratio sanity check. Both Hindi and
 # Nepali are written in this script, so a page with almost no Devanagari is
@@ -95,14 +98,26 @@ def read_gzip_bytes(path: Path) -> bytes:
         return handle.read()
 
 
-def read_jsonl(path: Path) -> Iterator[dict[str, Any]]:
-    """Yield records from a .jsonl or .jsonl.gz file, skipping blank lines."""
+def read_jsonl(path: Path, skip_bad_lines: bool = False) -> Iterator[dict[str, Any]]:
+    """Yield records from a .jsonl or .jsonl.gz file, skipping blank lines.
+
+    ``skip_bad_lines`` tolerates unparseable lines instead of raising. Use it
+    when reading a file another process may still be appending to: extraction
+    is meant to run against a fetch that is still in flight, and the only
+    damaged line in that case is the half-written last one.
+    """
     opener = gzip.open if path.suffix == ".gz" else open
     with opener(path, "rt", encoding="utf-8") as handle:
-        for line in handle:
+        for number, line in enumerate(handle, start=1):
             line = line.strip()
-            if line:
+            if not line:
+                continue
+            try:
                 yield json.loads(line)
+            except json.JSONDecodeError:
+                if not skip_bad_lines:
+                    raise
+                log.warning("%s: skipping unparseable line %d", path.name, number)
 
 
 def write_jsonl(path: Path, records: Iterable[dict[str, Any]]) -> int:

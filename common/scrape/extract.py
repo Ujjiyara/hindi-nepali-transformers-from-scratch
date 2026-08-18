@@ -111,7 +111,10 @@ class Extractor:
             return 0
 
         records = []
-        for entry in read_jsonl(manifest_path):
+        # Tolerant: extraction is deliberately re-runnable against a fetch that
+        # is still in progress, and the fetcher may be midway through writing
+        # the manifest's last line.
+        for entry in read_jsonl(manifest_path, skip_bad_lines=True):
             self.stats.bump("pages_in")
             path = self._raw_path(entry["id"])
             if not path.exists():
