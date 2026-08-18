@@ -35,6 +35,7 @@ SOURCE_NOTES = {
     "nagariknews": ("Nagarik News, own crawler", "manual"),
     "ratopati": ("Ratopati news, own crawler", "manual"),
     "setopati": ("Setopati news, own crawler", "manual"),
+    "ekantipur": ("eKantipur news, own crawler", "manual"),
     "khabarhub": ("Khabarhub news, own crawler (sitemap-driven)", "manual"),
     "ujyaaloonline": ("Ujyaalo Online news, own crawler", "manual"),
     "hamrakura": ("Hamrakura news, own crawler", "manual"),
@@ -195,6 +196,156 @@ def _comparison_table(lang_dirs: dict[str, Path]) -> str:
     return "\n".join(rows) + "\n"
 
 
+def _load_sweeps(lang_dirs: dict[str, Path]) -> dict[str, dict[int, dict]]:
+    """Per language, its sweep rows keyed by vocabulary size."""
+    sweeps = {}
+    for code, root in lang_dirs.items():
+        data = _read_json(root / "tokenizer" / "sweep.json")
+        if data:
+            sweeps[code] = {r["vocab_size"]: r for r in data.get("sweep", [])}
+    return sweeps
+
+
+def _chosen_vocab(root: Path) -> int | None:
+    """The vocabulary size selected in this language's tokenizer config.
+
+    The *choice* is a decision recorded in the config; the numbers describing
+    it are read back out of the sweep, never from the config, so they cannot
+    disagree with the measurements after a re-run.
+    """
+    path = root / "configs" / "tokenizer.yaml"
+    if not path.exists():
+        return None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip().startswith("vocab_size:"):
+            return int(line.split(":", 1)[1].strip())
+    return None
+
+
+def _fertility_comparison(sweeps: dict[str, dict[int, dict]]) -> str:
+    """State which language tokenises more cheaply, from the measurements."""
+    if len(sweeps) < 2:
+        return ""
+    (code_a, rows_a), (code_b, rows_b) = list(sweeps.items())[:2]
+    shared = sorted(set(rows_a) & set(rows_b))
+    if not shared:
+        return ""
+
+    gaps = {s: rows_b[s]["fertility"] - rows_a[s]["fertility"] for s in shared}
+    name_a = LANGUAGE_NAMES.get(code_a, code_a)
+    name_b = LANGUAGE_NAMES.get(code_b, code_b)
+    lower, higher = (name_a, name_b) if all(g > 0 for g in gaps.values()) else (
+        (name_b, name_a) if all(g < 0 for g in gaps.values()) else (None, None)
+    )
+    if lower is None:
+        return (
+            f"\n**Neither language has lower fertility at every vocabulary size.** "
+            f"The gap between them changes sign across the sweep, so on this "
+            f"evidence the two tokenise held-out text at comparable cost.\n"
+        )
+
+    percentages = [
+        100 * abs(gaps[s]) / min(rows_a[s]["fertility"], rows_b[s]["fertility"])
+        for s in shared
+    ]
+    return (
+        f"\n**{lower} has lower fertility at every vocabulary size**, by "
+        f"{min(percentages):.1f}–{max(percentages):.1f}% across the sweep. A "
+        f"tokenizer fitted on more text learns more useful subwords, so the same "
+        f"amount of language costs fewer tokens. {higher} therefore fits less real "
+        f"content into an identical context window, before any architectural "
+        f"difference is considered.\n"
+    )
+
+
+def _utilisation_comparison(sweeps: dict[str, dict[int, dict]]) -> str:
+    """Describe how utilisation moves with vocabulary size, from the data."""
+    if not sweeps:
+        return ""
+    parts = []
+    for code, rows in sweeps.items():
+        sizes = sorted(rows)
+        name = LANGUAGE_NAMES.get(code, code)
+        first, last = rows[sizes[0]], rows[sizes[-1]]
+        parts.append(
+            f"{name} goes from {100 * first['vocab_utilisation']:.1f}% at "
+            f"{sizes[0]:,} to {100 * last['vocab_utilisation']:.1f}% at {sizes[-1]:,}"
+        )
+    worst = min(
+        (r["vocab_utilisation"], LANGUAGE_NAMES.get(c, c), s)
+        for c, rows in sweeps.items()
+        for s, r in rows.items()
+    )
+    return (
+        f"\n**Vocabulary utilisation is what actually bounds the vocabulary size.** "
+        f"{'; '.join(parts)}. At the largest size the worst case is {worst[1]} at "
+        f"{100 * worst[0]:.1f}%, so {100 * (1 - worst[0]):.1f}% of a {worst[2]:,}-entry "
+        f"vocabulary never appears in held-out text at all. Those entries would still "
+        f"consume embedding parameters in Phase 2 while receiving almost no gradient "
+        f"signal.\n"
+    )
+
+
+def _chosen_sizes_table(lang_dirs: dict[str, Path], model_dim: int = 384) -> str:
+    """The selected vocabulary per language, described with swept measurements."""
+    sweeps = _load_sweeps(lang_dirs)
+    rows = [
+        "| Model | Vocabulary | Fertility | Utilisation | "
+        f"Embedding params at d={model_dim} | Against the largest size swept |",
+        "|---|---|---|---|---|---|",
+    ]
+    for code, root in lang_dirs.items():
+        chosen = _chosen_vocab(root)
+        swept = sweeps.get(code, {})
+        row = swept.get(chosen) if chosen else None
+        if row is None:
+            rows.append(
+                f"| {MODEL_ROLE.get(code, code)} | -- | -- | -- | -- | "
+                "_no sweep entry for the configured size_ |"
+            )
+            continue
+
+        largest = max(swept)
+        top = swept[largest]
+        params = chosen * model_dim
+        fertility_cost = 100 * (row["fertility"] - top["fertility"]) / top["fertility"]
+        utilisation_gain = 100 * (row["vocab_utilisation"] - top["vocab_utilisation"])
+        saved = (largest - chosen) * model_dim
+        reason = (
+            f"{fertility_cost:.1f}% higher fertility than {largest:,}, "
+            f"for {utilisation_gain:+.1f} points of utilisation and "
+            f"{saved / 1e6:.1f}M fewer embedding parameters"
+            if chosen != largest
+            else "the largest size swept"
+        )
+        rows.append(
+            f"| {MODEL_ROLE.get(code, code)} | **{chosen:,}** | {row['fertility']:.3f} | "
+            f"{100 * row['vocab_utilisation']:.1f}% | {params / 1e6:.1f}M | {reason} |"
+        )
+    return "\n".join(rows) + "\n"
+
+
+def _selection_note(lang_dirs: dict[str, Path]) -> str:
+    """Say whether the two models ended up with the same vocabulary size."""
+    chosen = {code: _chosen_vocab(root) for code, root in lang_dirs.items()}
+    values = [v for v in chosen.values() if v]
+    if len(set(values)) == 1 and len(values) > 1:
+        return (
+            f"\nBoth models select {values[0]:,}. That is an outcome of the "
+            f"measurements rather than a shared setting imposed on them: each "
+            f"sweep was run independently on its own corpus, and both show the "
+            f"same shape, with utilisation holding up to {values[0]:,} and falling "
+            f"away beyond it. Because the sizes match, the fertility gap in the "
+            f"table above is a like-for-like comparison of the two languages "
+            f"rather than an artefact of different vocabulary budgets.\n"
+        )
+    return (
+        "\nThe two models select different sizes. That asymmetry is the intended "
+        "outcome rather than an inconsistency: each vocabulary is fitted to its own "
+        "corpus, and the lower-resource corpus supports a smaller one.\n"
+    )
+
+
 def _top_tokens_line(sweep: dict) -> str:
     rows = sweep.get("sweep", [])
     if not rows:
@@ -326,50 +477,33 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
 
     add("\n### 4.3 Model H vs. Model L, side by side\n")
     add(_comparison_table(lang_dirs))
+    sweeps = _load_sweeps(lang_dirs)
     add("\nTwo things are visible here, and they are the clearest quantitative "
         "evidence of the resource gap that this project is about.\n")
-    add("\n**Hindi has lower fertility at every vocabulary size.** A tokenizer "
-        "fitted on more text learns more useful merges, so the same amount of "
-        "language costs fewer tokens. Model L therefore fits less real content into "
-        "an identical context window, before any architectural difference is "
-        "considered.\n")
-    add("\n**Vocabulary utilisation separates the two far more sharply than "
-        "fertility does.** Hindi keeps 92-98% of its vocabulary in use on held-out "
-        "text across the whole sweep, so it can afford a large vocabulary. Nepali "
-        "falls from 84% at 8k to 39% at 32k: three-fifths of a 32,000-entry Nepali "
-        "vocabulary never appears in held-out text at all. Those entries would still "
-        "consume embedding parameters in Phase 2 while receiving almost no gradient "
-        "signal.\n")
-    add("\nThis is why fertility alone is not a sufficient selection criterion, and "
-        "why the two models are given different vocabulary sizes rather than a "
-        "single shared setting.\n")
+    add(_fertility_comparison(sweeps))
+    add(_utilisation_comparison(sweeps))
+    add("\nThis is why fertility alone is not a sufficient selection criterion: it "
+        "falls monotonically with vocabulary size and would always argue for the "
+        "largest one.\n")
 
     add("\n### 4.4 Choosing the vocabulary size\n")
     add("Fertility falls monotonically as the vocabulary grows, so fertility alone "
         "would always argue for the largest vocabulary. Two things argue against it.\n")
     add("\nFirst, **vocabulary utilisation** — the fraction of the vocabulary that "
-        "actually occurs in held-out text — falls sharply with size. Entries that "
-        "appear rarely receive poorly estimated embeddings during pretraining.\n")
+        "actually occurs in held-out text — falls as the vocabulary grows (the "
+        "measured values are in the table above). Entries that appear rarely "
+        "receive poorly estimated embeddings during pretraining.\n")
     add("\nSecond, the Phase 2 budget is roughly 25M parameters. With a model "
         "dimension of 384 and tied embeddings, a 32,000-entry vocabulary consumes "
         "32,000 × 384 ≈ 12.3M parameters — about half the entire budget — while a "
         "16,000-entry vocabulary costs half that and leaves the parameters for "
         "transformer blocks instead.\n")
     add("\n**Chosen sizes.**\n")
-    add("| Model | Vocabulary | Fertility | Utilisation | Embedding params at d=384 | Reason |")
-    add("|---|---|---|---|---|---|")
-    add("| Model H (Hindi) | **16,000** | 1.428 | 98.2% | 6.1M | Utilisation is at its "
-        "peak and fertility is within 6% of the 32k value, for half the embedding cost. "
-        "32k would spend 12.3M of the ~25M Phase 2 budget on the embedding table alone. |")
-    add("| Model L (Nepali) | **8,000** | 1.689 | 83.7% | 3.1M | The only size where most "
-        "of the vocabulary is actually exercised by held-out text. At 16k utilisation is "
-        "already 62.6% and at 32k only 39.2%, so the extra entries would be embedding "
-        "parameters trained on almost nothing. |\n")
-    add("\nThe asymmetry is the intended outcome, not an inconsistency: the "
-        "lower-resource corpus supports a smaller vocabulary. These choices are "
-        "recorded in `Hindi/configs/tokenizer.yaml` and `Nepali/configs/tokenizer.yaml` "
-        "for Phase 2, and the trade-off is plotted in "
-        "`report/figures/tokenizer_fertility.png` and "
+    add(_chosen_sizes_table(lang_dirs))
+    add(_selection_note(lang_dirs))
+    add("\nThese choices are recorded in `Hindi/configs/tokenizer.yaml` and "
+        "`Nepali/configs/tokenizer.yaml` for Phase 2, and the trade-off is plotted "
+        "in `report/figures/tokenizer_fertility.png` and "
         "`report/figures/tokenizer_vocab_utilisation.png`.\n")
 
     # ---- 5. figures -------------------------------------------------------
