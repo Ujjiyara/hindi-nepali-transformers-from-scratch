@@ -58,6 +58,19 @@ _ASSET_RE = re.compile(
 )
 
 
+def _host(url: str) -> str:
+    """Hostname with any leading ``www.`` removed, lowercased.
+
+    The crawl restricts itself to one site by comparing hostnames, and many
+    sites redirect between the bare domain and the ``www`` one. Comparing the
+    raw netloc means a config written with the wrong variant matches nothing:
+    the crawl fetches its seed, finds every link "off-site", and terminates
+    after a handful of pages having discovered almost nothing -- a silent
+    near-empty result rather than an error.
+    """
+    return urlparse(url).netloc.lower().removeprefix("www.")
+
+
 def normalise_url(url: str) -> str:
     """Canonical form of a URL, so the same page is not fetched twice.
 
@@ -100,7 +113,7 @@ class SiteDiscoverer:
         self.session = requests.Session()
         self.session.headers["User-Agent"] = cfg.user_agent
 
-        self.domain = urlparse(site.base_url).netloc
+        self.domain = _host(site.base_url)
         # The politeness delay applies to EVERY request this class makes, not
         # just crawl requests. Sitemap indexes can fan out to hundreds of child
         # files; fetching those back-to-back looks exactly like an attack and
@@ -262,7 +275,7 @@ class SiteDiscoverer:
                 continue
             visited.add(url)
 
-            if urlparse(url).netloc != self.domain or _ASSET_RE.search(url):
+            if _host(url) != self.domain or _ASSET_RE.search(url):
                 continue
 
             data = self._get(url)  # _get applies the politeness delay
@@ -276,7 +289,7 @@ class SiteDiscoverer:
                 child = normalise_url(urljoin(url, href))
                 if not child.startswith("http"):
                     continue
-                if urlparse(child).netloc != self.domain or _ASSET_RE.search(child):
+                if _host(child) != self.domain or _ASSET_RE.search(child):
                     continue
                 self._accept(child)
                 if child not in visited:
