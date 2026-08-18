@@ -90,9 +90,13 @@ done && cd -
 
 # Nepali  (note: 'newiki' is Nepali; 'newwiki' with two w's is Newari)
 mkdir -p Nepali/data/raw/wikipedia && cd Nepali/data/raw/wikipedia
-wget -c "https://dumps.wikimedia.org/newiki/latest/newiki-latest-pages-articles.xml.bz2"
-cd -
+for w in newiki newikibooks newiktionary; do
+  wget -c "https://dumps.wikimedia.org/$w/latest/$w-latest-pages-articles.xml.bz2"
+done && cd -
 ```
+
+Nepali has no Wikisource, Wikiquote or Wikinews dump; `newikibooks` and
+`newiktionary` are the only sister projects that exist for it.
 
 Extract them. Wikipedia/Wikibooks/Wikiquote use the article namespace; Wikisource
 needs `--namespaces 250`, because its namespace-0 entries are transclusion shells
@@ -127,12 +131,28 @@ python -m common.scrape.run fetch    --config Nepali/configs/scrape_sites.yaml -
 python -m common.scrape.run extract  --config Nepali/configs/scrape_sites.yaml --site onlinekhabar
 ```
 
+Omitting `--site` runs every site in the config, one thread per site, which is
+how the overnight collection was actually done: a single site cannot be fetched
+faster without being impolite, so throughput comes from fetching several at
+once.
+
 Same four steps with `Hindi/configs/scrape_sites.yaml`. `fetch` is resumable: it
 keeps an on-disk set of fetched URLs, so an interrupted run continues where it
 stopped. `--limit N` caps a run for testing.
 
+`discover` is interruptible: sending it SIGINT makes it stop crawling and write
+the URLs it has found so far, and re-running it merges with the existing URL
+file rather than replacing it. A crawl over a large news site runs for hours,
+so how long to let it run is a decision worth making while it runs.
+
+`extract` may be run against a fetch that is still in progress — it works from
+the stored raw bytes and tolerates the partially written last manifest line —
+so a long scrape can be turned into usable text without waiting for it to end.
+
 The scraper honours `robots.txt` and any declared `Crawl-delay`, identifies
-itself in the User-Agent, and rate-limits per site.
+itself in the User-Agent, and rate-limits per site. Requests are spaced
+start-to-start, so a declared delay is honoured as the minimum interval between
+requests that it is defined to be.
 
 ### 3. Downloaded corpus (CC-100)
 
@@ -155,6 +175,17 @@ Normalise, deduplicate and split. Reads everything under the language's
 ```bash
 python -m common.pipeline.run --data-root Hindi/data  --lang hi
 python -m common.pipeline.run --data-root Nepali/data --lang ne
+```
+
+Each run exits nonzero if manually collected text is under 20% of the corpus by
+characters, measured *after* deduplication — the share is not knowable before
+then, because dedup decides which copy of a near-duplicate survives and CC-100
+overlaps Wikipedia heavily. If it trips, either collect more manual text or
+drop downloaded shards, e.g.:
+
+```bash
+python -m common.pipeline.run --data-root Nepali/data --lang ne \
+  --exclude cc100_ne.part0011 cc100_ne.part0010
 ```
 
 ### 5. Tokenizers
