@@ -136,7 +136,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     sweep.add_argument("--model-type", default="unigram", choices=["unigram", "bpe"])
     sweep.add_argument("--character-coverage", type=float, default=0.9995)
-    sweep.add_argument("--max-lines", type=int, default=2_000_000)
+    # Unset by default: export the whole training split and let SentencePiece
+    # subsample it uniformly via input_sentence_size. A value here caps the
+    # export by sampling (see export_lines), which is for quick test runs.
+    sweep.add_argument("--max-lines", type=int, default=None)
     sweep.add_argument("--eval-docs", type=int, default=2000)
     sweep.set_defaults(func=cmd_sweep)
 
