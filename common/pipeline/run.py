@@ -86,6 +86,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--min-chars", type=int, default=200)
     parser.add_argument("--no-dedup", action="store_true", help="debugging only")
     parser.add_argument(
+        "--min-manual-fraction",
+        type=float,
+        default=0.20,
+        help="fail if manually collected text is a smaller share of the "
+             "corpus than this (by characters, measured after dedup)",
+    )
+    parser.add_argument(
         "--exclude",
         nargs="*",
         default=[],
@@ -249,6 +256,29 @@ def main(argv: list[str] | None = None) -> int:
         (time.time() - started) / 60,
     )
     log.info("stats -> %s", stats_path)
+
+    # The manual share is a hard requirement on the corpus, and it is not
+    # knowable until after deduplication: dedup decides which copy of a
+    # document survives, so downloaded text can displace manual text and move
+    # this number after every input is already fixed. Checking it here means a
+    # corpus that breaks the rule can never be handed quietly to the tokenizer.
+    # Outputs and statistics are still written, so the shortfall can be
+    # measured and corrected rather than merely reported.
+    manual_fraction = report["corpus"]["manual_char_fraction"]
+    if manual_fraction < args.min_manual_fraction:
+        deficit = args.min_manual_fraction * total_chars - manual_chars
+        downloaded_budget = manual_chars / args.min_manual_fraction - manual_chars
+        log.error(
+            "manual share is %.1f%%, below the required %.1f%%. Either collect "
+            "~%s more manual characters, or cut downloaded input to ~%s "
+            "characters (currently %s) -- e.g. --exclude some downloaded shards.",
+            100 * manual_fraction,
+            100 * args.min_manual_fraction,
+            f"{int(deficit):,}",
+            f"{int(downloaded_budget):,}",
+            f"{total_chars - manual_chars:,}",
+        )
+        return 2
     return 0
 
 
