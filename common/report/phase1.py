@@ -26,6 +26,8 @@ SOURCE_NOTES = {
     "hiwikiquote": ("Wikiquote dump", "manual"),
     "hiwikiversity": ("Wikiversity dump", "manual"),
     "newiki": ("Wikipedia article dump", "manual"),
+    "newikibooks": ("Wikibooks dump", "manual"),
+    "newiktionary": ("Wiktionary dump (definition prose)", "manual"),
     "jagran": ("Jagran news, own crawler", "manual"),
     "navbharattimes": ("Navbharat Times news, own crawler", "manual"),
     "livehindustan": ("Live Hindustan news, own crawler", "manual"),
@@ -33,6 +35,9 @@ SOURCE_NOTES = {
     "nagariknews": ("Nagarik News, own crawler", "manual"),
     "ratopati": ("Ratopati news, own crawler", "manual"),
     "setopati": ("Setopati news, own crawler", "manual"),
+    "khabarhub": ("Khabarhub news, own crawler (sitemap-driven)", "manual"),
+    "ujyaaloonline": ("Ujyaalo Online news, own crawler", "manual"),
+    "hamrakura": ("Hamrakura news, own crawler", "manual"),
     "cc100_hi": ("CC-100 (pre-built public corpus)", "downloaded"),
     "cc100_ne": ("CC-100 (pre-built public corpus)", "downloaded"),
 }
@@ -72,7 +77,10 @@ def _sources_table(stats: dict) -> str:
     rows = ["| Source | Description | Collection | Documents in | Kept after filters |",
             "|---|---|---|---|---|"]
     for name, counts in sorted(per_source.items(), key=lambda kv: -kv[1].get("in", 0)):
-        description, method = SOURCE_NOTES.get(name, ("--", "manual"))
+        # An unknown source is never assumed to be manual: the manual fraction
+        # is a rule the project has to satisfy, so a source nobody described
+        # must show up as unlabelled rather than quietly counting in our favour.
+        description, method = SOURCE_NOTES.get(name, ("--", "unlabelled"))
         docs_in = counts.get("in", 0)
         dropped = sum(v for k, v in counts.items() if k.startswith("dropped_"))
         rows.append(

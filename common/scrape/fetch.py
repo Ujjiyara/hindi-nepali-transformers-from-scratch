@@ -59,6 +59,22 @@ class Fetcher:
         # robots.txt Crawl-delay wins when it is stricter than our own setting.
         declared = self.robots.crawl_delay(site.base_url)
         self.delay = max(site.delay_seconds, declared or 0.0)
+        self._last_request_at = 0.0
+
+    def _wait_turn(self) -> None:
+        """Space requests ``delay`` seconds apart, measured start-to-start.
+
+        Sleeping the full delay *after* each response adds the server's own
+        response time on top of the interval, so a 1.5s delay against a host
+        that answers in 1.4s becomes a request every 2.9s -- roughly half the
+        collection rate, for no gain in politeness. A Crawl-delay is a minimum
+        interval between requests, so waiting only the remainder honours it
+        exactly while nearly doubling throughput.
+        """
+        remaining = self.delay - (time.monotonic() - self._last_request_at)
+        if remaining > 0:
+            time.sleep(remaining)
+        self._last_request_at = time.monotonic()
 
     def _raw_path(self, identifier: str) -> Path:
         """Shard raw files by id prefix so no single directory holds 100k files."""
@@ -67,6 +83,9 @@ class Fetcher:
     def _get(self, url: str) -> requests.Response | None:
         """GET with retry and exponential backoff. Returns None on failure."""
         for attempt in range(1, self.cfg.max_retries + 1):
+            # Every actual request is spaced, retries included -- a retry is
+            # another hit on a host that has just told us it is struggling.
+            self._wait_turn()
             try:
                 response = self.session.get(
                     url, timeout=self.cfg.request_timeout, allow_redirects=True
@@ -127,9 +146,6 @@ class Fetcher:
                     continue
 
                 response = self._get(url)
-                # Politeness delay applies to every request we actually made,
-                # successful or not.
-                time.sleep(self.delay)
 
                 if response is None:
                     self.stats.bump("failed")
