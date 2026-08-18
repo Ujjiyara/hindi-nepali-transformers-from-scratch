@@ -34,7 +34,7 @@ from urllib.parse import urldefrag, urljoin, urlparse
 import requests
 
 from common.scrape.config import ScrapeConfig, SiteConfig
-from common.scrape.io_utils import Stats, utc_now, write_jsonl
+from common.scrape.io_utils import Stats, read_jsonl, utc_now, write_jsonl
 from common.scrape.robots import RobotsPolicy
 
 log = logging.getLogger(__name__)
@@ -304,7 +304,15 @@ class SiteDiscoverer:
                 log.warning("[%s] unknown strategy %r, skipping", self.site.name, name)
                 continue
             before = len(self.found)
-            action()
+            try:
+                action()
+            except KeyboardInterrupt:
+                # A crawl of a large news site can run for hours. Interrupting
+                # it must not throw away what it has already found, so the URLs
+                # collected so far fall through to the normal write below.
+                log.warning("[%s] interrupted during %s -- keeping %d URLs found so far",
+                            self.site.name, name, len(self.found))
+                break
             log.info("[%s] strategy %-8s -> +%d URLs (total %d)",
                      self.site.name, name, len(self.found) - before, len(self.found))
 
@@ -331,6 +339,17 @@ def discover_site(cfg: ScrapeConfig, site: SiteConfig, robots: RobotsPolicy) -> 
     records = discoverer.run()
 
     out_path = cfg.urls_dir / f"{site.name}.jsonl"
+    # Merge rather than overwrite. A later run with wider crawl limits explores
+    # different parts of the site, so replacing the file would silently discard
+    # URLs an earlier run found but the fetcher had not reached yet.
+    if out_path.exists():
+        merged = {record["url"]: record for record in read_jsonl(out_path)}
+        before = len(merged)
+        for record in records:
+            merged.setdefault(record["url"], record)
+        log.info("[%s] merged with %d previously discovered URLs -> %d total",
+                 site.name, before, len(merged))
+        records = list(merged.values())
     written = write_jsonl(out_path, records)
     discoverer.stats.save(cfg.urls_dir / f"_stats_discover_{site.name}.json")
 
