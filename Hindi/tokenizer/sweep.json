@@ -1,6 +1,6 @@
 {
   "lang": "hi",
-  "generated_at": "2026-08-19T07:34:53+00:00",
+  "generated_at": "2026-08-19T08:53:18+00:00",
   "model_type": "unigram",
   "character_coverage": 0.9995,
   "train_split": "Hindi/data/processed/train.jsonl.gz",
@@ -11,19 +11,19 @@
       "documents": 2000,
       "characters": 5270261,
       "words": 1038327,
-      "tokens": 1457135,
-      "fertility": 1.4033,
-      "chars_per_token": 3.6169,
+      "tokens": 1456709,
+      "fertility": 1.4029,
+      "chars_per_token": 3.6179,
       "unknown_tokens": 0,
       "unknown_rate": 0.0,
       "byte_fallback_tokens": 5230,
-      "byte_fallback_rate": 0.00358924,
-      "unique_tokens_used": 7805,
-      "vocab_utilisation": 0.9756,
+      "byte_fallback_rate": 0.00359028,
+      "unique_tokens_used": 7804,
+      "vocab_utilisation": 0.9755,
       "top_tokens": [
         [
           "▁के",
-          36200
+          36222
         ],
         [
           ",",
@@ -67,7 +67,7 @@
         ],
         [
           "▁पर",
-          11535
+          11534
         ],
         [
           "▁हैं",
@@ -83,23 +83,23 @@
         ],
         [
           "ी",
-          8290
-        ],
-        [
-          "▁",
-          7977
+          8260
         ],
         [
           "▁भी",
           7961
         ],
         [
+          "▁",
+          7928
+        ],
+        [
           "ों",
-          7704
+          7614
         ],
         [
           "▁एक",
-          7530
+          7539
         ],
         [
           "▁नहीं",
@@ -111,11 +111,11 @@
         ],
         [
           "▁कि",
-          6422
+          6502
         ],
         [
           "▁कर",
-          6220
+          6211
         ],
         [
           "▁तो",
@@ -131,7 +131,7 @@
         ],
         [
           "न",
-          5378
+          5506
         ],
         [
           "▁इस",
@@ -139,7 +139,7 @@
         ],
         [
           "र",
-          4787
+          5046
         ]
       ],
       "model_path": "Hindi/tokenizer/hi_unigram_8000.model",
@@ -150,15 +150,15 @@
       "documents": 2000,
       "characters": 5270261,
       "words": 1038327,
-      "tokens": 1330420,
-      "fertility": 1.2813,
-      "chars_per_token": 3.9614,
+      "tokens": 1330287,
+      "fertility": 1.2812,
+      "chars_per_token": 3.9617,
       "unknown_tokens": 0,
       "unknown_rate": 0.0,
       "byte_fallback_tokens": 5230,
-      "byte_fallback_rate": 0.00393109,
-      "unique_tokens_used": 15631,
-      "vocab_utilisation": 0.9769,
+      "byte_fallback_rate": 0.00393148,
+      "unique_tokens_used": 15629,
+      "vocab_utilisation": 0.9768,
       "top_tokens": [
         [
           "▁के",
@@ -166,7 +166,7 @@
         ],
         [
           ",",
-          30888
+          30880
         ],
         [
           "▁में",
@@ -182,7 +182,7 @@
         ],
         [
           "▁की",
-          23355
+          23359
         ],
         [
           "▁से",
@@ -190,11 +190,11 @@
         ],
         [
           "▁को",
-          17090
+          17088
         ],
         [
           "▁का",
-          15649
+          15626
         ],
         [
           "▁और",
@@ -202,11 +202,11 @@
         ],
         [
           ".",
-          11980
+          11968
         ],
         [
           "▁पर",
-          11326
+          11315
         ],
         [
           "▁हैं",
@@ -214,7 +214,7 @@
         ],
         [
           "▁ने",
-          9267
+          9262
         ],
         [
           "-",
@@ -226,7 +226,7 @@
         ],
         [
           "▁एक",
-          7330
+          7333
         ],
         [
           "▁नहीं",
@@ -246,11 +246,11 @@
         ],
         [
           "▁कर",
-          5929
+          5922
         ],
         [
           "▁ही",
-          5671
+          5669
         ],
         [
           "▁हो",
@@ -258,11 +258,11 @@
         ],
         [
           "▁इस",
-          5110
+          5125
         ],
         [
           "▁",
-          5100
+          5045
         ],
         [
           ":",
@@ -270,7 +270,7 @@
         ],
         [
           "ों",
-          4225
+          4252
         ],
         [
           "...",
@@ -278,7 +278,7 @@
         ],
         [
           ")",
-          4148
+          4169
         ]
       ],
       "model_path": "Hindi/tokenizer/hi_unigram_16000.model",
@@ -289,15 +289,15 @@
       "documents": 2000,
       "characters": 5270261,
       "words": 1038327,
-      "tokens": 1254175,
+      "tokens": 1254203,
       "fertility": 1.2079,
-      "chars_per_token": 4.2022,
+      "chars_per_token": 4.2021,
       "unknown_tokens": 0,
       "unknown_rate": 0.0,
       "byte_fallback_tokens": 5230,
-      "byte_fallback_rate": 0.00417007,
-      "unique_tokens_used": 29068,
-      "vocab_utilisation": 0.9084,
+      "byte_fallback_rate": 0.00416998,
+      "unique_tokens_used": 29083,
+      "vocab_utilisation": 0.9088,
       "top_tokens": [
         [
           "▁के",
@@ -325,15 +325,15 @@
         ],
         [
           "▁से",
-          17717
+          17708
         ],
         [
           "▁को",
-          16909
+          16907
         ],
         [
           "▁का",
-          15303
+          15299
         ],
         [
           "▁और",
@@ -341,11 +341,11 @@
         ],
         [
           ".",
-          11686
+          11696
         ],
         [
           "▁पर",
-          11098
+          11097
         ],
         [
           "▁हैं",
@@ -357,7 +357,7 @@
         ],
         [
           "-",
-          8187
+          8190
         ],
         [
           "▁भी",
@@ -365,7 +365,7 @@
         ],
         [
           "▁एक",
-          7264
+          7262
         ],
         [
           "▁नहीं",
@@ -377,15 +377,15 @@
         ],
         [
           "▁कि",
-          6038
+          6036
         ],
         [
           "▁तो",
-          5911
+          5910
         ],
         [
           "▁कर",
-          5815
+          5810
         ],
         [
           "▁ही",
@@ -401,7 +401,7 @@
         ],
         [
           ":",
-          4423
+          4426
         ],
         [
           "▁-",
@@ -413,11 +413,11 @@
         ],
         [
           ")",
-          3956
+          3977
         ],
         [
           "▁",
-          3855
+          3900
         ]
       ],
       "model_path": "Hindi/tokenizer/hi_unigram_32000.model",
@@ -428,9 +428,9 @@
   "examples": [
     {
       "text": "REAL NEWS THAT INDIAN MEDIA DON'T DARE TO PUBLISH: बंगारू लक्ष्मण को चार साल की जेल",
-      "n_tokens": 33,
+      "n_tokens": 34,
       "n_words": 16,
-      "fertility": 2.062,
+      "fertility": 2.125,
       "pieces": [
         "▁RE",
         "AL",
@@ -451,8 +451,9 @@
         "DA",
         "RE",
         "▁TO",
-        "▁P",
-        "UB",
+        "▁",
+        "PU",
+        "B",
         "L",
         "ISH",
         ":",

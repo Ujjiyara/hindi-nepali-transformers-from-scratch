@@ -64,9 +64,9 @@ Splits are assigned per document from a salted SHA-256 of the document id, never
 
 | Split | Documents | Characters | Est. tokens | Manual (char %) |
 |---|---|---|---|---|
-| train | 684,177 | 1,649,866,770 | 471,390,505 | 34.4% |
-| validation | 6,841 | 16,585,211 | 4,738,631 | 34.1% |
-| test | 7,063 | 17,148,518 | 4,899,576 | 36.9% |
+| train | 684,190 | 1,650,040,640 | 471,440,182 | 34.4% |
+| validation | 6,838 | 16,575,708 | 4,735,916 | 34.0% |
+| test | 7,053 | 16,984,151 | 4,852,614 | 36.3% |
 | **total** | **698,081** | **1,683,600,499** | **481,028,714** | **34.4%** |
 
 
@@ -163,9 +163,9 @@ One tokenizer per language, trained from scratch with SentencePiece (unigram) on
 
 | Vocab size | Fertility (tok/word) | Chars/token | Unknown rate | Byte-fallback rate | Vocab utilisation |
 |---|---|---|---|---|---|
-| 8,000 | 1.403 | 3.62 | 0.00e+00 | 3.59e-03 | 97.6% |
+| 8,000 | 1.403 | 3.62 | 0.00e+00 | 3.59e-03 | 97.5% |
 | 16,000 | 1.281 | 3.96 | 0.00e+00 | 3.93e-03 | 97.7% |
-| 32,000 | 1.208 | 4.20 | 0.00e+00 | 4.17e-03 | 90.8% |
+| 32,000 | 1.208 | 4.20 | 0.00e+00 | 4.17e-03 | 90.9% |
 
 
 Most frequent held-out tokens: `▁के`, `,`, `▁में`, `▁है`, `।`, `▁की`, `▁से`, `▁को`, `▁का`, `▁और`, `.`, `▁पर`, `▁हैं`, `▁ने`, `-`
@@ -173,9 +173,9 @@ Most frequent held-out tokens: `▁के`, `,`, `▁में`, `▁है`, `�
 
 **Example segmentations**
 
-- **16 words -> 33 tokens** (fertility 2.062):
+- **16 words -> 34 tokens** (fertility 2.125):
   - text: `REAL NEWS THAT INDIAN MEDIA DON'T DARE TO PUBLISH: बंगारू लक्ष्मण को चार साल की जेल`
-  - pieces: `▁RE AL ▁NEWS ▁ TH AT ▁INDIA N ▁M ED IA ▁D ON ' T ▁ DA RE ▁TO ▁P UB L ISH : ▁बंग ा रू ▁लक्ष्मण ▁को ▁चार ▁साल ▁की ▁जेल`
+  - pieces: `▁RE AL ▁NEWS ▁ TH AT ▁INDIA N ▁M ED IA ▁D ON ' T ▁ DA RE ▁TO ▁ PU B L ISH : ▁बंग ा रू ▁लक्ष्मण ▁को ▁चार ▁साल ▁की ▁जेल`
 
 - **15 words -> 17 tokens** (fertility 1.133):
   - text: `Home धर्म व्रत कथा - विधि बुधवार व्रत करने की विधि, कथा, उद्देश्य एवं फल`
@@ -217,9 +217,9 @@ Most frequent held-out tokens: `▁।`, `,`, `▁र`, `▁छ`, `को`, `।
 
 | Vocab size | Hindi fertility | Hindi utilisation | Nepali fertility | Nepali utilisation |
 |---|---|---|---|---|
-| 8,000 | 1.403 | 97.6% | 1.520 | 97.7% |
+| 8,000 | 1.403 | 97.5% | 1.520 | 97.7% |
 | 16,000 | 1.281 | 97.7% | 1.360 | 97.7% |
-| 32,000 | 1.208 | 90.8% | 1.261 | 89.8% |
+| 32,000 | 1.208 | 90.9% | 1.261 | 89.8% |
 
 
 Two things are visible here, and they are the clearest quantitative evidence of the resource gap that this project is about.
@@ -228,7 +228,7 @@ Two things are visible here, and they are the clearest quantitative evidence of 
 **Hindi has lower fertility at every vocabulary size**, by 4.4–8.3% across the sweep. A tokenizer fitted on more text learns more useful subwords, so the same amount of language costs fewer tokens. Nepali therefore fits less real content into an identical context window, before any architectural difference is considered.
 
 
-**Vocabulary utilisation is what actually bounds the vocabulary size.** Hindi goes from 97.6% at 8,000 to 90.8% at 32,000; Nepali goes from 97.7% at 8,000 to 89.8% at 32,000. At the largest size the worst case is Nepali at 89.8%, so 10.2% of a 32,000-entry vocabulary never appears in held-out text at all. Those entries would still consume embedding parameters in Phase 2 while receiving almost no gradient signal.
+**Vocabulary utilisation is what actually bounds the vocabulary size.** Hindi goes from 97.5% at 8,000 to 90.9% at 32,000; Nepali goes from 97.7% at 8,000 to 89.8% at 32,000. At the largest size the worst case is Nepali at 89.8%, so 10.2% of a 32,000-entry vocabulary never appears in held-out text at all. Those entries would still consume embedding parameters in Phase 2 while receiving almost no gradient signal.
 
 
 This is why fertility alone is not a sufficient selection criterion: it falls monotonically with vocabulary size and would always argue for the largest one.
@@ -249,7 +249,7 @@ Second, the Phase 2 budget is roughly 25M parameters. With a model dimension of 
 
 | Model | Vocabulary | Fertility | Utilisation | Embedding params at d=384 | Against the largest size swept |
 |---|---|---|---|---|---|
-| Model H (higher-resource) | **16,000** | 1.281 | 97.7% | 6.1M | 6.1% higher fertility than 32,000, for +6.9 points of utilisation and 6.1M fewer embedding parameters |
+| Model H (higher-resource) | **16,000** | 1.281 | 97.7% | 6.1M | 6.1% higher fertility than 32,000, for +6.8 points of utilisation and 6.1M fewer embedding parameters |
 | Model L (lower-resource) | **16,000** | 1.360 | 97.7% | 6.1M | 7.9% higher fertility than 32,000, for +7.9 points of utilisation and 6.1M fewer embedding parameters |
 
 
