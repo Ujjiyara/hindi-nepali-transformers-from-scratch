@@ -1,22 +1,31 @@
 # Model L tokenizer, selected from the vocabulary sweep in report/phase1.md.
 #
-# 8,000 rather than 16,000 or 32,000: it is the only swept size where most of
-# the vocabulary is exercised by held-out text (83.7%, against 62.6% at 16k and
-# 39.2% at 32k). Larger vocabularies lower fertility but spend embedding
-# parameters on entries that receive almost no gradient signal.
+# 16,000 rather than 32,000: utilisation holds at 97.7% here but falls to 89.8%
+# at 32k, so a tenth of a 32,000-entry vocabulary would never appear in held-out
+# text while still consuming embedding parameters. The price is 7.9% higher
+# fertility than 32k, for half the embedding cost.
 #
-# The smaller vocabulary than Model H is the intended consequence of the
-# smaller corpus, not an inconsistency between the two models.
+# 16,000 rather than 8,000: fertility is 10.5% better at effectively identical
+# utilisation (97.66% against 97.71%).
+#
+# Model L lands on the same size as Model H. That is a result, not a shared
+# setting: the two sweeps were run independently on their own corpora and both
+# show utilisation holding to 16k and falling away beyond it. It also makes the
+# fertility gap between the two languages a like-for-like comparison rather
+# than an artefact of different vocabulary budgets.
 lang: ne
 model_type: unigram
-vocab_size: 8000
+vocab_size: 16000
 character_coverage: 0.9995
 byte_fallback: true
-model_path: Nepali/tokenizer/ne_unigram_8000.model
-vocab_path: Nepali/tokenizer/ne_unigram_8000.vocab
+model_path: Nepali/tokenizer/ne_unigram_16000.model
+vocab_path: Nepali/tokenizer/ne_unigram_16000.vocab
+# Measured on the validation split by common/tokenizer/evaluate.py. The report
+# reads these numbers from tokenizer/sweep.json rather than from here, so a
+# stale value in this file cannot reach the report.
 measured:
-  fertility: 1.689
-  chars_per_token: 3.95
+  fertility: 1.3603
+  chars_per_token: 4.711
   unknown_rate: 0.0
-  byte_fallback_rate: 0.00242
-  vocab_utilisation: 0.837
+  byte_fallback_rate: 0.003659
+  vocab_utilisation: 0.9766

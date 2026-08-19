@@ -24,7 +24,7 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 ### 2.1 Hindi — Model H (higher-resource)
 
-**Final corpus: 676,405 documents, 1,641,897,345 characters, approximately 469,113,527 tokens (32.8% manually collected).**
+**Final corpus: 698,081 documents, 1,683,600,499 characters, approximately 481,028,714 tokens (34.4% manually collected).**
 
 
 #### Sources
@@ -34,7 +34,7 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 | `cc100_hi` | CC-100 (pre-built public corpus) | downloaded | 487,850 | 487,247 |
 | `hiwikisource` | Wikisource proofread pages (public-domain literature) | manual | 160,558 | 156,997 |
 | `hiwiki` | Wikipedia article dump | manual | 87,043 | 86,747 |
-| `livehindustan` | Live Hindustan news, own crawler | manual | 8,311 | 8,309 |
+| `livehindustan` | Live Hindustan news, own crawler | manual | 33,423 | 33,421 |
 | `navbharattimes` | Navbharat Times news, own crawler | manual | 4,499 | 4,495 |
 | `jagran` | Jagran news, own crawler | manual | 2,789 | 2,787 |
 | `hiwikibooks` | Wikibooks dump | manual | 2,075 | 2,067 |
@@ -46,16 +46,16 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 | Stage | Documents removed | Remaining |
 |---|---|---|
-| Loaded from interim | -- | 754,560 |
+| Loaded from interim | -- | 779,672 |
 | Quality filter: below minimum length | 2 | |
 | Quality filter: too few words | 62 | |
 | Quality filter: digit-dominated | 283 | |
 | Quality filter: punctuation-dominated | 4,117 | |
 | Quality filter: repetitive lines (listing pages) | 13 | |
-| **After normalisation and quality filters** | | **750,083** |
-| Exact duplicates (SHA-256 of normalised text) | 24,100 | |
-| Near-duplicates (MinHash/LSH, 13,533 clusters) | 49,578 | |
-| **Final corpus** | | **676,405** |
+| **After normalisation and quality filters** | | **775,195** |
+| Exact duplicates (SHA-256 of normalised text) | 24,136 | |
+| Near-duplicates (MinHash/LSH, 14,172 clusters) | 52,978 | |
+| **Final corpus** | | **698,081** |
 
 
 #### Splits
@@ -64,15 +64,15 @@ Splits are assigned per document from a salted SHA-256 of the document id, never
 
 | Split | Documents | Characters | Est. tokens | Manual (char %) |
 |---|---|---|---|---|
-| train | 662,939 | 1,609,029,687 | 459,722,767 | 32.7% |
-| validation | 6,644 | 16,200,487 | 4,628,710 | 32.5% |
-| test | 6,822 | 16,667,171 | 4,762,048 | 35.1% |
-| **total** | **676,405** | **1,641,897,345** | **469,113,527** | **32.8%** |
+| train | 684,177 | 1,649,866,770 | 471,390,505 | 34.4% |
+| validation | 6,841 | 16,585,211 | 4,738,631 | 34.1% |
+| test | 7,063 | 17,148,518 | 4,899,576 | 36.9% |
+| **total** | **698,081** | **1,683,600,499** | **481,028,714** | **34.4%** |
 
 
 ### 2.2 Nepali — Model L (lower-resource)
 
-**Final corpus: 352,722 documents, 671,969,987 characters, approximately 191,991,424 tokens (18.6% manually collected).**
+**Final corpus: 390,725 documents, 752,355,355 characters, approximately 214,958,672 tokens (27.4% manually collected).**
 
 
 #### Sources
@@ -80,16 +80,16 @@ Splits are assigned per document from a salted SHA-256 of the document id, never
 | Source | Description | Collection | Documents in | Kept after filters |
 |---|---|---|---|---|
 | `cc100_ne` | CC-100 (pre-built public corpus) | downloaded | 346,720 | 346,272 |
-| `onlinekhabar` | Online Khabar news, own crawler | manual | 25,274 | 25,273 |
+| `onlinekhabar` | Online Khabar news, own crawler | manual | 30,291 | 30,290 |
+| `khabarhub` | Khabarhub news, own crawler (sitemap-driven) | manual | 23,595 | 23,593 |
 | `newiki` | Wikipedia article dump | manual | 21,878 | 21,870 |
-| `nagariknews` | Nagarik News, own crawler | manual | 2,971 | 2,951 |
-| `khabarhub` | Khabarhub news, own crawler (sitemap-driven) | manual | 1,432 | 1,431 |
-| `ratopati` | Ratopati news, own crawler | manual | 1,104 | 1,102 |
-| `hamrakura` | Hamrakura news, own crawler | manual | 942 | 940 |
-| `ekantipur` | eKantipur news, own crawler | manual | 937 | 937 |
+| `hamrakura` | Hamrakura news, own crawler | manual | 12,241 | 12,206 |
+| `nagariknews` | Nagarik News, own crawler | manual | 3,191 | 3,170 |
+| `setopati` | Setopati news, own crawler | manual | 3,013 | 3,010 |
+| `ratopati` | Ratopati news, own crawler | manual | 2,180 | 2,177 |
+| `ekantipur` | eKantipur news, own crawler | manual | 2,135 | 2,135 |
+| `ujyaaloonline` | Ujyaalo Online news, own crawler | manual | 1,512 | 1,512 |
 | `newiktionary` | Wiktionary dump (definition prose) | manual | 857 | 845 |
-| `setopati` | Setopati news, own crawler | manual | 820 | 818 |
-| `ujyaaloonline` | Ujyaalo Online news, own crawler | manual | 535 | 535 |
 | `newikibooks` | Wikibooks dump | manual | 168 | 168 |
 
 
@@ -97,16 +97,16 @@ Splits are assigned per document from a salted SHA-256 of the document id, never
 
 | Stage | Documents removed | Remaining |
 |---|---|---|
-| Loaded from interim | -- | 403,638 |
-| Quality filter: below minimum length | 5 | |
-| Quality filter: too few words | 19 | |
-| Quality filter: digit-dominated | 30 | |
-| Quality filter: punctuation-dominated | 439 | |
+| Loaded from interim | -- | 447,781 |
+| Quality filter: below minimum length | 16 | |
+| Quality filter: too few words | 21 | |
+| Quality filter: digit-dominated | 31 | |
+| Quality filter: punctuation-dominated | 462 | |
 | Quality filter: repetitive lines (listing pages) | 3 | |
-| **After normalisation and quality filters** | | **403,142** |
-| Exact duplicates (SHA-256 of normalised text) | 11,578 | |
-| Near-duplicates (MinHash/LSH, 15,674 clusters) | 38,842 | |
-| **Final corpus** | | **352,722** |
+| **After normalisation and quality filters** | | **447,248** |
+| Exact duplicates (SHA-256 of normalised text) | 16,139 | |
+| Near-duplicates (MinHash/LSH, 16,435 clusters) | 40,384 | |
+| **Final corpus** | | **390,725** |
 
 
 #### Splits
@@ -115,10 +115,10 @@ Splits are assigned per document from a salted SHA-256 of the document id, never
 
 | Split | Documents | Characters | Est. tokens | Manual (char %) |
 |---|---|---|---|---|
-| train | 345,613 | 658,312,412 | 188,089,260 | 18.6% |
-| validation | 3,603 | 6,959,859 | 1,988,531 | 20.7% |
-| test | 3,506 | 6,697,716 | 1,913,633 | 18.0% |
-| **total** | **352,722** | **671,969,987** | **191,991,424** | **18.6%** |
+| train | 382,826 | 737,055,540 | 210,587,297 | 27.4% |
+| validation | 3,995 | 7,778,100 | 2,222,314 | 29.0% |
+| test | 3,904 | 7,521,715 | 2,149,061 | 27.1% |
+| **total** | **390,725** | **752,355,355** | **214,958,672** | **27.4%** |
 
 
 ## 3. Preprocessing
@@ -164,7 +164,7 @@ One tokenizer per language, trained from scratch with SentencePiece (unigram) on
 | Vocab size | Fertility (tok/word) | Chars/token | Unknown rate | Byte-fallback rate | Vocab utilisation |
 |---|---|---|---|---|---|
 | 8,000 | 1.403 | 3.62 | 0.00e+00 | 3.59e-03 | 97.6% |
-| 16,000 | 1.280 | 3.96 | 0.00e+00 | 3.93e-03 | 97.7% |
+| 16,000 | 1.281 | 3.96 | 0.00e+00 | 3.93e-03 | 97.7% |
 | 32,000 | 1.208 | 4.20 | 0.00e+00 | 4.17e-03 | 90.8% |
 
 
@@ -190,12 +190,12 @@ Most frequent held-out tokens: `▁के`, `,`, `▁में`, `▁है`, `�
 
 | Vocab size | Fertility (tok/word) | Chars/token | Unknown rate | Byte-fallback rate | Vocab utilisation |
 |---|---|---|---|---|---|
-| 8,000 | 1.518 | 4.22 | 0.00e+00 | 3.10e-03 | 97.7% |
-| 16,000 | 1.360 | 4.71 | 0.00e+00 | 3.46e-03 | 97.6% |
-| 32,000 | 1.261 | 5.08 | 0.00e+00 | 3.73e-03 | 89.9% |
+| 8,000 | 1.520 | 4.22 | 0.00e+00 | 3.28e-03 | 97.7% |
+| 16,000 | 1.360 | 4.71 | 0.00e+00 | 3.66e-03 | 97.7% |
+| 32,000 | 1.261 | 5.08 | 0.00e+00 | 3.95e-03 | 89.8% |
 
 
-Most frequent held-out tokens: `▁।`, `,`, `▁र`, `▁छ`, `को`, `।`, `मा`, `ले`, `का`, `▁पनि`, `▁'`, `▁भएको`, `लाई`, `▁लागि`, `▁छन्`
+Most frequent held-out tokens: `▁।`, `,`, `▁र`, `▁छ`, `को`, `।`, `मा`, `का`, `ले`, `▁पनि`, `▁'`, `▁भएको`, `लाई`, `▁लागि`, `▁छन्`
 
 
 **Example segmentations**
@@ -206,7 +206,7 @@ Most frequent held-out tokens: `▁।`, `,`, `▁र`, `▁छ`, `को`, `।
 
 - **31 words -> 34 tokens** (fertility 1.097):
   - text: `स्मार्टफोनमा सानो सानो समस्याले पनि कहिलेकाही हामीलाई दुख दिईरहेको हुन्छ । कहिलेकाही मोबाइलमा केहि समस्या आउन सक्छ त्यस्`
-  - pieces: `▁स्मार्टफोन मा ▁सानो ▁सानो ▁समस्याले ▁पनि ▁कहिलेकाही ▁हामीलाई ▁दुख ▁दिई रहेको ▁हुन्छ ▁। ▁कहिलेकाही ▁मोबाइलमा ▁केहि ▁समस्या ▁आउन ▁सक्छ ▁त्यस्तो ▁अवस्थामा ▁मोबाइल ▁कुनै ▁पसलमा ▁बनाउन ▁ला नु ▁बन्दा ▁पनि ▁घरमै ▁बसेर ▁बनाउने ▁प्रयास ▁गर्न`
+  - pieces: `▁स्मार्टफोन मा ▁सानो ▁सानो ▁समस्याले ▁पनि ▁कहिलेकाही ▁हामीलाई ▁दुख ▁दिईरहे को ▁हुन्छ ▁। ▁कहिलेकाही ▁मोबाइलमा ▁केहि ▁समस्या ▁आउन ▁सक्छ ▁त्यस्तो ▁अवस्थामा ▁मोबाइल ▁कुनै ▁पसलमा ▁बनाउन ▁ला नु ▁बन्दा ▁पनि ▁घरमै ▁बसेर ▁बनाउने ▁प्रयास ▁गर्न`
 
 - **32 words -> 44 tokens** (fertility 1.375):
   - text: `कैलालीको घोडाघोडी नगरपालिका- १ सुखडमा शिक्षा तथा प्राकृतीक संरक्षण बिकास मञ्च सुखडको आयोजनामा यहि पुस २८ गते देखि माघ ५ `
@@ -217,18 +217,18 @@ Most frequent held-out tokens: `▁।`, `,`, `▁र`, `▁छ`, `को`, `।
 
 | Vocab size | Hindi fertility | Hindi utilisation | Nepali fertility | Nepali utilisation |
 |---|---|---|---|---|
-| 8,000 | 1.403 | 97.6% | 1.518 | 97.7% |
-| 16,000 | 1.280 | 97.7% | 1.360 | 97.6% |
-| 32,000 | 1.208 | 90.8% | 1.261 | 89.9% |
+| 8,000 | 1.403 | 97.6% | 1.520 | 97.7% |
+| 16,000 | 1.281 | 97.7% | 1.360 | 97.7% |
+| 32,000 | 1.208 | 90.8% | 1.261 | 89.8% |
 
 
 Two things are visible here, and they are the clearest quantitative evidence of the resource gap that this project is about.
 
 
-**Hindi has lower fertility at every vocabulary size**, by 4.3–8.2% across the sweep. A tokenizer fitted on more text learns more useful subwords, so the same amount of language costs fewer tokens. Nepali therefore fits less real content into an identical context window, before any architectural difference is considered.
+**Hindi has lower fertility at every vocabulary size**, by 4.4–8.3% across the sweep. A tokenizer fitted on more text learns more useful subwords, so the same amount of language costs fewer tokens. Nepali therefore fits less real content into an identical context window, before any architectural difference is considered.
 
 
-**Vocabulary utilisation is what actually bounds the vocabulary size.** Hindi goes from 97.6% at 8,000 to 90.8% at 32,000; Nepali goes from 97.7% at 8,000 to 89.9% at 32,000. At the largest size the worst case is Nepali at 89.9%, so 10.1% of a 32,000-entry vocabulary never appears in held-out text at all. Those entries would still consume embedding parameters in Phase 2 while receiving almost no gradient signal.
+**Vocabulary utilisation is what actually bounds the vocabulary size.** Hindi goes from 97.6% at 8,000 to 90.8% at 32,000; Nepali goes from 97.7% at 8,000 to 89.8% at 32,000. At the largest size the worst case is Nepali at 89.8%, so 10.2% of a 32,000-entry vocabulary never appears in held-out text at all. Those entries would still consume embedding parameters in Phase 2 while receiving almost no gradient signal.
 
 
 This is why fertility alone is not a sufficient selection criterion: it falls monotonically with vocabulary size and would always argue for the largest one.
@@ -249,11 +249,11 @@ Second, the Phase 2 budget is roughly 25M parameters. With a model dimension of 
 
 | Model | Vocabulary | Fertility | Utilisation | Embedding params at d=384 | Against the largest size swept |
 |---|---|---|---|---|---|
-| Model H (higher-resource) | **16,000** | 1.280 | 97.7% | 6.1M | 6.0% higher fertility than 32,000, for +6.8 points of utilisation and 6.1M fewer embedding parameters |
-| Model L (lower-resource) | **8,000** | 1.518 | 97.7% | 3.1M | 20.4% higher fertility than 32,000, for +7.8 points of utilisation and 9.2M fewer embedding parameters |
+| Model H (higher-resource) | **16,000** | 1.281 | 97.7% | 6.1M | 6.1% higher fertility than 32,000, for +6.9 points of utilisation and 6.1M fewer embedding parameters |
+| Model L (lower-resource) | **16,000** | 1.360 | 97.7% | 6.1M | 7.9% higher fertility than 32,000, for +7.9 points of utilisation and 6.1M fewer embedding parameters |
 
 
-The two models select different sizes. That asymmetry is the intended outcome rather than an inconsistency: each vocabulary is fitted to its own corpus, and the lower-resource corpus supports a smaller one.
+Both models select 16,000. That is an outcome of the measurements rather than a shared setting imposed on them: each sweep was run independently on its own corpus, and both show the same shape, with utilisation holding up to 16,000 and falling away beyond it. Because the sizes match, the fertility gap in the table above is a like-for-like comparison of the two languages rather than an artefact of different vocabulary budgets.
 
 
 These choices are recorded in `Hindi/configs/tokenizer.yaml` and `Nepali/configs/tokenizer.yaml` for Phase 2, and the trade-off is plotted in `report/figures/tokenizer_fertility.png` and `report/figures/tokenizer_vocab_utilisation.png`.
