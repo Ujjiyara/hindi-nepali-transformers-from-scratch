@@ -32,6 +32,48 @@ log = logging.getLogger("wiki")
 MIN_ARTICLE_CHARS = 300
 MIN_DEVANAGARI_RATIO = 0.60
 
+# Wikimedia project implied by the tail of a source name such as "hiwikibooks".
+# Order matters: the longer names must be tested before the "wiki" that is a
+# prefix of them all.
+_PROJECT_SUFFIXES = (
+    "wikisource",
+    "wikibooks",
+    "wikiquote",
+    "wikiversity",
+    "wikinews",
+    "wiktionary",
+    "wikivoyage",
+    "wiki",
+)
+# "hiwiki" is Wikipedia; every other project names itself in its host.
+_PROJECT_HOSTS = {"wiki": "wikipedia"}
+
+
+def check_site_matches_source(source: str, site: str) -> str | None:
+    """Return a complaint if --site looks wrong for --source, else None.
+
+    ``--site`` only ever appears inside the ``source_url`` recorded on each
+    document, so getting it wrong is invisible: the run succeeds, the counts
+    are right, and every document quietly claims to come from a wiki it did
+    not come from. Three Hindi dumps were extracted with hi.wikisource.org
+    before this check existed, which also made documents with the same title
+    in different wikis collide on document id, since the id is a hash of that
+    URL.
+    """
+    for suffix in _PROJECT_SUFFIXES:
+        if source.endswith(suffix):
+            expected = _PROJECT_HOSTS.get(suffix, suffix)
+            if expected not in site:
+                return (
+                    f"--source {source!r} is a {expected} dump but --site is "
+                    f"{site!r}, which is not a {expected} host. The site is "
+                    f"recorded in every document's source_url, so this would "
+                    f"misattribute the whole dump. Pass --allow-site-mismatch "
+                    f"if this really is intended."
+                )
+            return None
+    return None
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Extract a Wikimedia XML dump to JSONL.")
@@ -49,6 +91,11 @@ def main(argv: list[str] | None = None) -> int:
         help="comma-separated dump namespaces. Default '0' (articles). "
         "Wikisource needs '250': its ns 0 holds only transclusion shells.",
     )
+    parser.add_argument(
+        "--allow-site-mismatch",
+        action="store_true",
+        help="skip the check that --site matches the project named by --source",
+    )
     args = parser.parse_args(argv)
     namespaces = frozenset(n.strip() for n in args.namespaces.split(",") if n.strip())
 
@@ -57,6 +104,12 @@ def main(argv: list[str] | None = None) -> int:
         format="%(asctime)s %(levelname)-7s %(message)s",
         datefmt="%H:%M:%S",
     )
+
+    if not args.allow_site_mismatch:
+        complaint = check_site_matches_source(args.source, args.site)
+        if complaint:
+            log.error("%s", complaint)
+            return 1
 
     stats = Stats("wikipedia", args.source)
     args.out.parent.mkdir(parents=True, exist_ok=True)
