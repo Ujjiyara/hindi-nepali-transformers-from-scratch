@@ -24,7 +24,7 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 ### 2.1 Hindi — Model H (higher-resource)
 
-**Final corpus: 698,081 documents, 1,683,600,499 characters, approximately 481,028,714 tokens (34.4% manually collected).**
+**Final corpus: 698,081 documents, 1,683,600,499 characters, 437,159,548 tokens (34.4% manually collected).**
 
 
 #### Sources
@@ -62,17 +62,19 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 Splits are assigned per document from a salted SHA-256 of the document id, never per line, so no article contributes to more than one split. Because the assignment is a pure function of the id, adding a new source later leaves every existing document in the split it already had.
 
-| Split | Documents | Characters | Est. tokens | Manual (char %) |
+| Split | Documents | Characters | Tokens | Manual (char %) |
 |---|---|---|---|---|
-| train | 684,190 | 1,650,040,640 | 471,440,182 | 34.4% |
-| validation | 6,838 | 16,575,708 | 4,735,916 | 34.0% |
-| test | 7,053 | 16,984,151 | 4,852,614 | 36.3% |
-| **total** | **698,081** | **1,683,600,499** | **481,028,714** | **34.4%** |
+| train | 684,190 | 1,650,040,640 | 428,456,727 | 34.4% |
+| validation | 6,838 | 16,575,708 | 4,304,625 | 34.0% |
+| test | 7,053 | 16,984,151 | 4,398,196 | 36.3% |
+| **total** | **698,081** | **1,683,600,499** | **437,159,548** | **34.4%** |
+
+Token counts are measured by encoding every document with this language's chosen 16,000-entry tokenizer, not estimated from a characters-per-token constant (3.8512 for this corpus).
 
 
 ### 2.2 Nepali — Model L (lower-resource)
 
-**Final corpus: 390,725 documents, 752,355,355 characters, approximately 214,958,672 tokens (27.4% manually collected).**
+**Final corpus: 390,725 documents, 752,355,355 characters, 161,172,784 tokens (27.4% manually collected).**
 
 
 #### Sources
@@ -113,12 +115,14 @@ Splits are assigned per document from a salted SHA-256 of the document id, never
 
 Splits are assigned per document from a salted SHA-256 of the document id, never per line, so no article contributes to more than one split. Because the assignment is a pure function of the id, adding a new source later leaves every existing document in the split it already had.
 
-| Split | Documents | Characters | Est. tokens | Manual (char %) |
+| Split | Documents | Characters | Tokens | Manual (char %) |
 |---|---|---|---|---|
-| train | 382,826 | 737,055,540 | 210,587,297 | 27.4% |
-| validation | 3,995 | 7,778,100 | 2,222,314 | 29.0% |
-| test | 3,904 | 7,521,715 | 2,149,061 | 27.1% |
-| **total** | **390,725** | **752,355,355** | **214,958,672** | **27.4%** |
+| train | 382,826 | 737,055,540 | 157,898,113 | 27.4% |
+| validation | 3,995 | 7,778,100 | 1,671,388 | 29.0% |
+| test | 3,904 | 7,521,715 | 1,603,283 | 27.1% |
+| **total** | **390,725** | **752,355,355** | **161,172,784** | **27.4%** |
+
+Token counts are measured by encoding every document with this language's chosen 16,000-entry tokenizer, not estimated from a characters-per-token constant (4.668 for this corpus).
 
 
 ## 3. Preprocessing
@@ -257,6 +261,21 @@ Both models select 16,000. That is an outcome of the measurements rather than a 
 
 
 These choices are recorded in `Hindi/configs/tokenizer.yaml` and `Nepali/configs/tokenizer.yaml` for Phase 2, and the trade-off is plotted in `report/figures/tokenizer_fertility.png` and `report/figures/tokenizer_vocab_utilisation.png`.
+
+
+### 4.5 Corpus size in tokens, and the Phase 2 budget
+
+A rough compute-optimal budget for a 25M-parameter model is about 20 tokens per parameter, so roughly 500M tokens. Measured against that:
+
+| Model | Tokens | Chars/token | Fraction of a 500M-token budget | Epochs to reach it |
+|---|---|---|---|---|
+| Model H (higher-resource) | 437,159,548 | 3.8512 | 0.87x | 1.1 |
+| Model L (lower-resource) | 161,172,784 | 4.668 | 0.32x | 3.1 |
+
+The gap is wider in tokens than in characters: 2.2x the text but 2.7x the tokens. The lower-resource language is penalised twice over -- there is less of it, and its tokenizer spends more characters per token, so each character buys less training signal. Any comparison of the two models that is made per training step, rather than per epoch, will silently favour Model H.
+
+
+This is a real constraint on Phase 2 rather than a collection failure. Nepali cannot be grown much further: its CC-100 slice is close to exhausted, and the manual half is already every Nepali news site that passed triage plus every Nepali Wikimedia dump that exists. Reaching a full budget on it means repeating data, so the choice there is between multiple epochs and a smaller model -- and whichever is chosen has to be stated, because it changes what a perplexity comparison between the two models means.
 
 
 ## 5. Figures

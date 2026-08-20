@@ -118,25 +118,48 @@ def _cleaning_table(stats: dict) -> str:
     return "\n".join(rows) + "\n"
 
 
-def _splits_table(stats: dict) -> str:
+def _token_counts(root: Path) -> dict | None:
+    """Exact per-split token counts, if common.tokenizer.count has been run."""
+    return _read_json(root / "data" / "processed" / "_token_counts.json")
+
+
+def _splits_table(stats: dict, counts: dict | None) -> str:
+    """Splits, with measured token counts where available.
+
+    The pipeline can only estimate tokens as characters / 3.5, because it runs
+    before the tokenizer it would need exists. Once the tokenizer is trained
+    the corpus can simply be encoded, and that measurement is preferred here.
+    """
     splits = stats.get("splits", {})
-    rows = ["| Split | Documents | Characters | Est. tokens | Manual (char %) |",
+    measured = (counts or {}).get("splits", {})
+    header = "Tokens" if measured else "Est. tokens (chars / 3.5)"
+    rows = [f"| Split | Documents | Characters | {header} | Manual (char %) |",
             "|---|---|---|---|---|"]
     for name in ("train", "validation", "test"):
         row = splits.get(name)
         if not row:
             continue
+        tokens = measured.get(name, {}).get("tokens", row.get("est_tokens", 0))
         rows.append(
             f"| {name} | {row['documents']:,} | {row['characters']:,} | "
-            f"{row.get('est_tokens', 0):,} | {100 * row.get('manual_char_fraction', 0):.1f}% |"
+            f"{tokens:,} | {100 * row.get('manual_char_fraction', 0):.1f}% |"
         )
     corpus = stats.get("corpus", {})
     if corpus:
+        total = (counts or {}).get("corpus", {}).get("tokens", corpus["est_tokens"])
         rows.append(
             f"| **total** | **{corpus['documents']:,}** | **{corpus['characters']:,}** | "
-            f"**{corpus['est_tokens']:,}** | **{100 * corpus['manual_char_fraction']:.1f}%** |"
+            f"**{total:,}** | **{100 * corpus['manual_char_fraction']:.1f}%** |"
         )
-    return "\n".join(rows) + "\n"
+    table = "\n".join(rows) + "\n"
+    if counts:
+        table += (
+            f"\nToken counts are measured by encoding every document with this "
+            f"language's chosen {counts['tokenizer']['vocab_size']:,}-entry tokenizer, "
+            f"not estimated from a characters-per-token constant "
+            f"({counts['corpus']['chars_per_token']} for this corpus).\n"
+        )
+    return table
 
 
 def _tokenizer_table(sweep: dict) -> str:
@@ -346,6 +369,67 @@ def _selection_note(lang_dirs: dict[str, Path]) -> str:
     )
 
 
+def _token_budget_section(lang_dirs: dict[str, Path], params: int = 25_000_000,
+                          tokens_per_param: int = 20) -> str:
+    """Corpus sizes in tokens, against what a Phase 2 model would want to see.
+
+    This is the number that decides the training schedule, and it is the one
+    the resource gap hits hardest: Model L has less text *and* spends more
+    tokens per character of it.
+    """
+    rows_data = []
+    for code, root in lang_dirs.items():
+        counts = _read_json(root / "data" / "processed" / "_token_counts.json")
+        if counts:
+            rows_data.append((code, counts))
+    if len(rows_data) < 2:
+        return ""
+
+    budget = params * tokens_per_param
+    lines = [
+        f"A rough compute-optimal budget for a {params / 1e6:.0f}M-parameter model is "
+        f"about {tokens_per_param} tokens per parameter, so roughly "
+        f"{budget / 1e6:.0f}M tokens. Measured against that:\n",
+        "| Model | Tokens | Chars/token | Fraction of a "
+        f"{budget / 1e6:.0f}M-token budget | Epochs to reach it |",
+        "|---|---|---|---|---|",
+    ]
+    for code, counts in rows_data:
+        tokens = counts["corpus"]["tokens"]
+        lines.append(
+            f"| {MODEL_ROLE.get(code, code)} | {tokens:,} | "
+            f"{counts['corpus']['chars_per_token']} | {tokens / budget:.2f}x | "
+            f"{budget / tokens:.1f} |"
+        )
+
+    (code_a, a), (code_b, b) = rows_data[0], rows_data[1]
+    smaller, larger = (a, b) if a["corpus"]["tokens"] < b["corpus"]["tokens"] else (b, a)
+    small_name = LANGUAGE_NAMES.get(
+        code_a if smaller is a else code_b, "the smaller corpus")
+    ratio = larger["corpus"]["tokens"] / smaller["corpus"]["tokens"]
+    char_ratio = larger["corpus"]["characters"] / smaller["corpus"]["characters"]
+
+    lines.append(
+        f"\nThe gap is wider in tokens than in characters: "
+        f"{char_ratio:.1f}x the text but {ratio:.1f}x the tokens. The lower-resource "
+        f"language is penalised twice over -- there is less of it, and its tokenizer "
+        f"spends more characters per token, so each character buys less training "
+        f"signal. Any comparison of the two models that is made per training step, "
+        f"rather than per epoch, will silently favour Model H.\n"
+    )
+    lines.append(
+        f"\nThis is a real constraint on Phase 2 rather than a collection failure. "
+        f"{small_name} cannot be grown much further: its CC-100 slice is close to "
+        f"exhausted, and the manual half is already every Nepali news site that "
+        f"passed triage plus every Nepali Wikimedia dump that exists. Reaching a "
+        f"full budget on it means repeating data, so the choice there is between "
+        f"multiple epochs and a smaller model -- and whichever is chosen has to be "
+        f"stated, because it changes what a perplexity comparison between the two "
+        f"models means.\n"
+    )
+    return "\n".join(lines)
+
+
 def _top_tokens_line(sweep: dict) -> str:
     rows = sweep.get("sweep", [])
     if not rows:
@@ -396,9 +480,14 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
             continue
 
         corpus = stats.get("corpus", {})
+        counts = _token_counts(root)
+        if counts:
+            tokens_phrase = f"{counts['corpus']['tokens']:,} tokens"
+        else:
+            tokens_phrase = f"approximately {corpus.get('est_tokens', 0):,} tokens"
         add(f"**Final corpus: {corpus.get('documents', 0):,} documents, "
             f"{corpus.get('characters', 0):,} characters, "
-            f"approximately {corpus.get('est_tokens', 0):,} tokens "
+            f"{tokens_phrase} "
             f"({100 * corpus.get('manual_char_fraction', 0):.1f}% manually collected).**\n")
         add("\n#### Sources\n")
         add(_sources_table(stats))
@@ -409,7 +498,7 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
             "never per line, so no article contributes to more than one split. Because "
             "the assignment is a pure function of the id, adding a new source later "
             "leaves every existing document in the split it already had.\n")
-        add(_splits_table(stats))
+        add(_splits_table(stats, counts))
 
     # ---- 3. preprocessing -------------------------------------------------
     add("\n## 3. Preprocessing\n")
@@ -505,6 +594,11 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
         "`Nepali/configs/tokenizer.yaml` for Phase 2, and the trade-off is plotted "
         "in `report/figures/tokenizer_fertility.png` and "
         "`report/figures/tokenizer_vocab_utilisation.png`.\n")
+
+    budget = _token_budget_section(lang_dirs)
+    if budget:
+        add("\n### 4.5 Corpus size in tokens, and the Phase 2 budget\n")
+        add(budget)
 
     # ---- 5. figures -------------------------------------------------------
     add("\n## 5. Figures\n")
