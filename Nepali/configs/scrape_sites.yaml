@@ -143,7 +143,7 @@ sites:
       - "/wp-content/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 200000
-    delay_seconds: 1.5
+    delay_seconds: 1.0
 
   # Article URLs look like /detail/130598.
   - name: ujyaaloonline
@@ -197,7 +197,7 @@ sites:
       - "/storage/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -213,7 +213,7 @@ sites:
       - "/wp-content/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -229,7 +229,7 @@ sites:
       - "/wp-content/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -243,7 +243,7 @@ sites:
       - "/author/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -256,7 +256,7 @@ sites:
       - "/author/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -268,7 +268,7 @@ sites:
     url_exclude:
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -280,7 +280,7 @@ sites:
     url_exclude:
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -292,7 +292,7 @@ sites:
     url_exclude:
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -305,7 +305,7 @@ sites:
       - "/api/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
@@ -319,6 +319,6 @@ sites:
       - "/news-article/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
     max_urls: 60000
-    delay_seconds: 2.0
+    delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
