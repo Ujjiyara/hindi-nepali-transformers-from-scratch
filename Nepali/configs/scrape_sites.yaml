@@ -142,7 +142,7 @@ sites:
     url_exclude:
       - "/wp-content/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 200000
     delay_seconds: 1.5
 
   # Article URLs look like /detail/130598.
@@ -173,4 +173,152 @@ sites:
     max_urls: 40000
     delay_seconds: 2.0
     crawl_max_pages: 4000
+    crawl_max_depth: 4
+
+  # Added 20 Aug 2026, after the 20% floor turned out to be the real ceiling on
+  # Model L's corpus size rather than the amount of downloadable text. Because
+  # the rule ties total size to manual size, every manually collected character
+  # permits four downloaded ones -- manual text is worth five times its weight,
+  # so more scraping is the only thing that grows this corpus.
+  #
+  # All ten passed the same triage as the rest. nepalisamaya does not resolve;
+  # techpana and lawcommission.gov.np both declare Crawl-delay: 10, which caps
+  # them near 6 pages/minute -- worth having eventually, not worth a thread on
+  # an overnight run.
+
+  # State-owned daily with a large archive. Article URLs are /news/<id>.
+  - name: gorkhapatra
+    base_url: "https://gorkhapatraonline.com"
+    strategies: ["sitemap", "rss", "crawl"]
+    url_include:
+      - "/news/\\d+"
+    url_exclude:
+      - "/pdf/"
+      - "/storage/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  # WordPress date URLs, /YYYY/MM/<id>/.
+  - name: makalukhabar
+    base_url: "https://www.makalukhabar.com"
+    strategies: ["sitemap", "rss", "crawl"]
+    url_include:
+      - "/\\d{4}/\\d{2}/\\d+/?$"
+    url_exclude:
+      - "/category/"
+      - "/wp-json/"
+      - "/wp-content/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  # WordPress with a fuller date path, /YYYY/MM/DD/<id>/.
+  - name: deshsanchar
+    base_url: "https://deshsanchar.com"
+    strategies: ["sitemap", "rss", "crawl"]
+    url_include:
+      - "/\\d{4}/\\d{2}/\\d{2}/\\d+/?$"
+    url_exclude:
+      - "/category/"
+      - "/wp-json/"
+      - "/wp-content/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: baahrakhari
+    base_url: "https://baahrakhari.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/detail/\\d+"
+    url_exclude:
+      - "/shorts-viewer/"
+      - "/author/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: thahakhabar
+    base_url: "https://www.thahakhabar.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/detail/\\d+"
+    url_exclude:
+      - "/author/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: sajhapost
+    base_url: "https://www.sajhapost.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/posts/\\d+"
+    url_exclude:
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: swasthyakhabar
+    base_url: "https://swasthyakhabar.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/story/\\d+"
+    url_exclude:
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: pahilopost
+    base_url: "https://pahilopost.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/content/\\d+\\.html"
+    url_exclude:
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: bizmandu
+    base_url: "https://bizmandu.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/content/\\d+\\.html"
+    url_exclude:
+      - "/api/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
+    crawl_max_depth: 4
+
+  - name: nayapatrika
+    base_url: "https://www.nayapatrikadaily.com"
+    strategies: ["rss", "crawl"]
+    url_include:
+      - "/news-details/\\d+"
+    url_exclude:
+      - "/reporter/"
+      - "/news-article/"
+      - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
+    max_urls: 60000
+    delay_seconds: 2.0
+    crawl_max_pages: 6000
     crawl_max_depth: 4
