@@ -19,6 +19,19 @@ implementation code is shared; every artifact is per-language and lives under
 
 **Phase 1 report:** [`report/phase1.md`](report/phase1.md)
 
+### Phase 1 result
+
+| | Documents | Characters | Training tokens | Manual (of tokens) | Vocabulary |
+|---|---|---|---|---|---|
+| **Model H** (Hindi) | 870,914 | 2,062,310,348 | **523,670,863** | 29.5% | 16,000 |
+| **Model L** (Nepali) | 883,371 | 1,702,940,920 | **357,473,575** | 22.9% | 16,000 |
+
+Both clear the ≥20% manual floor, which is measured on tokens after
+deduplication. Model H meets the ~500M training-token target; Model L reaches
+357M, and `report/phase1.md` §4.5 reports the exact count and why it stops
+there. Every number here is generated from measured statistics files, not
+typed by hand.
+
 ---
 
 ## Google Drive
@@ -32,16 +45,20 @@ Sharing is set so the folder opens without requesting access. Layout:
 ```
 LMA-individual-project/
   hindi/
-    processed/          train.jsonl.gz, validation.jsonl.gz, test.jsonl.gz
-    tokenizer/          *.model, *.vocab, sweep.json
+    processed/          train.jsonl.gz, validation.jsonl.gz, test.jsonl.gz,
+                        _stats_pipeline.json, _token_counts.json
   nepali/
-    processed/          train.jsonl.gz, validation.jsonl.gz, test.jsonl.gz
-    tokenizer/          *.model, *.vocab, sweep.json
+    processed/          same five files
 ```
 
-Tokenizer `.model` and `.vocab` files are small enough to also be committed to
-this repository, under `Hindi/tokenizer/` and `Nepali/tokenizer/`. The corpora
-are Drive-only: they are far too large for git.
+The two `_stats_*.json` sidecars are tiny and are included deliberately: every
+figure in `report/phase1.md` is generated from them, so any number in the
+report can be checked against the file it came from.
+
+Tokenizer `.model` and `.vocab` files are **committed to this repository**
+under `Hindi/tokenizer/` and `Nepali/tokenizer/` — 3.5MB and 3.8MB, small
+enough for git — so they do not need to be fetched from Drive. The corpora are
+Drive-only: they are far too large for git.
 
 ---
 
@@ -51,9 +68,10 @@ are Drive-only: they are far too large for git.
 common/                     shared implementation (no data)
   scrape/                   sitemap / RSS / crawl discovery, polite fetching, extraction
   wiki/                     streaming Wikimedia XML dump reader + wikitext cleaner
-  downloaded/               streaming CC-100 ingester
+  downloaded/               streaming CC-100 and Sangraha ingesters
   pipeline/                 normalise -> dedup -> split
-  tokenizer/                SentencePiece training, evaluation, vocab sweep, plots
+  tokenizer/                SentencePiece training, evaluation, vocab sweep,
+                            exact token counting, plots
   report/                   generates report/phase1.md from measured stats
 
 Hindi/                      Model H — self-contained data and artifacts
@@ -203,11 +221,18 @@ python -m common.pipeline.run --data-root Hindi/data  --lang hi
 python -m common.pipeline.run --data-root Nepali/data --lang ne
 ```
 
-Each run exits nonzero if manually collected text is under 20% of the corpus by
-characters, measured *after* deduplication — the share is not knowable before
-then, because dedup decides which copy of a near-duplicate survives and CC-100
-overlaps Wikipedia heavily. If it trips, either collect more manual text or
-drop downloaded shards, e.g.:
+Each run exits nonzero if manually collected text is under 20% of the corpus,
+measured *after* deduplication — the share is not knowable before then, because
+dedup decides which copy of a near-duplicate survives and the downloaded
+corpora overlap Wikipedia heavily.
+
+This guard counts **characters**, because at this point no tokenizer exists to
+count tokens with. The rule itself is stated in tokens, and the authoritative
+check is step 6 below, which reports the token split. The two are close but not
+identical — manual text tokenises denser here, so its token share runs slightly
+above its character share, making the character guard the conservative one.
+
+If it trips, either collect more manual text or drop downloaded shards, e.g.:
 
 ```bash
 python -m common.pipeline.run --data-root Nepali/data --lang ne \
@@ -230,7 +255,27 @@ python -m common.tokenizer.run plot \
   --out-dir report/figures
 ```
 
-### 6. Report
+Record the chosen vocabulary size in each language's `configs/tokenizer.yaml`;
+the next step reads it from there.
+
+### 6. Exact token counts
+
+**Run this before the report.** The pipeline can only estimate tokens as
+characters / 3.5, because it runs before the tokenizer it would need exists.
+That estimate is out by 10% for Hindi and 33% for Nepali, so the report prefers
+measured counts and falls back to the estimate — labelled as one — when they
+are absent.
+
+This encodes every document with the tokenizer that language selected and
+writes `processed/_token_counts.json`, including the manual-versus-downloaded
+split **in tokens**, which is the form the ≥20% rule is stated in.
+
+```bash
+python -m common.tokenizer.count --data-root Hindi/data  --lang hi
+python -m common.tokenizer.count --data-root Nepali/data --lang ne
+```
+
+### 7. Report
 
 ```bash
 python -m common.report.phase1 --lang hi=Hindi --lang ne=Nepali --out report/phase1.md
