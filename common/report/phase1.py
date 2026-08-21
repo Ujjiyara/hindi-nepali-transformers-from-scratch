@@ -39,8 +39,20 @@ SOURCE_NOTES = {
     "khabarhub": ("Khabarhub news, own crawler (sitemap-driven)", "manual"),
     "ujyaaloonline": ("Ujyaalo Online news, own crawler", "manual"),
     "hamrakura": ("Hamrakura news, own crawler", "manual"),
+    "makalukhabar": ("Makalu Khabar, own crawler (sitemap-driven)", "manual"),
+    "deshsanchar": ("Desh Sanchar, own crawler (sitemap-driven)", "manual"),
+    "baahrakhari": ("Baahrakhari news, own crawler", "manual"),
+    "swasthyakhabar": ("Swasthya Khabar (health), own crawler", "manual"),
+    "pahilopost": ("Pahilo Post, own crawler", "manual"),
+    "thahakhabar": ("Thaha Khabar, own crawler", "manual"),
+    "gorkhapatra": ("Gorkhapatra (state daily), own crawler", "manual"),
+    "sajhapost": ("Sajha Post, own crawler", "manual"),
+    "bizmandu": ("Bizmandu (business), own crawler", "manual"),
+    "nayapatrika": ("Naya Patrika, own crawler", "manual"),
     "cc100_hi": ("CC-100 (pre-built public corpus)", "downloaded"),
     "cc100_ne": ("CC-100 (pre-built public corpus)", "downloaded"),
+    "sangraha_ne": ("Sangraha verified (pre-built public corpus)", "downloaded"),
+    "sangraha_hi": ("Sangraha verified (pre-built public corpus)", "downloaded"),
 }
 
 DROP_LABELS = {
@@ -417,15 +429,26 @@ def _token_budget_section(lang_dirs: dict[str, Path], params: int = 25_000_000,
         f"signal. Any comparison of the two models that is made per training step, "
         f"rather than per epoch, will silently favour Model H.\n"
     )
+    manual_floor = 0.20
     lines.append(
-        f"\nThis is a real constraint on Phase 2 rather than a collection failure. "
-        f"{small_name} cannot be grown much further: its CC-100 slice is close to "
-        f"exhausted, and the manual half is already every Nepali news site that "
-        f"passed triage plus every Nepali Wikimedia dump that exists. Reaching a "
-        f"full budget on it means repeating data, so the choice there is between "
-        f"multiple epochs and a smaller model -- and whichever is chosen has to be "
-        f"stated, because it changes what a perplexity comparison between the two "
-        f"models means.\n"
+        f"\nWhat limits {small_name} is not the supply of text. Sangraha's verified "
+        f"Nepali split alone holds far more than is used here, and the three "
+        f"sitemap-backed news sites still have on the order of two hundred thousand "
+        f"articles that were discovered but never fetched. The limit is the "
+        f"{manual_floor:.0%} manual floor, which ties total corpus size to manual "
+        f"size: at that ratio a corpus can be at most five times its manually "
+        f"collected part, so **every manually collected character permits four "
+        f"downloaded ones**. Downloaded text is effectively free; manual text is "
+        f"worth five times its weight, and collecting it is bounded by polite "
+        f"crawl rates -- roughly one request per second per host -- rather than by "
+        f"what exists.\n"
+    )
+    lines.append(
+        f"\nThat makes the Phase 2 schedule a real choice rather than a foregone "
+        f"one. {small_name} reaches a full budget either by further collection, "
+        f"which costs wall-clock time at a fixed rate, or by repeating data across "
+        f"epochs. Whichever is chosen has to be stated, because it changes what a "
+        f"perplexity comparison between the two models means.\n"
     )
     return "\n".join(lines)
 

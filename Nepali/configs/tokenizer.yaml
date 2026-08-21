@@ -1,12 +1,12 @@
 # Model L tokenizer, selected from the vocabulary sweep in report/phase1.md.
 #
-# 16,000 rather than 32,000: utilisation holds at 97.7% here but falls to 89.8%
-# at 32k, so a tenth of a 32,000-entry vocabulary would never appear in held-out
-# text while still consuming embedding parameters. The price is 7.9% higher
-# fertility than 32k, for half the embedding cost.
+# 16,000 rather than 32,000: utilisation holds at 97.2% here but falls to 88.9%
+# at 32k, so more than a tenth of a 32,000-entry vocabulary would never appear
+# in held-out text while still consuming embedding parameters. The price is
+# 8.0% higher fertility than 32k, for half the embedding cost.
 #
-# 16,000 rather than 8,000: fertility is 10.5% better at effectively identical
-# utilisation (97.66% against 97.71%).
+# 16,000 rather than 8,000: fertility is 11.6% better at effectively identical
+# utilisation (97.2% against 97.6%).
 #
 # Model L lands on the same size as Model H. That is a result, not a shared
 # setting: the two sweeps were run independently on their own corpora and both
@@ -24,8 +24,8 @@ vocab_path: Nepali/tokenizer/ne_unigram_16000.vocab
 # reads these numbers from tokenizer/sweep.json rather than from here, so a
 # stale value in this file cannot reach the report.
 measured:
-  fertility: 1.3603
-  chars_per_token: 4.711
+  fertility: 1.3684
+  chars_per_token: 4.6819
   unknown_rate: 0.0
-  byte_fallback_rate: 0.003659
-  vocab_utilisation: 0.9766
+  byte_fallback_rate: 0.0050315
+  vocab_utilisation: 0.9722
