@@ -145,23 +145,27 @@ def _splits_table(stats: dict, counts: dict | None) -> str:
     splits = stats.get("splits", {})
     measured = (counts or {}).get("splits", {})
     header = "Tokens" if measured else "Est. tokens (chars / 3.5)"
-    rows = [f"| Split | Documents | Characters | {header} | Manual (char %) |",
-            "|---|---|---|---|---|"]
+    rows = [f"| Split | Documents | Characters | {header} | Manual (token %) | Manual (char %) |",
+            "|---|---|---|---|---|---|"]
     for name in ("train", "validation", "test"):
         row = splits.get(name)
         if not row:
             continue
-        tokens = measured.get(name, {}).get("tokens", row.get("est_tokens", 0))
+        seen = measured.get(name, {})
+        tokens = seen.get("tokens", row.get("est_tokens", 0))
+        man_tok = f"{100 * seen['manual_token_fraction']:.1f}%" if seen else "--"
         rows.append(
             f"| {name} | {row['documents']:,} | {row['characters']:,} | "
-            f"{tokens:,} | {100 * row.get('manual_char_fraction', 0):.1f}% |"
+            f"{tokens:,} | {man_tok} | {100 * row.get('manual_char_fraction', 0):.1f}% |"
         )
     corpus = stats.get("corpus", {})
     if corpus:
-        total = (counts or {}).get("corpus", {}).get("tokens", corpus["est_tokens"])
+        seen = (counts or {}).get("corpus", {})
+        total = seen.get("tokens", corpus["est_tokens"])
+        man_tok = f"**{100 * seen['manual_token_fraction']:.1f}%**" if seen else "--"
         rows.append(
             f"| **total** | **{corpus['documents']:,}** | **{corpus['characters']:,}** | "
-            f"**{total:,}** | **{100 * corpus['manual_char_fraction']:.1f}%** |"
+            f"**{total:,}** | {man_tok} | **{100 * corpus['manual_char_fraction']:.1f}%** |"
         )
     table = "\n".join(rows) + "\n"
     if counts:
@@ -171,7 +175,40 @@ def _splits_table(stats: dict, counts: dict | None) -> str:
             f"not estimated from a characters-per-token constant "
             f"({counts['corpus']['chars_per_token']} for this corpus).\n"
         )
+        table += _manual_split_table(counts)
     return table
+
+
+def _manual_split_table(counts: dict) -> str:
+    """Manual vs downloaded, counted in tokens on the training split.
+
+    The project's floor is defined on tokens -- at least 20% of training tokens
+    manually collected -- so that is the number reported here. The character
+    share is not a safe substitute for it: manual and downloaded text tokenise
+    at different rates, so the two fractions differ, and only one of them is
+    the rule.
+    """
+    train = counts.get("splits", {}).get("train", {})
+    methods = train.get("by_method", {})
+    if not methods:
+        return ""
+    total = sum(m["tokens"] for m in methods.values())
+    if not total:
+        return ""
+
+    rows = ["\n**Manual vs. downloaded, training split (tokens):**\n",
+            "| Collection | Documents | Tokens | Share of training tokens |",
+            "|---|---|---|---|"]
+    for name in sorted(methods, key=lambda m: -methods[m]["tokens"]):
+        row = methods[name]
+        rows.append(f"| {name} | {row['documents']:,} | {row['tokens']:,} | "
+                    f"{100 * row['tokens'] / total:.1f}% |")
+    manual_share = 100 * methods.get("manual", {}).get("tokens", 0) / total
+    verdict = "meets" if manual_share >= 20 else "**does not meet**"
+    rows.append(f"| **total** | **{train['documents']:,}** | **{total:,}** | |")
+    rows.append(f"\nManual collection is {manual_share:.1f}% of training tokens, which "
+                f"{verdict} the 20% floor.\n")
+    return "\n".join(rows)
 
 
 def _tokenizer_table(sweep: dict) -> str:

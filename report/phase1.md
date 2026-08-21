@@ -64,14 +64,24 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 Splits are assigned per document from a salted SHA-256 of the document id, never per line, so no article contributes to more than one split. Because the assignment is a pure function of the id, adding a new source later leaves every existing document in the split it already had.
 
-| Split | Documents | Characters | Tokens | Manual (char %) |
-|---|---|---|---|---|
-| train | 853,623 | 2,021,507,508 | 523,670,863 | 28.1% |
-| validation | 8,544 | 20,211,359 | 5,237,540 | 27.9% |
-| test | 8,747 | 20,591,481 | 5,315,744 | 29.9% |
-| **total** | **870,914** | **2,062,310,348** | **534,224,147** | **28.1%** |
+| Split | Documents | Characters | Tokens | Manual (token %) | Manual (char %) |
+|---|---|---|---|---|---|
+| train | 853,623 | 2,021,507,508 | 523,670,863 | 29.5% | 28.1% |
+| validation | 8,544 | 20,211,359 | 5,237,540 | 29.4% | 27.9% |
+| test | 8,747 | 20,591,481 | 5,315,744 | 31.2% | 29.9% |
+| **total** | **870,914** | **2,062,310,348** | **534,224,147** | **29.6%** | **28.1%** |
 
 Token counts are measured by encoding every document with this language's chosen 16,000-entry tokenizer, not estimated from a characters-per-token constant (3.8604 for this corpus).
+
+**Manual vs. downloaded, training split (tokens):**
+
+| Collection | Documents | Tokens | Share of training tokens |
+|---|---|---|---|
+| downloaded | 580,191 | 368,956,827 | 70.5% |
+| manual | 273,432 | 154,714,036 | 29.5% |
+| **total** | **853,623** | **523,670,863** | |
+
+Manual collection is 29.5% of training tokens, which meets the 20% floor.
 
 
 ### 2.2 Nepali — Model L (lower-resource)
@@ -128,14 +138,24 @@ Token counts are measured by encoding every document with this language's chosen
 
 Splits are assigned per document from a salted SHA-256 of the document id, never per line, so no article contributes to more than one split. Because the assignment is a pure function of the id, adding a new source later leaves every existing document in the split it already had.
 
-| Split | Documents | Characters | Tokens | Manual (char %) |
-|---|---|---|---|---|
-| train | 865,795 | 1,669,078,931 | 357,473,575 | 22.9% |
-| validation | 8,856 | 17,185,446 | 3,677,138 | 24.8% |
-| test | 8,720 | 16,676,543 | 3,565,293 | 23.8% |
-| **total** | **883,371** | **1,702,940,920** | **364,716,006** | **22.9%** |
+| Split | Documents | Characters | Tokens | Manual (token %) | Manual (char %) |
+|---|---|---|---|---|---|
+| train | 865,795 | 1,669,078,931 | 357,473,575 | 22.9% | 22.9% |
+| validation | 8,856 | 17,185,446 | 3,677,138 | 25.1% | 24.8% |
+| test | 8,720 | 16,676,543 | 3,565,293 | 23.7% | 23.8% |
+| **total** | **883,371** | **1,702,940,920** | **364,716,006** | **23.0%** | **22.9%** |
 
 Token counts are measured by encoding every document with this language's chosen 16,000-entry tokenizer, not estimated from a characters-per-token constant (4.6692 for this corpus).
+
+**Manual vs. downloaded, training split (tokens):**
+
+| Collection | Documents | Tokens | Share of training tokens |
+|---|---|---|---|
+| downloaded | 682,697 | 275,474,094 | 77.1% |
+| manual | 183,098 | 81,999,481 | 22.9% |
+| **total** | **865,795** | **357,473,575** | |
+
+Manual collection is 22.9% of training tokens, which meets the 20% floor.
 
 
 ## 3. Preprocessing
