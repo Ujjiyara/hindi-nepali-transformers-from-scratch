@@ -50,17 +50,29 @@ def _init_worker(model_path: str) -> None:
     _MODEL.load(model_path)
 
 
-def _count_batch(texts: list[str]) -> tuple[int, int, int]:
-    """(tokens, characters, documents) for one batch."""
+def _count_batch(batch: list[tuple[str, str]]) -> dict[str, tuple[int, int, int]]:
+    """Per collection method, (tokens, characters, documents) for one batch.
+
+    Broken down by ``collection_method`` because the project's floor is stated
+    in *tokens* -- at least 20% of training tokens manually collected -- and a
+    character share is not a safe proxy for it. Manual and downloaded text
+    tokenise at different rates, so the two fractions differ, and the one that
+    has to be met is the token one.
+    """
     assert _MODEL is not None
+    out: dict[str, tuple[int, int, int]] = {}
+    texts = [text for text, _ in batch]
     pieces = _MODEL.encode(texts)
-    return sum(len(p) for p in pieces), sum(len(t) for t in texts), len(texts)
+    for (text, method), piece in zip(batch, pieces):
+        tokens, chars, docs = out.get(method, (0, 0, 0))
+        out[method] = (tokens + len(piece), chars + len(text), docs + 1)
+    return out
 
 
 def _batches(path: Path, size: int = BATCH_DOCS):
-    batch: list[str] = []
+    batch: list[tuple[str, str]] = []
     for record in read_jsonl(path):
-        batch.append(record.get("text", ""))
+        batch.append((record.get("text", ""), record.get("collection_method", "unknown")))
         if len(batch) >= size:
             yield batch
             batch = []
@@ -68,21 +80,37 @@ def _batches(path: Path, size: int = BATCH_DOCS):
         yield batch
 
 
-def count_split(path: Path, model_path: Path, workers: int) -> dict[str, int]:
-    """Encode one split and return its exact token, character and doc counts."""
+def count_split(path: Path, model_path: Path, workers: int) -> dict:
+    """Encode one split and return exact totals, split by collection method."""
+    by_method: dict[str, list[int]] = {}
     tokens = chars = docs = 0
     started = time.time()
     with mp.Pool(workers, initializer=_init_worker, initargs=(str(model_path),)) as pool:
-        for batch_tokens, batch_chars, batch_docs in pool.imap_unordered(
-            _count_batch, _batches(path), chunksize=1
-        ):
-            tokens += batch_tokens
-            chars += batch_chars
-            docs += batch_docs
+        for result in pool.imap_unordered(_count_batch, _batches(path), chunksize=1):
+            for method, (t, c, d) in result.items():
+                row = by_method.setdefault(method, [0, 0, 0])
+                row[0] += t
+                row[1] += c
+                row[2] += d
+                tokens += t
+                chars += c
+                docs += d
             if docs % 100_000 < BATCH_DOCS:
                 log.info("  %s: %s docs, %s tokens (%.1f min)",
                          path.name, f"{docs:,}", f"{tokens:,}", (time.time() - started) / 60)
-    return {"documents": docs, "characters": chars, "tokens": tokens}
+
+    manual = by_method.get("manual", [0, 0, 0])
+    return {
+        "documents": docs,
+        "characters": chars,
+        "tokens": tokens,
+        "manual_tokens": manual[0],
+        "manual_characters": manual[1],
+        "manual_token_fraction": round(manual[0] / tokens, 4) if tokens else 0.0,
+        "manual_char_fraction": round(manual[1] / chars, 4) if chars else 0.0,
+        "by_method": {m: {"tokens": v[0], "characters": v[1], "documents": v[2]}
+                      for m, v in sorted(by_method.items())},
+    }
 
 
 def chosen_model(config_path: Path) -> tuple[Path, int]:
@@ -125,12 +153,14 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         splits[name] = count_split(path, model_path, args.workers)
         row = splits[name]
-        log.info("%-11s %10s docs  %15s chars  %15s tokens  %.3f chars/token",
-                 name, f"{row['documents']:,}", f"{row['characters']:,}",
-                 f"{row['tokens']:,}", row["characters"] / max(row["tokens"], 1))
+        log.info("%-11s %10s docs  %15s tokens  manual %.1f%% of tokens (%.1f%% of chars)",
+                 name, f"{row['documents']:,}", f"{row['tokens']:,}",
+                 100 * row["manual_token_fraction"], 100 * row["manual_char_fraction"])
 
     total_tokens = sum(r["tokens"] for r in splits.values())
     total_chars = sum(r["characters"] for r in splits.values())
+    total_manual_tokens = sum(r["manual_tokens"] for r in splits.values())
+    total_manual_chars = sum(r["manual_characters"] for r in splits.values())
     report = {
         "lang": args.lang,
         "generated_at": utc_now(),
@@ -141,6 +171,9 @@ def main(argv: list[str] | None = None) -> int:
             "characters": total_chars,
             "tokens": total_tokens,
             "chars_per_token": round(total_chars / max(total_tokens, 1), 4),
+            "manual_tokens": total_manual_tokens,
+            "manual_token_fraction": round(total_manual_tokens / max(total_tokens, 1), 4),
+            "manual_char_fraction": round(total_manual_chars / max(total_chars, 1), 4),
         },
     }
     out_path = args.data_root / "processed" / "_token_counts.json"

@@ -212,7 +212,7 @@ sites:
       - "/wp-json/"
       - "/wp-content/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 150000
     delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
@@ -228,7 +228,7 @@ sites:
       - "/wp-json/"
       - "/wp-content/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 150000
     delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4
@@ -296,15 +296,25 @@ sites:
     crawl_max_pages: 6000
     crawl_max_depth: 4
 
+  # Has a wp-sitemap index of 134 post sitemaps (~134,000 articles). It was
+  # first configured to crawl, which found 718 URLs -- the sitemap was simply
+  # not looked for. Probing every configured site for the usual sitemap paths
+  # is worth doing before crawling any of them.
   - name: bizmandu
     base_url: "https://bizmandu.com"
-    strategies: ["rss", "crawl"]
+    strategies: ["sitemap", "rss", "crawl"]
+    sitemap_urls:
+      - "https://bizmandu.com/wp-sitemap.xml"
+    sitemap_exclude:
+      - "taxonomies"
+      - "users"
+      - "wp-sitemap-posts-page"
     url_include:
       - "/content/\\d+\\.html"
     url_exclude:
       - "/api/"
       - "\\.(jpg|jpeg|png|gif|pdf|mp4|mp3)$"
-    max_urls: 60000
+    max_urls: 150000
     delay_seconds: 1.0
     crawl_max_pages: 6000
     crawl_max_depth: 4

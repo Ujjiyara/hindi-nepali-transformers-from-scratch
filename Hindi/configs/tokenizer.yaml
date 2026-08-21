@@ -1,13 +1,18 @@
 # Model H tokenizer, selected from the vocabulary sweep in report/phase1.md.
 #
 # 16,000 rather than 32,000: vocabulary utilisation peaks here (97.7%, against
-# 90.9% at 32k) and the embedding table costs 6.1M instead of 12.3M parameters
+# 90.7% at 32k) and the embedding table costs 6.1M instead of 12.3M parameters
 # -- roughly a quarter of the ~25M Phase 2 budget rather than half of it. The
 # price is 6.0% higher fertility than 32k.
 #
-# 16,000 rather than 8,000: fertility is 8.7% better for no loss of utilisation
-# (97.7% against 97.5%), so the larger vocabulary is paid for by tokens that
+# 16,000 rather than 8,000: fertility is 9.5% better for no loss of utilisation
+# (97.7% against 97.6%), so the larger vocabulary is paid for by tokens that
 # held-out text actually uses.
+#
+# The brief recommends "tens of thousands"; 16,000 sits at the low end of that
+# and is chosen on the measurement the brief asks for -- fertility and unknown
+# rate on held-out text -- which does not support paying for 32,000 entries
+# when a tenth of them never appear in held-out text.
 lang: hi
 model_type: unigram
 vocab_size: 16000
@@ -19,8 +24,8 @@ vocab_path: Hindi/tokenizer/hi_unigram_16000.vocab
 # reads these numbers from tokenizer/sweep.json rather than from here, so a
 # stale value in this file cannot reach the report.
 measured:
-  fertility: 1.2812
-  chars_per_token: 3.9617
+  fertility: 1.2823
+  chars_per_token: 3.958
   unknown_rate: 0.0
-  byte_fallback_rate: 0.0039315
-  vocab_utilisation: 0.9768
+  byte_fallback_rate: 0.0039455
+  vocab_utilisation: 0.9769
