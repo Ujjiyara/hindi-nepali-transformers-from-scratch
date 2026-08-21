@@ -36,18 +36,20 @@ typed by hand.
 
 ## Google Drive
 
-Datasets, tokenizer artifacts and (from Phase 2) checkpoints:
+The train/validation/test splits for both languages, and (from Phase 2)
+checkpoints:
 
 **https://drive.google.com/drive/folders/1Psq9GORzHs6PE-EFO3y0S2oVQrf8nl4l?usp=sharing**
 
-Sharing is set so the folder opens without requesting access. Layout:
+Sharing is set to "anyone with the link", so the folder opens without
+requesting access; verified from a signed-out browser. Layout:
 
 ```
-LMA-individual-project/
-  hindi/
+LMA_Individual_project_data/
+  Hindi/
     processed/          train.jsonl.gz, validation.jsonl.gz, test.jsonl.gz,
                         _stats_pipeline.json, _token_counts.json
-  nepali/
+  Nepali/
     processed/          same five files
 ```
 
