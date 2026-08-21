@@ -2,6 +2,7 @@
 
 # Building and Analyzing Monolingual Transformer LMs in Two Indian Languages
 
+
 Language Models and Agents — Monsoon 2026 — Individual Project
 
 Two fully independent decoder-only Transformer language models, trained from
@@ -154,10 +155,11 @@ itself in the User-Agent, and rate-limits per site. Requests are spaced
 start-to-start, so a declared delay is honoured as the minimum interval between
 requests that it is defined to be.
 
-### 3. Downloaded corpus (CC-100)
+### 3. Downloaded corpora (CC-100 and Sangraha)
 
-Streamed and decompressed on the fly, so the multi-gigabyte archive is never
-stored; output is sharded so an interrupted run keeps its completed shards.
+Two downloaded sources are used. CC-100 is streamed and decompressed on the
+fly, so the multi-gigabyte archive is never stored; output is sharded so an
+interrupted run keeps its completed shards.
 
 ```bash
 python -m common.downloaded.cc100 --url https://data.statmt.org/cc-100/hi.txt.xz \
@@ -166,6 +168,30 @@ python -m common.downloaded.cc100 --url https://data.statmt.org/cc-100/hi.txt.xz
 python -m common.downloaded.cc100 --url https://data.statmt.org/cc-100/ne.txt.xz \
   --out Nepali/data/interim/downloaded/cc100_ne.jsonl.gz --lang ne --target-chars 600000000
 ```
+
+Sangraha (AI4Bharat, CC-BY-4.0) supplies the second half. Its **verified**
+split is scraped from human-verified sites plus text OCR'd from Indic-language
+PDFs and transcribed from video and podcasts — registers CC-100, being raw
+Common Crawl, does not contain.
+
+```bash
+python -m common.downloaded.sangraha --lang hi --subset verified \
+  --out Hindi/data/interim/downloaded/sangraha_hi.jsonl.gz --target-chars 400000000
+
+python -m common.downloaded.sangraha --lang ne --subset verified \
+  --out Nepali/data/interim/downloaded/sangraha_ne.jsonl.gz --target-chars 900000000
+```
+
+The **synthetic** split is deliberately not used. It is English Wikipedia
+machine-translated into Indic languages plus romanised transliterations of
+that, so training a Nepali model on it would corrupt the thing being measured,
+and the romanised half fails the Devanagari filter anyway. It is also 10,588M
+of Sangraha's 12,896M Nepali tokens, so picking subsets by size alone would
+have gone badly wrong.
+
+Shards are read smallest-first and deleted as they are consumed, so peak disk
+stays near one shard rather than the 17GB the full Nepali verified split
+occupies.
 
 ### 4. Build the corpora
 
