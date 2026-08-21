@@ -436,20 +436,38 @@ def _token_budget_section(lang_dirs: dict[str, Path], params: int = 25_000_000,
 
     budget = params * tokens_per_param
     lines = [
-        f"A rough compute-optimal budget for a {params / 1e6:.0f}M-parameter model is "
-        f"about {tokens_per_param} tokens per parameter, so roughly "
-        f"{budget / 1e6:.0f}M tokens. Measured against that:\n",
-        "| Model | Tokens | Chars/token | Fraction of a "
-        f"{budget / 1e6:.0f}M-token budget | Epochs to reach it |",
+        f"The brief targets approximately {budget / 1e6:.0f}M **training** tokens per "
+        f"language, which is also roughly compute-optimal for a "
+        f"{params / 1e6:.0f}M-parameter model at about {tokens_per_param} tokens per "
+        f"parameter. Measured on the training split, which is the split that "
+        f"target refers to:\n",
+        "| Model | Training tokens | Chars/token | Fraction of the "
+        f"{budget / 1e6:.0f}M target | Epochs to reach it |",
         "|---|---|---|---|---|",
     ]
     for code, counts in rows_data:
-        tokens = counts["corpus"]["tokens"]
+        train = counts["splits"]["train"]["tokens"]
         lines.append(
-            f"| {MODEL_ROLE.get(code, code)} | {tokens:,} | "
-            f"{counts['corpus']['chars_per_token']} | {tokens / budget:.2f}x | "
-            f"{budget / tokens:.1f} |"
+            f"| {MODEL_ROLE.get(code, code)} | {train:,} | "
+            f"{counts['corpus']['chars_per_token']} | {train / budget:.2f}x | "
+            f"{budget / train:.1f} |"
         )
+
+    short = [(c, d) for c, d in rows_data if d["splits"]["train"]["tokens"] < budget]
+    met = [(c, d) for c, d in rows_data if d["splits"]["train"]["tokens"] >= budget]
+    if met:
+        names = ", ".join(LANGUAGE_NAMES.get(c, c) for c, _ in met)
+        lines.append(f"\n{names} meets the target.\n")
+    if short:
+        for code, data in short:
+            train = data["splits"]["train"]["tokens"]
+            lines.append(
+                f"\n**{LANGUAGE_NAMES.get(code, code)} falls short of it, at "
+                f"{train:,} training tokens.** The brief allows this for the "
+                f"lower-resource language provided the exact count is reported and "
+                f"the shortfall justified; the exact count is above and the reason "
+                f"follows.\n"
+            )
 
     (code_a, a), (code_b, b) = rows_data[0], rows_data[1]
     smaller, larger = (a, b) if a["corpus"]["tokens"] < b["corpus"]["tokens"] else (b, a)
@@ -469,8 +487,8 @@ def _token_budget_section(lang_dirs: dict[str, Path], params: int = 25_000_000,
     manual_floor = 0.20
     lines.append(
         f"\nWhat limits {small_name} is not the supply of text. Sangraha's verified "
-        f"Nepali split alone holds far more than is used here, and the three "
-        f"sitemap-backed news sites still have on the order of two hundred thousand "
+        f"Nepali split alone holds far more than is used here, and the "
+        f"sitemap-backed news sites still have several hundred thousand "
         f"articles that were discovered but never fetched. The limit is the "
         f"{manual_floor:.0%} manual floor, which ties total corpus size to manual "
         f"size: at that ratio a corpus can be at most five times its manually "
@@ -542,13 +560,24 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
         corpus = stats.get("corpus", {})
         counts = _token_counts(root)
         if counts:
+            # Quote the manual share in tokens, matching the token count it sits
+            # beside. The project's floor is defined on tokens, and the two
+            # shares differ, so pairing a token count with a character share
+            # would read as a contradiction against the table below.
             tokens_phrase = f"{counts['corpus']['tokens']:,} tokens"
+            manual_phrase = (
+                f"{100 * counts['corpus']['manual_token_fraction']:.1f}% of tokens "
+                f"manually collected"
+            )
         else:
             tokens_phrase = f"approximately {corpus.get('est_tokens', 0):,} tokens"
+            manual_phrase = (
+                f"{100 * corpus.get('manual_char_fraction', 0):.1f}% of characters "
+                f"manually collected"
+            )
         add(f"**Final corpus: {corpus.get('documents', 0):,} documents, "
             f"{corpus.get('characters', 0):,} characters, "
-            f"{tokens_phrase} "
-            f"({100 * corpus.get('manual_char_fraction', 0):.1f}% manually collected).**\n")
+            f"{tokens_phrase} ({manual_phrase}).**\n")
         add("\n#### Sources\n")
         add(_sources_table(stats))
         add("\n#### Cleaning and deduplication\n")

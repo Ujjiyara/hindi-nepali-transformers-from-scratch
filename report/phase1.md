@@ -24,7 +24,7 @@ Because both models use Devanagari, the same script-ratio filter (at least 60% D
 
 ### 2.1 Hindi — Model H (higher-resource)
 
-**Final corpus: 870,914 documents, 2,062,310,348 characters, 534,224,147 tokens (28.1% manually collected).**
+**Final corpus: 870,914 documents, 2,062,310,348 characters, 534,224,147 tokens (29.6% of tokens manually collected).**
 
 
 #### Sources
@@ -86,7 +86,7 @@ Manual collection is 29.5% of training tokens, which meets the 20% floor.
 
 ### 2.2 Nepali — Model L (lower-resource)
 
-**Final corpus: 883,371 documents, 1,702,940,920 characters, 364,716,006 tokens (22.9% manually collected).**
+**Final corpus: 883,371 documents, 1,702,940,920 characters, 364,716,006 tokens (23.0% of tokens manually collected).**
 
 
 #### Sources
@@ -298,17 +298,23 @@ These choices are recorded in `Hindi/configs/tokenizer.yaml` and `Nepali/configs
 
 ### 4.5 Corpus size in tokens, and the Phase 2 budget
 
-A rough compute-optimal budget for a 25M-parameter model is about 20 tokens per parameter, so roughly 500M tokens. Measured against that:
+The brief targets approximately 500M **training** tokens per language, which is also roughly compute-optimal for a 25M-parameter model at about 20 tokens per parameter. Measured on the training split, which is the split that target refers to:
 
-| Model | Tokens | Chars/token | Fraction of a 500M-token budget | Epochs to reach it |
+| Model | Training tokens | Chars/token | Fraction of the 500M target | Epochs to reach it |
 |---|---|---|---|---|
-| Model H (higher-resource) | 534,224,147 | 3.8604 | 1.07x | 0.9 |
-| Model L (lower-resource) | 364,716,006 | 4.6692 | 0.73x | 1.4 |
+| Model H (higher-resource) | 523,670,863 | 3.8604 | 1.05x | 1.0 |
+| Model L (lower-resource) | 357,473,575 | 4.6692 | 0.71x | 1.4 |
+
+Hindi meets the target.
+
+
+**Nepali falls short of it, at 357,473,575 training tokens.** The brief allows this for the lower-resource language provided the exact count is reported and the shortfall justified; the exact count is above and the reason follows.
+
 
 The gap is wider in tokens than in characters: 1.2x the text but 1.5x the tokens. The lower-resource language is penalised twice over -- there is less of it, and its tokenizer spends more characters per token, so each character buys less training signal. Any comparison of the two models that is made per training step, rather than per epoch, will silently favour Model H.
 
 
-What limits Nepali is not the supply of text. Sangraha's verified Nepali split alone holds far more than is used here, and the three sitemap-backed news sites still have on the order of two hundred thousand articles that were discovered but never fetched. The limit is the 20% manual floor, which ties total corpus size to manual size: at that ratio a corpus can be at most five times its manually collected part, so **every manually collected character permits four downloaded ones**. Downloaded text is effectively free; manual text is worth five times its weight, and collecting it is bounded by polite crawl rates -- roughly one request per second per host -- rather than by what exists.
+What limits Nepali is not the supply of text. Sangraha's verified Nepali split alone holds far more than is used here, and the sitemap-backed news sites still have several hundred thousand articles that were discovered but never fetched. The limit is the 20% manual floor, which ties total corpus size to manual size: at that ratio a corpus can be at most five times its manually collected part, so **every manually collected character permits four downloaded ones**. Downloaded text is effectively free; manual text is worth five times its weight, and collecting it is bounded by polite crawl rates -- roughly one request per second per host -- rather than by what exists.
 
 
 That makes the Phase 2 schedule a real choice rather than a foregone one. Nepali reaches a full budget either by further collection, which costs wall-clock time at a fixed rate, or by repeating data across epochs. Whichever is chosen has to be stated, because it changes what a perplexity comparison between the two models means.
