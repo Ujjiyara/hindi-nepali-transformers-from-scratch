@@ -45,14 +45,17 @@ class TokenizerMetrics:
 
     @property
     def chars_per_token(self) -> float:
+        """Average characters per token: the inverse view of fertility."""
         return self.characters / self.tokens if self.tokens else 0.0
 
     @property
     def unknown_rate(self) -> float:
+        """Fraction of tokens that are <unk>; zero by construction with byte fallback."""
         return self.unknown_tokens / self.tokens if self.tokens else 0.0
 
     @property
     def byte_fallback_rate(self) -> float:
+        """Fraction of tokens that are raw UTF-8 byte pieces rather than subwords."""
         return self.byte_fallback_tokens / self.tokens if self.tokens else 0.0
 
     @property
@@ -66,6 +69,7 @@ class TokenizerMetrics:
         return self.unique_tokens_used / self.vocab_size if self.vocab_size else 0.0
 
     def as_dict(self) -> dict:
+        """The metrics as a plain dictionary, for sweep.json."""
         return {
             "vocab_size": self.vocab_size,
             "documents": self.documents,

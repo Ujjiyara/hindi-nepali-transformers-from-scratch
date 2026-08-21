@@ -95,4 +95,5 @@ def plot_token_frequency(
 
 
 def load_sweep(path: Path) -> list[dict]:
+    """Read one sweep.json and return its per-vocabulary-size rows."""
     return json.loads(path.read_text(encoding="utf-8"))["sweep"]

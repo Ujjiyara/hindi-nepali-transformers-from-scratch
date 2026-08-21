@@ -128,6 +128,7 @@ def chosen_model(config_path: Path) -> tuple[Path, int]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Count one language's corpus tokens exactly and write _token_counts.json."""
     parser = argparse.ArgumentParser(description="Count corpus tokens exactly.")
     parser.add_argument("--data-root", required=True, type=Path)
     parser.add_argument("--lang", required=True)

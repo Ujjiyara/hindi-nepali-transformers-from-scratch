@@ -86,6 +86,7 @@ class NormalizeConfig:
     )
 
     def compiled_boilerplate(self) -> list[re.Pattern[str]]:
+        """Boilerplate patterns compiled once, for reuse across every document."""
         return [re.compile(p, re.IGNORECASE) for p in self.boilerplate_patterns]
 
 

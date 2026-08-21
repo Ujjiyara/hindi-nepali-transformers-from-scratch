@@ -78,6 +78,7 @@ def read_jsonl_tolerant(path: Path):
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Build one language's corpus: normalise, deduplicate, split, report."""
     parser = argparse.ArgumentParser(description="Normalise, dedup and split a corpus.")
     parser.add_argument("--data-root", required=True, type=Path)
     parser.add_argument("--lang", required=True)

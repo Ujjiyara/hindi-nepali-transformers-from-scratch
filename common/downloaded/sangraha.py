@@ -93,6 +93,7 @@ def iter_documents(subset: str, lang_dir: str, cache_dir: Path, keep: bool):
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Ingest one Sangraha subset for one language into the document schema."""
     parser = argparse.ArgumentParser(description="Ingest Sangraha into the project schema.")
     parser.add_argument("--lang", required=True, help="project language code, e.g. ne")
     parser.add_argument("--out", required=True, type=Path)
@@ -124,6 +125,7 @@ def main(argv: list[str] | None = None) -> int:
     shard_index = kept = chars = shard_chars = 0
 
     def open_shard(index: int):
+        """Open output shard ``index`` and return ``(path, handle)``."""
         path = args.out.parent / f"{stem}.part{index:04d}.jsonl.gz"
         return path, gzip.open(path, "wt", encoding="utf-8")
 

@@ -122,12 +122,15 @@ class ScrapeConfig:
 
     @property
     def urls_dir(self) -> Path:
+        """Directory holding one JSONL file of discovered URLs per site."""
         return self.data_root / "urls"
 
     @property
     def raw_dir(self) -> Path:
+        """Directory holding the raw fetched bytes, sharded by document id."""
         return self.data_root / "raw" / "scrape"
 
     @property
     def interim_dir(self) -> Path:
+        """Directory holding extracted text, one JSONL file per site."""
         return self.data_root / "interim" / "scrape"

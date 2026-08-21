@@ -114,6 +114,7 @@ def stream_documents(url: str, user_agent: str, min_chars: int, max_attempts: in
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Stream CC-100 for one language into the project's document schema."""
     parser = argparse.ArgumentParser(description="Stream-ingest a CC-100 corpus.")
     parser.add_argument("--url", required=True)
     parser.add_argument("--out", required=True, type=Path)

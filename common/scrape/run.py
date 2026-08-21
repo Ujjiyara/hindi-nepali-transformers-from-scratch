@@ -95,6 +95,7 @@ def cmd_triage(cfg: ScrapeConfig, sites: list[SiteConfig]) -> int:
 
 
 def cmd_discover(cfg: ScrapeConfig, sites: list[SiteConfig]) -> int:
+    """discover: find candidate article URLs for each selected site."""
     robots = RobotsPolicy(cfg.user_agent, timeout=cfg.request_timeout)
     total = sum(discover_site(cfg, site, robots) for site in sites)
     print(f"discovered {total} URL(s) -> {cfg.urls_dir}")
@@ -102,18 +103,21 @@ def cmd_discover(cfg: ScrapeConfig, sites: list[SiteConfig]) -> int:
 
 
 def cmd_fetch(cfg: ScrapeConfig, sites: list[SiteConfig], limit: int | None) -> int:
+    """fetch: download the discovered URLs, one thread per site."""
     total = fetch_all(cfg, sites, limit=limit)
     print(f"saved {total} new page(s) -> {cfg.raw_dir}")
     return 0
 
 
 def cmd_extract(cfg: ScrapeConfig, sites: list[SiteConfig]) -> int:
+    """extract: turn stored raw HTML into clean text records."""
     total = sum(extract_site(cfg, site) for site in sites)
     print(f"extracted {total} document(s) -> {cfg.interim_dir}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Entry point for the triage / discover / fetch / extract subcommands."""
     parser = argparse.ArgumentParser(description="Corpus scraper (discover / fetch / extract).")
     parser.add_argument("command", choices=["triage", "discover", "fetch", "extract"])
     parser.add_argument("--config", required=True, help="path to a language scrape config YAML")

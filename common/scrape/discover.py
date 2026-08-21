@@ -304,6 +304,7 @@ class SiteDiscoverer:
     # --- entry point ------------------------------------------------------
 
     def run(self) -> list[dict[str, object]]:
+        """Run this site's strategies in order and return the URL records found."""
         strategies = {
             "sitemap": self._from_sitemaps,
             "rss": self._from_rss,

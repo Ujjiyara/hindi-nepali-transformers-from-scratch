@@ -152,10 +152,12 @@ class JsonlAppender:
         self._handle = open(path, "a", encoding="utf-8")
 
     def write(self, record: dict[str, Any]) -> None:
+        """Append one record, flushing so an interrupted run keeps what it wrote."""
         self._handle.write(json.dumps(record, ensure_ascii=False) + "\n")
         self._handle.flush()
 
     def close(self) -> None:
+        """Close the underlying file handle."""
         self._handle.close()
 
     def __enter__(self) -> "JsonlAppender":
@@ -189,6 +191,7 @@ class SeenSet:
         return len(self._seen)
 
     def add(self, url: str) -> None:
+        """Record ``url`` as seen, in memory and on disk."""
         if url in self._seen:
             return
         self._seen.add(url)
@@ -196,6 +199,7 @@ class SeenSet:
         self._handle.flush()
 
     def close(self) -> None:
+        """Close the underlying file handle."""
         self._handle.close()
 
     def __enter__(self) -> "SeenSet":
@@ -221,9 +225,11 @@ class Stats:
         self.counts: Counter[str] = Counter()
 
     def bump(self, key: str, amount: int = 1) -> None:
+        """Increment the named counter by ``amount``."""
         self.counts[key] += amount
 
     def as_dict(self) -> dict[str, Any]:
+        """The collected counters as a plain dictionary, for JSON serialisation."""
         return {
             "stage": self.stage,
             "label": self.label,
@@ -233,6 +239,7 @@ class Stats:
         }
 
     def save(self, path: Path) -> None:
+        """Write this stage's counters to a _stats.json sidecar."""
         path.parent.mkdir(parents=True, exist_ok=True)
         atomic_write_bytes(
             path,
@@ -240,5 +247,6 @@ class Stats:
         )
 
     def summary(self) -> str:
+        """One-line human-readable summary of the counters, for logging."""
         parts = [f"{key}={value}" for key, value in sorted(self.counts.items())]
         return f"[{self.stage}:{self.label}] " + "  ".join(parts)

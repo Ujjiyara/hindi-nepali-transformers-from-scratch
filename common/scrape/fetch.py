@@ -190,6 +190,7 @@ def fetch_all(cfg: ScrapeConfig, sites: list[SiteConfig], limit: int | None = No
     robots = RobotsPolicy(cfg.user_agent, timeout=cfg.request_timeout)
 
     def work(site: SiteConfig) -> int:
+        """Fetch one site; the unit of work handed to the thread pool."""
         return Fetcher(cfg, site, robots).run(limit=limit)
 
     if len(sites) == 1:

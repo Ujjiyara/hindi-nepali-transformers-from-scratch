@@ -518,6 +518,7 @@ def _top_tokens_line(sweep: dict) -> str:
 
 
 def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
+    """Render the whole Phase 1 report as Markdown from the measured stats files."""
     out: list[str] = []
     add = out.append
 
@@ -707,6 +708,7 @@ def build(lang_dirs: dict[str, Path], repo_root: Path) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Write report/phase1.md for the languages named on the command line."""
     parser = argparse.ArgumentParser(description="Generate the Phase 1 report.")
     parser.add_argument(
         "--lang", action="append", required=True, metavar="CODE=DIR",

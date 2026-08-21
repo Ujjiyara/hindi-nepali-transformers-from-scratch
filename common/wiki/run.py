@@ -76,6 +76,7 @@ def check_site_matches_source(source: str, site: str) -> str | None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Extract one Wikimedia dump into the project's document schema."""
     parser = argparse.ArgumentParser(description="Extract a Wikimedia XML dump to JSONL.")
     parser.add_argument("--dump", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)

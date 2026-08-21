@@ -43,6 +43,7 @@ def export_lines(
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     def source_lines():
+        """Yield every line of the split that is long enough to be worth training on."""
         for record in read_jsonl(split_path):
             for line in record.get("text", "").splitlines():
                 line = line.strip()

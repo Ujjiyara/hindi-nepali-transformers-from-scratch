@@ -52,6 +52,7 @@ class TokenizerConfig:
     extra_symbols: list[str] = field(default_factory=list)
 
     def as_kwargs(self) -> dict:
+        """Settings in the keyword form SentencePieceTrainer.train expects."""
         return {
             "vocab_size": self.vocab_size,
             "model_type": self.model_type,

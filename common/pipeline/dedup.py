@@ -98,6 +98,7 @@ class MinHasher:
         self.b = rng.integers(0, 1 << 31, size=num_perm, dtype=np.uint64)
 
     def signature(self, shingle_set: set[int]) -> np.ndarray:
+        """MinHash signature of a shingle set, as a uint64 array of length num_perm."""
         if not shingle_set:
             return np.full(self.num_perm, np.uint64(_MERSENNE), dtype=np.uint64)
         values = np.fromiter(shingle_set, dtype=np.uint64, count=len(shingle_set))
@@ -112,12 +113,14 @@ class UnionFind:
         self.parent = list(range(size))
 
     def find(self, item: int) -> int:
+        """Representative of ``item``'s set, with path compression."""
         while self.parent[item] != item:
             self.parent[item] = self.parent[self.parent[item]]  # path halving
             item = self.parent[item]
         return item
 
     def union(self, left: int, right: int) -> None:
+        """Merge the sets containing ``a`` and ``b``."""
         left_root, right_root = self.find(left), self.find(right)
         if left_root != right_root:
             self.parent[right_root] = left_root
@@ -125,6 +128,7 @@ class UnionFind:
 
 @dataclass
 class DedupResult:
+    """Outcome of a dedup pass: which documents survive, and what was removed."""
     keep_indices: list[int]
     exact_dropped: int
     near_dropped: int

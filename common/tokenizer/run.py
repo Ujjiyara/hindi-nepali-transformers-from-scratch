@@ -31,6 +31,7 @@ DEFAULT_VOCAB_SIZES = [8000, 16000, 32000]
 
 
 def cmd_sweep(args: argparse.Namespace) -> int:
+    """sweep: train every requested vocabulary size and measure each on held-out text."""
     data_root: Path = args.data_root
     train_split = data_root / "processed" / "train.jsonl.gz"
     eval_split = data_root / "processed" / "validation.jsonl.gz"
@@ -104,6 +105,7 @@ def cmd_sweep(args: argparse.Namespace) -> int:
 
 
 def cmd_plot(args: argparse.Namespace) -> int:
+    """plot: draw the cross-language comparison figures from sweep.json files."""
     from common.tokenizer.plots import plot_sweep, plot_token_frequency
 
     sweeps: dict[str, list[dict]] = {}
@@ -122,6 +124,7 @@ def cmd_plot(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Entry point for the sweep / plot subcommands."""
     parser = argparse.ArgumentParser(description="Tokenizer training and evaluation.")
     sub = parser.add_subparsers(dest="command", required=True)
 
