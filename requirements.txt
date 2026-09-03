@@ -20,3 +20,5 @@ matplotlib>=3.7           # sweep and token-frequency figures
 # --- Phase 2: model, pretraining, evaluation --------------------------------
 torch>=2.1                # the only deep-learning dependency; no HF, no nn.Transformer
 pytest>=7.4               # correctness tests for attention, masking and resume
+sacrebleu>=2.4              # BLEU and chrF, standard implementations
+rouge-score>=0.1.2          # ROUGE-L
