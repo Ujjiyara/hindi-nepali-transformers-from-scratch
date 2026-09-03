@@ -21,4 +21,6 @@ matplotlib>=3.7           # sweep and token-frequency figures
 torch>=2.1                # the only deep-learning dependency; no HF, no nn.Transformer
 pytest>=7.4               # correctness tests for attention, masking and resume
 sacrebleu>=2.4              # BLEU and chrF, standard implementations
-rouge-score>=0.1.2          # ROUGE-L
+# ROUGE-L is implemented in common/eval/text_metrics.py: the rouge-score
+# package's tokenizer strips every non-ASCII character and scores all
+# Devanagari pairs as zero.
