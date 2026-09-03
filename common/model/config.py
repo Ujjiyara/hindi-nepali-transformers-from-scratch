@@ -31,7 +31,10 @@ happiest with.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, fields, replace
+from pathlib import Path
+
+import yaml
 
 
 @dataclass(frozen=True)
@@ -118,3 +121,24 @@ class GPTConfig:
     def with_(self, **changes) -> "GPTConfig":
         """A copy with some fields replaced, for sweeps and ablations."""
         return replace(self, **changes)
+
+    def to_dict(self) -> dict:
+        """Plain dict, for writing into checkpoints and run logs."""
+        return asdict(self)
+
+    @classmethod
+    def from_yaml(cls, path: str | Path) -> "GPTConfig":
+        """Load a geometry from one of the per-language ``model.yaml`` files.
+
+        Unknown keys are an error rather than a silent no-op: a typo in a
+        config file would otherwise train a model that quietly differs from
+        the one the file describes.
+        """
+        raw = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        unknown = set(raw) - {f.name for f in fields(cls)}
+        if unknown:
+            raise ValueError(
+                f"{path}: unknown keys {sorted(unknown)}; "
+                f"expected only {sorted(f.name for f in fields(cls))}"
+            )
+        return cls(**raw)

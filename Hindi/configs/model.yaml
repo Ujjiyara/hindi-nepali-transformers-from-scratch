@@ -1,0 +1,25 @@
+# Model H -- Hindi (higher-resource), Phase 2 geometry.
+#
+# ~24.09M trainable parameters against the brief's ~25M budget:
+#   embedding  16000 x 384 = 6.14M   (tied with the output head, so counted once)
+#   positional   512 x 384 = 0.20M
+#   blocks      10 x 12d^2 = 17.74M
+#
+# Depth over width at a fixed budget: each block is another sequential
+# transformation of the residual stream, while width only widens each one.
+# Ten pre-norm layers train without warmup tricks. Head dimension is 384/6 = 64.
+#
+# vocab_size comes from this language's own Phase 1 tokenizer
+# (Hindi/tokenizer/hi_unigram_16000.model) and is never shared with the
+# other model. The trainer re-checks it against the tokenizer file before
+# starting, so a mismatched pair cannot silently train.
+vocab_size: 16000
+block_size: 512
+n_layer: 10
+n_head: 6
+d_model: 384
+d_ff: 1536
+dropout: 0.1
+bias: true
+tie_embeddings: true
+use_positional: true
