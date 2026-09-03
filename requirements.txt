@@ -16,3 +16,7 @@ numpy>=1.24               # MinHash signatures in the near-duplicate stage
 # --- tokenizers and figures -------------------------------------------------
 sentencepiece>=0.1.99     # unigram training algorithm (no pretrained models)
 matplotlib>=3.7           # sweep and token-frequency figures
+
+# --- Phase 2: model, pretraining, evaluation --------------------------------
+torch>=2.1                # the only deep-learning dependency; no HF, no nn.Transformer
+pytest>=7.4               # correctness tests for attention, masking and resume
