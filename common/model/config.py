@@ -100,7 +100,7 @@ class GPTConfig:
 
         attention = (d * 3 * d + 3 * d * bias) + (d * d + d * bias)
         feed_forward = (d * ff + ff * bias) + (ff * d + d * bias)
-        norms = 2 * (2 * d)  # two LayerNorms, each a weight and a bias
+        norms = 2 * (d + d * bias)  # two LayerNorms: a weight, and a bias if used
         blocks = self.n_layer * (attention + feed_forward + norms)
 
         head = 0 if self.tie_embeddings else self.vocab_size * d
@@ -109,7 +109,7 @@ class GPTConfig:
             "embedding": embedding,
             "positional": positional,
             "blocks": blocks,
-            "final_norm": 2 * d,
+            "final_norm": d + d * bias,
             "lm_head": head,
         }
         counts["total"] = sum(counts.values())
