@@ -1,4 +1,8 @@
-data/
+# Corpora, token arrays and checkpoints live on Google Drive, never in git.
+# Scoped to the two language directories: a bare "data/" would also swallow
+# common/data/, which is source code.
+Hindi/data/
+Nepali/data/
 __pycache__/
 *.pyc
 *.tmp
