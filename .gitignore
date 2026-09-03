@@ -3,6 +3,9 @@
 # common/data/, which is source code.
 Hindi/data/
 Nepali/data/
+# Checkpoints are ~290MB each and go to Google Drive, per the brief.
+Hindi/checkpoints/
+Nepali/checkpoints/
 __pycache__/
 *.pyc
 *.tmp

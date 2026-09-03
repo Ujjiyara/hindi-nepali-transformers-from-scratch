@@ -1,0 +1,38 @@
+# Model L -- Nepali pretraining run.
+#
+# One epoch over this language's 357473575 training tokens.
+# Tokens per optimiser step = batch_size * grad_accum * block_size
+#                           = 16 * 4 * 512 = 32,768
+# so max_steps = 357473575 / 32,768 = 10909.
+#
+# batch_size 16 at block_size 512 fits a 16GB T4 with room to spare; the
+# accumulation of 4 buys the gradient statistics of a 32k-token batch without
+# the memory of one. Raise batch_size and lower grad_accum together on a larger
+# card -- the product is what matters.
+#
+# checkpoint_interval 500 is roughly every four minutes at the measured step
+# time, so a killed Kaggle session costs minutes rather than hours.
+batch_size: 16
+grad_accum: 4
+max_steps: 10909
+weight_decay: 0.1
+beta1: 0.9
+beta2: 0.95
+grad_clip: 1.0
+eval_interval: 500
+eval_batches: 40
+checkpoint_interval: 500
+keep_checkpoints: 2
+log_interval: 20
+seed: 1337
+device: auto
+dtype: auto
+
+schedule:
+  # Peak 6e-4 with a floor at a tenth of it. Warmup is 164 steps, about 1.5%
+  # of the run: long enough for AdamW's second-moment estimate to settle before
+  # the rate reaches full size.
+  max_lr: 6.0e-4
+  min_lr: 6.0e-5
+  warmup_steps: 164
+  max_steps: 10909
