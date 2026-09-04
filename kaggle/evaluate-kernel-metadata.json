@@ -1,0 +1,19 @@
+{
+  "id": "sakshamgoyal69/lma-phase-2-evaluation",
+  "title": "LMA Phase 2 evaluation",
+  "code_file": "evaluate.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "false",
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "sakshamgoyal69/lma-phase2-code",
+    "sakshamgoyal69/lma-phase2-tokens"
+  ],
+  "competition_sources": [],
+  "kernel_sources": ["sakshamgoyal69/lma-phase-2-pretraining"],
+  "model_sources": []
+}
