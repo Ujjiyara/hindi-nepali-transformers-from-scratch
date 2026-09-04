@@ -74,6 +74,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--prompt-tokens", type=int, default=64)
     parser.add_argument("--continuation-tokens", type=int, default=96)
     parser.add_argument("--attention-batches", type=int, default=4)
+    parser.add_argument("--max-eval-batches", type=int, default=None,
+                        help="cap batches when scoring; smoke tests only, "
+                             "since reported numbers must cover the split")
     parser.add_argument("--skip-generation", action="store_true")
     parser.add_argument("--skip-attention", action="store_true")
     args = parser.parse_args(argv)
@@ -116,8 +119,12 @@ def main(argv: list[str] | None = None) -> int:
             model.cfg.block_size,
             device,
             autocast_dtype,
+            max_batches=args.max_eval_batches,
         )
-        results["language_modelling"][split] = metrics.as_dict()
+        entry = metrics.as_dict()
+        # Guards against a capped smoke run being mistaken for a result.
+        entry["complete_split"] = args.max_eval_batches is None
+        results["language_modelling"][split] = entry
 
     # --- generation --------------------------------------------------------
     if not args.skip_generation:
