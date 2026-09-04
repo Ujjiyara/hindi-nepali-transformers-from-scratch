@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import pathlib
 from pathlib import Path
 
 import sentencepiece as spm
@@ -41,6 +42,24 @@ log = logging.getLogger("eval")
 
 # Greedy plus the three temperatures the brief names.
 TEMPERATURES = (0.0, 0.5, 1.0, 1.5)
+
+
+def resolve_split(directory: pathlib.Path, split: str) -> pathlib.Path:
+    """Find a split file whether or not it is still gzipped.
+
+    Kaggle expands archives when it builds a dataset, and it expands the files
+    *inside* them too, so a ``test.jsonl.gz`` packed into an uploaded tarball
+    arrives as a plain ``test.jsonl``. Accepting either keeps the same command
+    working locally and on Kaggle rather than requiring the caller to know
+    which side they are on.
+    """
+    for name in (f"{split}.jsonl.gz", f"{split}.jsonl"):
+        candidate = directory / name
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(
+        f"no {split}.jsonl or {split}.jsonl.gz in {directory}"
+    )
 
 
 def load_model(checkpoint: Path, device: torch.device) -> tuple[GPT, dict]:
@@ -128,7 +147,7 @@ def main(argv: list[str] | None = None) -> int:
     # --- generation --------------------------------------------------------
     if not args.skip_generation:
         prompts = build_prompts(
-            args.processed / "test.jsonl.gz", sp, args.prompts,
+            resolve_split(args.processed, "test"), sp, args.prompts,
             args.prompt_tokens, args.continuation_tokens,
         )
         references = [p.reference_text for p in prompts]
