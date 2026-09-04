@@ -1,0 +1,18 @@
+{
+  "id": "sakshamgoyal69/lma-phase-2-pretraining",
+  "title": "LMA Phase 2 pretraining",
+  "code_file": "train.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "false",
+  "dataset_sources": [
+    "sakshamgoyal69/lma-phase2-code",
+    "sakshamgoyal69/lma-phase2-tokens"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

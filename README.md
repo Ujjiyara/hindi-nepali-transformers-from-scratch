@@ -398,6 +398,28 @@ Launch with **Save & Run All (Commit)** so the run survives the browser
 closing. Checkpoints are ~276 MB each; `keep_checkpoints` bounds how many
 remain on disk.
 
+#### Running it on Kaggle headlessly
+
+`kaggle/train_kernel.py` is the batch job that was actually run, and
+`kaggle/kernel-metadata.json` its configuration. It attaches the token arrays
+and this code as private datasets, trains both models (in parallel when two
+GPUs are present, in sequence otherwise), and resumes automatically if a
+previous run's output is attached as a third source.
+
+```bash
+kaggle datasets create -p <staging-dir> --keep-tabular   # tokens, then code
+kaggle kernels push -p kaggle/
+kaggle kernels status sakshamgoyal69/lma-phase-2-pretraining
+kaggle kernels output sakshamgoyal69/lma-phase-2-pretraining -p kaggle-output/
+```
+
+Two things about Kaggle that the script has to absorb rather than assume:
+datasets are mounted at `/kaggle/input/datasets/<owner>/<slug>/`, not
+`/kaggle/input/<slug>/`, and an uploaded archive is expanded when the dataset
+is built, so the code arrives as a directory tree rather than the tarball that
+was uploaded. `find_input()` locates each dataset by a marker file it contains
+instead of by path, and fails with a listing of what was actually attached.
+
 ### 10. Evaluate
 
 ```bash
