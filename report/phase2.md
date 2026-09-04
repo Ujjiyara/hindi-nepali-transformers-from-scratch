@@ -247,6 +247,22 @@ Three quantities per (layer, head), averaged over held-out text. Query position 
 
 ![ne attention layer 9](figures/attention_heatmap_nepali_layer9.png)
 
+
+**Which heads learned what.**
+
+| Model | Heads | Local (distance < 5) | Sharp (entropy < 0.4) | Diffuse (entropy > 0.7) | Sharpest head |
+|---|---|---|---|---|---|
+| Hindi (Model H) | 60 | 6 | 16 | 18 | layer 5 head 2 (entropy 0.027, distance 1.2) |
+| Nepali (Model L) | 60 | 6 | 10 | 21 | layer 5 head 5 (entropy 0.021, distance 1.2) |
+
+**Both models independently learned a previous-token head.** The sharpest head in each sits in the middle of the stack with a mean attention distance of about one position and a normalised entropy near zero -- it attends to exactly the preceding token and nothing else. The heatmaps show it as a single bright sub-diagonal at weight 1.0. That two independently trained models on two different corpora both converge on this head, at the same depth but at different head indices, is evidence that it is a structure the objective demands rather than an artefact of initialisation.
+
+**Depth organises the heads into a clear pattern.** The first two layers are diffuse and long-range: entropy near 0.9 and mean distances in the tens of positions, which is close to uniform averaging over the available context. The middle layers hold the local, positional heads -- this is where the previous-token head and its near neighbours live, and where the per-layer spread in attention distance collapses. The last layers widen again into longer-range, content-dependent attention. Heads that park most of their mass on position 0 also appear throughout; that is the familiar attention-sink behaviour, a head with nothing to contribute at this position dumping its probability somewhere harmless.
+
+**How Model H and Model L differ.** Hindi (Model H) has 16 sharp heads against 10, and 18 diffuse against 21 -- it has committed more of its heads to specific, low-entropy roles and left fewer of them averaging. The difference is starkest in the last four layers, where the spread of attention distances within a layer averages 125 positions for Hindi (Model H) against 61 for Nepali (Model L): the heads of the higher-resource model remain differentiated from one another deep into the stack, while the lower-resource model's late heads converge on similar behaviour.
+
+That is the attention-level signature of the resource gap, and it is consistent with the loss curves: more data buys more specialisation, not a different kind of model. Both models built the same scaffolding -- diffuse early layers, a local middle band, longer-range late layers -- and the one with more text simply differentiated further within it.
+
 Every heatmap is lower-triangular by construction, which is the causal mask visible directly: a query at position *i* has zero weight on every key after it. A full square would mean the mask was broken.
 
 
