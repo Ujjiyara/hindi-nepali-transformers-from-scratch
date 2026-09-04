@@ -413,12 +413,26 @@ kaggle kernels status sakshamgoyal69/lma-phase-2-pretraining
 kaggle kernels output sakshamgoyal69/lma-phase-2-pretraining -p kaggle-output/
 ```
 
-Two things about Kaggle that the script has to absorb rather than assume:
-datasets are mounted at `/kaggle/input/datasets/<owner>/<slug>/`, not
-`/kaggle/input/<slug>/`, and an uploaded archive is expanded when the dataset
-is built, so the code arrives as a directory tree rather than the tarball that
-was uploaded. `find_input()` locates each dataset by a marker file it contains
-instead of by path, and fails with a listing of what was actually attached.
+Three things about Kaggle that the script has to absorb rather than assume.
+
+**Mount paths.** Datasets appear at `/kaggle/input/datasets/<owner>/<slug>/`,
+not `/kaggle/input/<slug>/`, and an uploaded archive is expanded when the
+dataset is built, so the code arrives as a directory tree rather than the
+tarball that was uploaded. `find_input()` locates each dataset by a marker file
+it contains instead of by path, and fails with a listing of what was actually
+attached.
+
+**The accelerator must be named exactly.** `machine_shape` accepts only
+`NvidiaTeslaT4`, `NvidiaTeslaP100` or `Tpu1VmV38`; anything else is silently
+normalised to a generic `Gpu` with no error, which allocates a P100.
+
+**A P100 is unusable here.** Kaggle's preinstalled PyTorch carries no compiled
+kernels for Pascal (sm_60), so every CUDA call fails with `no kernel image is
+available for execution on the device`. The T4 is Turing (sm_75) and works.
+This is also why `resolve_dtype` decides bfloat16 from the compute capability
+rather than from `torch.cuda.is_bf16_supported()`, which returns True on both
+of those cards and would trade the T4's fp16 tensor cores for software-emulated
+bfloat16.
 
 ### 10. Evaluate
 
