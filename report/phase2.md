@@ -32,6 +32,29 @@ Both models use the same geometry. That is not a shared artifact -- the weights,
 
 **Positional embeddings are learned and absolute.** Self-attention is permutation-equivariant, so with no position signal the model sees an unordered bag of tokens. A learned table costs one small matrix and needs no extra machinery; the price is that 512 is a hard architectural limit on context, not a soft one, and the model has no representation at all for a longer position. A relative scheme such as RoPE would lift that.
 
+
+**The forward pass, with shapes.** The brief asks for the reshape and transpose operations to be explicit, because they are where hand-written attention usually goes wrong.
+
+| Step | Operation | Shape |
+|---|---|---|
+| 0 | input | `(B, T, d)` |
+| 1 | fused QKV projection | `(B, T, 3d)` |
+| 2 | split into q, k, v | `3 x (B, T, d)` |
+| 3 | `.view(B, T, h, d_head)` | `(B, T, 6, 64)` |
+| 4 | `.transpose(1, 2)` | `(B, 6, T, 64)` |
+| 5 | `q @ k.transpose(-2, -1)` | `(B, 6, T, T)` |
+| 6 | scale by 1/sqrt(64) | `(B, 6, T, T)` |
+| 7 | additive causal mask, then softmax over keys | `(B, 6, T, T)` |
+| 8 | attention dropout, then `@ v` | `(B, 6, T, 64)` |
+| 9 | `.transpose(1, 2).contiguous().view` | `(B, T, d)` |
+| 10 | output projection, residual dropout | `(B, T, d)` |
+
+The order matters: heads are carved out of the **feature** axis by viewing to `(B, T, h, d_head)` and only then transposing, so head *i* owns feature columns `[i*d_head : (i+1)*d_head]`. Viewing straight to `(B, h, T, d_head)` would slice along *time*, handing head 0 the first `T/h` tokens. That variant trains and produces a falling loss curve while being entirely wrong, which is why the test suite checks the batched implementation against a reference that splits heads by explicit column slicing rather than checking the mask alone.
+
+**Why the 1/sqrt(d_head) scaling is needed.** If the components of `q` and `k` are roughly independent with unit variance, then `q . k` is a sum of 64 such products, so its variance is 64 and its standard deviation sqrt(64) = 8. Logits spread that widely drive the softmax to a near one-hot distribution at initialisation, where its gradient is almost zero and nothing learns. Dividing by sqrt(d_head) restores unit variance and keeps the softmax in the range where it responds to its inputs. It is a variance-control argument, not a heuristic.
+
+**Why the mask is added before the softmax.** The mask holds 0 on allowed positions and -inf on future ones, so exponentiating gives exactly zero *and* removes those terms from the softmax denominator. Zeroing the upper triangle after the softmax would instead leave each row summing to less than one by a position-dependent amount, silently rescaling every output.
+
 **Pre-norm, not post-norm.** LayerNorm sits inside each residual branch, leaving an unnormalised identity path from input to output so that gradient reaches layer 0 undistorted. Post-norm renormalises that path once per sublayer, which is why deep post-norm stacks need long warmups to train at all.
 
 
@@ -168,6 +191,17 @@ Held-out prompts from the test split, continued at temperature 1.0. The referenc
 > **Reference** ३४ करोड नाफा कमाएको छ । आज आयोजित नेपाल आयल निगम स्वतन्त्र कर्मचारी युनियनको दोस्रो केन्द्रीय महाधिवेशनका क्रममा सो कुराको जानकारी दिइएको हो । कार्यक्रममा बोल्दै नेपाली काँग्रेसका केन्द्रीय सदस्य तथा पूर्व उद्योगमन्त्री नवीन्द्रराज जोशीले पेसागत इमान्दारिता, क...
 
 
+### 5.2 Qualitative notes on coherence and language correctness
+
+**Greedy decoding degenerates into verbatim looping in both models.** The 4-gram repetition rate under greedy decoding is Hindi (Model H) 0.78, Nepali (Model L) 0.75, and the samples show what that number is: a single clause repeated until the token budget runs out. This is the expected behaviour of a 24M-parameter model at argmax, not a bug -- the most likely continuation of a sentence the model has already produced is that sentence again. It is also why the BLEU column peaks at greedy while chrF does not: repeated common n-grams collect precision credit that has nothing to do with quality.
+
+**At temperature 1.0 the language itself is correct; the content is not.** Continuations are well-formed Devanagari with plausible morphology -- postpositions attach correctly, verb endings agree, native numerals are used consistently, and sentences terminate with a danda rather than trailing off. Byte-fallback artefacts are absent, which is consistent with the near-zero unknown rate Phase 1 measured. What fails is coherence beyond a clause or two: the models hold a register and a topic for roughly a sentence, then drift, and numeric and factual detail is confabulated freely -- a generated news continuation will keep the shape of a news report while inventing figures that contradict each other within the same sentence.
+
+**Neither model shows a qualitative deficit relative to the other.** The failure modes are the same in kind and close in degree, which is the more informative comparison: the resource gap between Model H and Model L shows up as a small quantitative difference in held-out loss, not as one model having learned the language and the other not.
+
+The honest summary is that both models have learned the *surface* of their language -- script, morphology, register, sentence shape -- and essentially none of the world knowledge or long-range planning that would make a continuation true or on-topic. At 24M parameters and one epoch over a few hundred million tokens, that is the expected outcome, and it is what the perplexity figures around 43 and 47 already imply.
+
+
 ## 6. Attention analysis
 
 Three quantities per (layer, head), averaged over held-out text. Query position 0 is excluded from both averages: it can only attend to itself, so its entropy and distance are zero regardless of what the head learned.
@@ -232,6 +266,8 @@ The corpora differ by a factor of 1.46 in training tokens, which is the resource
 **The gap splits almost evenly between corpus size and everything else.** At the point where Nepali (Model L) exhausts its corpus (357,466,112 tokens), Hindi (Model H) is at 3.6756 validation loss against 3.7410 -- a gap of 0.0654 nats that is *not* explained by data volume, since both models have seen the same number of tokens. Hindi (Model H) then gains a further 0.0772 nats from the 166,199,296 tokens it still has left. So roughly 46% of the final difference is present at equal data and 54% is bought by the larger corpus.
 
 That matters for how the result is stated. Against optimiser steps the two models look nearly identical; against tokens seen they separate; and only the second axis reflects the resource gap the project is about. Neither axis alone tells the whole story, which is why both figures are included above.
+
+**Tokenizer fertility compounds the gap.** Phase 1 measured 1.2823 tokens per word for Hindi (Model H) against 1.3687 for Nepali (Model L) at the same 16,000-entry vocabulary -- 6.7% higher. A tokenizer fitted on less text learns fewer useful subwords, so the same amount of language costs more tokens. The lower-resource language is therefore penalised twice over: there is less of it, and each token of it carries less linguistic content, so a fixed context window holds less actual text and a fixed token budget buys less training signal.
 
 **The tokenizer is doing more work than the parameter count.** Both models are byte-for-byte the same architecture with the same 24,086,016 parameters and the same 16,000-entry vocabulary size, so every difference in the tables above comes from the data and the vocabulary fitted to it. The lower-resource language ends up with the coarser tokenizer -- more bytes per token -- which flatters its bits-per-byte and penalises its perplexity, in opposite directions.
 

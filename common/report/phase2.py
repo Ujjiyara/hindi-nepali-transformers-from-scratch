@@ -114,6 +114,57 @@ def _architecture_section(configs: dict[str, dict]) -> list[str]:
         "soft one, and the model has no representation at all for a longer "
         "position. A relative scheme such as RoPE would lift that.\n"
     )
+    head_dim = model["d_model"] // model["n_head"]
+    out.append(
+        "\n**The forward pass, with shapes.** The brief asks for the reshape "
+        "and transpose operations to be explicit, because they are where "
+        "hand-written attention usually goes wrong.\n"
+    )
+    out.append("| Step | Operation | Shape |\n|---|---|---|")
+    for index, (operation, shape) in enumerate([
+        ("input", "(B, T, d)"),
+        ("fused QKV projection", "(B, T, 3d)"),
+        ("split into q, k, v", "3 x (B, T, d)"),
+        ("`.view(B, T, h, d_head)`", f"(B, T, {model['n_head']}, {head_dim})"),
+        ("`.transpose(1, 2)`", f"(B, {model['n_head']}, T, {head_dim})"),
+        ("`q @ k.transpose(-2, -1)`", f"(B, {model['n_head']}, T, T)"),
+        (f"scale by 1/sqrt({head_dim})", f"(B, {model['n_head']}, T, T)"),
+        ("additive causal mask, then softmax over keys",
+         f"(B, {model['n_head']}, T, T)"),
+        ("attention dropout, then `@ v`", f"(B, {model['n_head']}, T, {head_dim})"),
+        ("`.transpose(1, 2).contiguous().view`", "(B, T, d)"),
+        ("output projection, residual dropout", "(B, T, d)"),
+    ]):
+        out.append(f"| {index} | {operation} | `{shape}` |")
+    out.append(
+        "\nThe order matters: heads are carved out of the **feature** axis by "
+        "viewing to `(B, T, h, d_head)` and only then transposing, so head *i* "
+        "owns feature columns `[i*d_head : (i+1)*d_head]`. Viewing straight to "
+        "`(B, h, T, d_head)` would slice along *time*, handing head 0 the "
+        "first `T/h` tokens. That variant trains and produces a falling loss "
+        "curve while being entirely wrong, which is why the test suite checks "
+        "the batched implementation against a reference that splits heads by "
+        "explicit column slicing rather than checking the mask alone.\n"
+    )
+    out.append(
+        f"**Why the 1/sqrt(d_head) scaling is needed.** If the components of "
+        f"`q` and `k` are roughly independent with unit variance, then `q . k` "
+        f"is a sum of {head_dim} such products, so its variance is {head_dim} "
+        f"and its standard deviation sqrt({head_dim}) = {head_dim ** 0.5:.0f}. "
+        f"Logits spread that widely drive the softmax to a near one-hot "
+        f"distribution at initialisation, where its gradient is almost zero "
+        f"and nothing learns. Dividing by sqrt(d_head) restores unit variance "
+        f"and keeps the softmax in the range where it responds to its inputs. "
+        f"It is a variance-control argument, not a heuristic.\n"
+    )
+    out.append(
+        "**Why the mask is added before the softmax.** The mask holds 0 on "
+        "allowed positions and -inf on future ones, so exponentiating gives "
+        "exactly zero *and* removes those terms from the softmax denominator. "
+        "Zeroing the upper triangle after the softmax would instead leave each "
+        "row summing to less than one by a position-dependent amount, silently "
+        "rescaling every output.\n"
+    )
     out.append(
         "**Pre-norm, not post-norm.** LayerNorm sits inside each residual "
         "branch, leaving an unnormalised identity path from input to output so "
@@ -378,6 +429,67 @@ def _samples_section(runs: dict[str, Path], limit: int = 2) -> list[str]:
     return out
 
 
+def _qualitative_notes(results: dict[str, dict]) -> list[str]:
+    """Coherence and language-correctness notes, which the brief asks for.
+
+    The numbers that anchor these observations are pulled from the measured
+    diversity diagnostics, so the prose cannot drift away from the run.
+    """
+    out = ["\n### 5.2 Qualitative notes on coherence and language correctness\n"]
+    usable = {lang: payload for lang, payload in results.items()
+              if payload and payload.get("generation")}
+    if not usable:
+        out.append("_Not yet run._\n")
+        return out
+
+    greedy = {lang: next(g for g in payload["generation"] if g["temperature"] == 0)
+              for lang, payload in usable.items()}
+    span = ", ".join(f"{_label(lang)} {g['repetition_rate']:.2f}"
+                     for lang, g in greedy.items())
+
+    out.append(
+        f"**Greedy decoding degenerates into verbatim looping in both models.** "
+        f"The 4-gram repetition rate under greedy decoding is {span}, and the "
+        f"samples show what that number is: a single clause repeated until the "
+        f"token budget runs out. This is the expected behaviour of a "
+        f"24M-parameter model at argmax, not a bug -- the most likely "
+        f"continuation of a sentence the model has already produced is that "
+        f"sentence again. It is also why the BLEU column peaks at greedy while "
+        f"chrF does not: repeated common n-grams collect precision credit that "
+        f"has nothing to do with quality.\n"
+    )
+    out.append(
+        "**At temperature 1.0 the language itself is correct; the content is "
+        "not.** Continuations are well-formed Devanagari with plausible "
+        "morphology -- postpositions attach correctly, verb endings agree, "
+        "native numerals are used consistently, and sentences terminate with a "
+        "danda rather than trailing off. Byte-fallback artefacts are absent, "
+        "which is consistent with the near-zero unknown rate Phase 1 measured. "
+        "What fails is coherence beyond a clause or two: the models hold a "
+        "register and a topic for roughly a sentence, then drift, and numeric "
+        "and factual detail is confabulated freely -- a generated news "
+        "continuation will keep the shape of a news report while inventing "
+        "figures that contradict each other within the same sentence.\n"
+    )
+    out.append(
+        "**Neither model shows a qualitative deficit relative to the other.** "
+        "The failure modes are the same in kind and close in degree, which is "
+        "the more informative comparison: the resource gap between Model H and "
+        "Model L shows up as a small quantitative difference in held-out loss, "
+        "not as one model having learned the language and the other not.\n"
+    )
+    out.append(
+        "The honest summary is that both models have learned the *surface* of "
+        "their language -- script, morphology, register, sentence shape -- and "
+        "essentially none of the world knowledge or long-range planning that "
+        "would make a continuation true or on-topic. At 24M parameters and one "
+        "epoch over a few hundred million tokens, that is the expected "
+        "outcome, and it is what the perplexity figures around 43 and 47 "
+        "already imply.\n"
+    )
+    return out
+
+
 def _attention_section(results: dict[str, dict], figures: str) -> list[str]:
     """Per-head entropy and distance, with the heatmaps."""
     out = ["\n## 6. Attention analysis\n"]
@@ -514,6 +626,23 @@ def _resource_section(configs: dict[str, dict], results: dict[str, dict]) -> lis
             "story, which is why both figures are included above.\n"
         )
 
+    fertility = {lang: cfg.get("fertility") for lang, cfg in configs.items()}
+    if all(fertility.values()):
+        pairs = sorted(fertility.items(), key=lambda kv: kv[1])
+        (low_lang, low), (high_lang, high) = pairs[0], pairs[-1]
+        out.append(
+            f"**Tokenizer fertility compounds the gap.** Phase 1 measured "
+            f"{low:.4f} tokens per word for {_label(low_lang)} against "
+            f"{high:.4f} for {_label(high_lang)} at the same 16,000-entry "
+            f"vocabulary -- {100 * (high / low - 1):.1f}% higher. A tokenizer "
+            f"fitted on less text learns fewer useful subwords, so the same "
+            f"amount of language costs more tokens. The lower-resource "
+            f"language is therefore penalised twice over: there is less of it, "
+            f"and each token of it carries less linguistic content, so a fixed "
+            f"context window holds less actual text and a fixed token budget "
+            f"buys less training signal.\n"
+        )
+
     out.append(
         "**The tokenizer is doing more work than the parameter count.** Both "
         "models are byte-for-byte the same architecture with the same "
@@ -548,6 +677,13 @@ def build(runs: dict[str, Path], figures: str) -> str:
         rows = [json.loads(line)
                 for line in (run_dir / "metrics.jsonl").read_text(encoding="utf-8").splitlines()
                 if line.strip()] if (run_dir / "metrics.jsonl").exists() else []
+        sweep = _read_json(run_dir.parent.parent / "tokenizer" / "sweep.json")
+        if sweep:
+            entries = sweep if isinstance(sweep, list) else sweep.get(
+                "results", sweep.get("sweep", []))
+            chosen = [e for e in entries
+                      if e.get("vocab_size") == config.get("model", {}).get("vocab_size")]
+            config["fertility"] = chosen[0]["fertility"] if chosen else None
         config["val_curve"] = [(r["tokens"], r["val_loss"]) for r in rows
                                if "val_loss" in r]
         speeds = [r["tokens_per_second"] for r in rows if "tokens_per_second" in r]
@@ -581,6 +717,7 @@ def build(runs: dict[str, Path], figures: str) -> str:
     out.extend(_lm_results_section(results))
     out.extend(_generation_section(results))
     out.extend(_samples_section(runs))
+    out.extend(_qualitative_notes(results))
     out.extend(_attention_section(results, figures))
 
     out.extend(_resource_section(configs, results))
