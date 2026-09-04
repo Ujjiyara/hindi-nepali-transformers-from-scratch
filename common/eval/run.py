@@ -33,7 +33,6 @@ from common.eval.attention import capture_attention, collect_statistics
 from common.eval.generate import build_prompts, generate_for_prompts
 from common.eval.lm import score_split
 from common.eval.plots import plot_attention_heatmaps
-from common.eval.text_metrics import score_generations
 from common.model.gpt import GPT
 from common.train.checkpoint import load_checkpoint, load_config
 from common.train.loop import resolve_device, resolve_dtype
@@ -134,26 +133,36 @@ def main(argv: list[str] | None = None) -> int:
         )
         references = [p.reference_text for p in prompts]
 
+        # Every continuation is kept, not just the few shown in the report, so
+        # that the overlap metrics can be recomputed from this file without a
+        # GPU. sacrebleu is not part of the Kaggle image and the run may have
+        # no internet, and losing hours of generation to a missing text-metrics
+        # package would be a poor trade.
+        try:
+            from common.eval.text_metrics import score_generations
+        except ImportError as error:
+            score_generations = None
+            log.warning("%s: writing samples, scoring them elsewhere", error)
+
         generation_results, samples = [], []
         for temperature in TEMPERATURES:
             hypotheses = generate_for_prompts(
                 model, prompts, sp, args.continuation_tokens, temperature,
                 device, batch_size=args.batch_size,
             )
-            generation_results.append(
-                score_generations(hypotheses, references, temperature).as_dict()
-            )
-            # A handful of full samples per temperature, for the report.
+            if score_generations is not None:
+                generation_results.append(
+                    score_generations(hypotheses, references, temperature).as_dict()
+                )
             samples.append({
                 "temperature": temperature,
-                "examples": [
-                    {"prompt": p.prompt_text, "reference": p.reference_text,
-                     "generated": h}
-                    for p, h in list(zip(prompts, hypotheses))[:5]
-                ],
+                "prompts": [p.prompt_text for p in prompts],
+                "references": references,
+                "hypotheses": hypotheses,
             })
 
-        results["generation"] = generation_results
+        if generation_results:
+            results["generation"] = generation_results
         (args.out_dir / "samples.json").write_text(
             json.dumps({"label": args.label, "samples": samples},
                        indent=2, ensure_ascii=False) + "\n",
