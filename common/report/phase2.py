@@ -239,6 +239,25 @@ def _training_section(configs: dict[str, dict], results: dict[str, dict]) -> lis
         cells = [getter(configs[l], results.get(l)) for l in configs]
         out.append(f"| {name} | " + " | ".join(cells) + " |")
 
+    reconciliation = []
+    for lang, cfg in configs.items():
+        docs, packed = cfg.get("train_documents"), cfg.get("train_tokens")
+        if docs and packed:
+            reconciliation.append(
+                f"{_label(lang)} {packed - docs:,} + {docs:,} = {packed:,}")
+    if reconciliation:
+        out.append(
+            "\n**On the token counts.** These exceed the training-token figures "
+            "in the Phase 1 report by exactly one token per document. Packing "
+            "concatenates a split's documents and writes the tokenizer's "
+            "end-of-sequence id between them, so the array the model trains on "
+            "is the Phase 1 corpus plus one separator per document ("
+            + "; ".join(reconciliation) + "). The separator is trained on and "
+            "scored like any other token -- predicting where a document ends is "
+            "real modelling -- so it is counted here rather than subtracted "
+            "out.\n"
+        )
+
     out.append(
         "\nWeight decay is applied only to parameters with two or more "
         "dimensions. Decaying a LayerNorm gain towards zero fights the "
@@ -555,6 +574,23 @@ def _attention_section(results: dict[str, dict], figures: str) -> list[str]:
     return out
 
 
+def _sink_counts(results: dict[str, dict]) -> str:
+    """Count heads that are sharp yet attend very far back -- likely sinks."""
+    parts = []
+    for lang, payload in results.items():
+        if not payload or "attention" not in payload:
+            continue
+        att = payload["attention"]
+        entropy, distance = att["normalised_entropy"], att["distance"]
+        count = sum(1
+                    for layer in range(att["n_layer"])
+                    for head in range(att["n_head"])
+                    if entropy[layer][head] < 0.4 and distance[layer][head] > 100)
+        parts.append(f"{_label(lang)} has {count}")
+    return ("Counting heads with normalised entropy below 0.4 and mean distance "
+            "above 100 positions, " + " and ".join(parts) + ".")
+
+
 def _attention_discussion(results: dict[str, dict]) -> list[str]:
     """Which heads are local, which are content-based, and how H and L differ.
 
@@ -615,10 +651,13 @@ def _attention_discussion(results: dict[str, dict]) -> list[str]:
         "-- this is where the previous-token head and its near neighbours live, "
         "and where the per-layer spread in attention distance collapses. The "
         "last layers widen again into longer-range, content-dependent "
-        "attention. Heads that park most of their mass on position 0 also "
-        "appear throughout; that is the familiar attention-sink behaviour, a "
-        "head with nothing to contribute at this position dumping its "
-        "probability somewhere harmless.\n"
+        "attention. A third group is sharp *and* long-range at once -- low "
+        "entropy paired with a mean distance in the hundreds of positions, "
+        "which for a causal model means nearly all the mass sits on one "
+        "far-back key, in practice position 0. That is the familiar "
+        "attention-sink pattern: a head with nothing useful to contribute "
+        "here parking its probability somewhere harmless. "
+        + _sink_counts(results) + "\n"
     )
 
     if len(summary) == 2:
@@ -771,6 +810,7 @@ def build(runs: dict[str, Path], figures: str) -> str:
         packed = _read_json(Path(config.get("tokens", ".")) / "_stats_pack.json")
         if packed:
             config["train_tokens"] = packed["splits"]["train"]["tokens"]
+            config["train_documents"] = packed["splits"]["train"]["documents"]
         config["last"] = _last_training_record(run_dir)
         rows = [json.loads(line)
                 for line in (run_dir / "metrics.jsonl").read_text(encoding="utf-8").splitlines()

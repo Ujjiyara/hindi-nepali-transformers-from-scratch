@@ -130,6 +130,7 @@ Hindi/                      Model H — self-contained data and artifacts
 Nepali/                     Model L — same structure, no shared files
 
 tests/                      correctness tests for attention, masking, resume, metrics
+kaggle/                     batch training and evaluation kernels + their metadata
 report/
   phase1.md                 Phase 1 report
   phase2.md                 Phase 2 report
