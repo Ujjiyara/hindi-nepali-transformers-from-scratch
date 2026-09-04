@@ -17,7 +17,8 @@ The two models share **no** data, tokenizer, vocabulary, or weights. Only
 implementation code is shared; every artifact is per-language and lives under
 `Hindi/` or `Nepali/`.
 
-**Phase 1 report:** [`report/phase1.md`](report/phase1.md)
+**Phase 1 report:** [`report/phase1.md`](report/phase1.md)  
+**Phase 2 report:** [`report/phase2.md`](report/phase2.md)
 
 ### Phase 1 result
 
@@ -31,6 +32,32 @@ deduplication. Model H meets the ~500M training-token target; Model L reaches
 357M, and `report/phase1.md` §4.5 reports the exact count and why it stops
 there. Every number here is generated from measured statistics files, not
 typed by hand.
+
+### Phase 2 result
+
+Both models are the same ~24.1M-parameter decoder-only Transformer, implemented
+from `nn.Linear`, `nn.Embedding`, `nn.LayerNorm` and `nn.Dropout` only — no
+`nn.Transformer*`, no HuggingFace model classes, no pre-built attention block.
+
+| Setting | Value |
+|---|---|
+| Layers / heads / model dim | 10 / 6 / 384 (head dim 64) |
+| Feed-forward width | 1536 (4x) |
+| Context length | 512 (learned absolute positions — a hard ceiling) |
+| Vocabulary | 16,000 per model, never shared |
+| Trainable parameters | **24,086,016** (embedding tied with the output head) |
+| Planned steps (one epoch) | 15,981 (Model H), 10,909 (Model L) |
+
+Correctness is asserted rather than assumed: `tests/` checks that the batched
+head reshape matches per-head column slicing, that attention rows sum to one
+with an exactly-zero upper triangle, that changing token *t+1* leaves the
+logits at *t* **bitwise** identical, that no gradient path runs from later
+positions to output *t*, and that a checkpoint resume reproduces an
+uninterrupted run's losses exactly.
+
+```bash
+python -m pytest tests/ -q
+```
 
 ---
 
@@ -49,18 +76,30 @@ LMA_Individual_project_data/
   Hindi/
     processed/          train.jsonl.gz, validation.jsonl.gz, test.jsonl.gz,
                         _stats_pipeline.json, _token_counts.json
+    tokens/             train.bin, validation.bin, test.bin, _stats_pack.json
+    checkpoints/        best.pt, step_*.pt          (Phase 2)
   Nepali/
     processed/          same five files
+    tokens/             same four files
+    checkpoints/        best.pt, step_*.pt          (Phase 2)
 ```
 
-The two `_stats_*.json` sidecars are tiny and are included deliberately: every
-figure in `report/phase1.md` is generated from them, so any number in the
-report can be checked against the file it came from.
+The `_stats_*.json` sidecars are tiny and are included deliberately: every
+figure in the reports is generated from them, so any number can be checked
+against the file it came from.
 
 Tokenizer `.model` and `.vocab` files are **committed to this repository**
 under `Hindi/tokenizer/` and `Nepali/tokenizer/` — 3.5MB and 3.8MB, small
-enough for git — so they do not need to be fetched from Drive. The corpora are
-Drive-only: they are far too large for git.
+enough for git — so they do not need to be fetched from Drive. Corpora, token
+arrays and checkpoints are Drive-only: they are far too large for git. Each
+checkpoint is ~276MB and holds model weights, AdamW moment estimates, the
+schedule, the fp16 loss scale, the step, the data position and the RNG state,
+which is what makes a run resumable rather than merely restartable.
+
+**Training run logs are in the repository, not on Drive**: each run's
+`config.json` and `metrics.jsonl` live under `Hindi/runs/<name>/` and
+`Nepali/runs/<name>/`, because the brief grades what is on the branch and a
+loss curve stored only on Drive is not.
 
 ---
 
@@ -74,21 +113,34 @@ common/                     shared implementation (no data)
   pipeline/                 normalise -> dedup -> split
   tokenizer/                SentencePiece training, evaluation, vocab sweep,
                             exact token counting, plots
-  report/                   generates report/phase1.md from measured stats
+  model/                    config, causal self-attention, block, GPT
+  data/                     corpus -> flat uint16 token array, batch sampler
+  train/                    LR schedule, resumable checkpoints, pretraining loop
+  eval/                     perplexity/BPB, generation, BLEU/chrF/ROUGE-L,
+                            attention statistics, figures
+  report/                   generates report/phase{1,2}.md from measured stats
 
 Hindi/                      Model H — self-contained data and artifacts
-  configs/scrape_sites.yaml
+  configs/                  scrape_sites.yaml, tokenizer.yaml, model.yaml, train.yaml
   data/{raw,interim,processed,urls,logs}/     (git-ignored, see Drive)
+  data/tokens/              packed .bin token arrays (git-ignored, see Drive)
   tokenizer/                *.model, *.vocab, sweep.json
+  checkpoints/              (git-ignored, see Drive)
+  runs/<name>/              config.json, metrics.jsonl, eval/results.json (committed)
 Nepali/                     Model L — same structure, no shared files
 
+tests/                      correctness tests for attention, masking, resume, metrics
 report/
   phase1.md                 Phase 1 report
+  phase2.md                 Phase 2 report
   figures/                  all plots
 ```
 
-`data/` is git-ignored. Every pipeline stage writes a `_stats.json` sidecar next
-to its output; the report is generated from those files.
+`Hindi/data/`, `Nepali/data/` and both `checkpoints/` are git-ignored. Every
+stage writes a `_stats.json` sidecar next to its output, and every run writes
+`config.json` and `metrics.jsonl` into its run directory; the reports are
+generated from those files, so no figure or table depends on a checkpoint being
+present.
 
 ---
 
@@ -283,6 +335,95 @@ python -m common.tokenizer.count --data-root Nepali/data --lang ne
 python -m common.report.phase1 --lang hi=Hindi --lang ne=Nepali --out report/phase1.md
 ```
 
+### 8. Pack the corpora into token arrays
+
+Encodes every document once into a flat `uint16` array — documents
+concatenated, separated by the tokenizer's end-of-sequence id — so training
+never re-tokenizes and never pads. A training example is a slice: take
+`block_size + 1` ids, use `[:-1]` as input and `[1:]` as target.
+
+```bash
+python -m common.data.run pack --data-root Hindi/data  --lang hi \
+    --tokenizer Hindi/tokenizer/hi_unigram_16000.model
+python -m common.data.run pack --data-root Nepali/data --lang ne \
+    --tokenizer Nepali/tokenizer/ne_unigram_16000.model
+```
+
+| | Train tokens | Validation | Test | Size |
+|---|---|---|---|---|
+| Hindi | 524,524,486 | 5,246,084 | 5,324,491 | 1001 MB |
+| Nepali | 358,339,370 | 3,685,994 | 3,574,013 | 684 MB |
+
+These exceed the Phase 1 counts by exactly one token per document — the
+end-of-sequence separator.
+
+### 9. Pretrain
+
+Run once per language; the two models never share a process, a device, or a
+weight.
+
+```bash
+python -m common.train.run \
+    --model-config Hindi/configs/model.yaml \
+    --train-config Hindi/configs/train.yaml \
+    --tokens Hindi/data/tokens \
+    --checkpoint-dir Hindi/checkpoints \
+    --run-dir Hindi/runs/base
+```
+
+Re-running the same command resumes from the newest checkpoint. Use
+`--stop-at-step N` to end a session early **without** reshaping the
+learning-rate curve — that is the flag for a capped Kaggle session;
+`--max-steps` shortens the whole run and does reshape it.
+
+**On Kaggle (2x T4), both models in parallel, one per GPU:**
+
+```python
+import subprocess
+procs = [subprocess.Popen(
+    ["python", "-m", "common.train.run",
+     "--model-config", f"{L}/configs/model.yaml",
+     "--train-config", f"{L}/configs/train.yaml",
+     "--tokens", f"{L}/data/tokens",
+     "--checkpoint-dir", f"/kaggle/working/checkpoints/{L}",
+     "--run-dir", f"/kaggle/working/runs/{L}",
+     "--device", dev],
+    stdout=open(f"/kaggle/working/{L}.log", "w"), stderr=subprocess.STDOUT)
+    for L, dev in [("Hindi", "cuda:0"), ("Nepali", "cuda:1")]]
+for p in procs:
+    p.wait()
+```
+
+Launch with **Save & Run All (Commit)** so the run survives the browser
+closing. Checkpoints are ~276 MB each; `keep_checkpoints` bounds how many
+remain on disk.
+
+### 10. Evaluate
+
+```bash
+python -m common.eval.run \
+    --checkpoint Hindi/checkpoints/best.pt \
+    --tokens Hindi/data/tokens \
+    --tokenizer Hindi/tokenizer/hi_unigram_16000.model \
+    --processed Hindi/data/processed \
+    --label "Hindi (Model H)" \
+    --out-dir Hindi/runs/base/eval
+```
+
+Writes `results.json` (perplexity, bits-per-byte, BLEU/chrF/ROUGE-L at greedy
+and T=0.5/1.0/1.5, diversity diagnostics, per-head attention statistics) and
+`samples.json`, plus attention heatmaps into `report/figures/`. The checkpoint
+carries its own geometry, so an evaluation cannot silently run against the
+wrong architecture.
+
+### 11. Phase 2 figures and report
+
+```bash
+python -m common.report.phase2 \
+    --run hi=Hindi/runs/base --run ne=Nepali/runs/base \
+    --out report/phase2.md
+```
+
 ---
 
 ## Notes on constraints
@@ -295,3 +436,16 @@ python -m common.report.phase1 --lang hi=Hindi --lang ne=Nepali --out report/pha
 - Manual vs. downloaded provenance is recorded on every document
   (`collection_method`) and the manual fraction is reported **after**
   deduplication, since dedup can otherwise change it silently.
+- The Transformer is built from `nn.Linear`, `nn.Embedding`, `nn.LayerNorm` and
+  `nn.Dropout` only. Positional embeddings, multi-head attention and causal
+  masking are implemented in `common/model/`; no `nn.Transformer*` module, no
+  HuggingFace model class, and no fused attention kernel such as
+  `F.scaled_dot_product_attention` is used, since that is a pre-built attention
+  block.
+- `sacrebleu` supplies BLEU and chrF. ROUGE-L is implemented in
+  `common/eval/text_metrics.py` rather than taken from the `rouge-score`
+  package, whose tokenizer applies `[^a-z0-9]+ -> " "` and therefore deletes
+  every Devanagari character, silently scoring every pair as zero.
+- Model H and Model L share implementation code and nothing else: separate
+  corpora, tokenizers, vocabularies, token arrays, weights, optimiser states
+  and checkpoints. Neither is ever initialised from the other.
