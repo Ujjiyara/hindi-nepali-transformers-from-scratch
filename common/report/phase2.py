@@ -43,6 +43,24 @@ def _final_metrics(run_dir: Path) -> dict | None:
     return _read_json(run_dir / "eval" / "results.json")
 
 
+def _last_training_record(run_dir: Path) -> dict:
+    """How far training actually got, read from the run's own metrics log.
+
+    Taken from ``metrics.jsonl`` rather than from the evaluation results, so
+    the pretraining table is complete even when a checkpoint has been trained
+    but not yet evaluated -- and so it reports the run that happened rather
+    than the run that was planned.
+    """
+    path = run_dir / "metrics.jsonl"
+    if not path.exists():
+        return {}
+    last = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            last.update(json.loads(line))
+    return last
+
+
 def _architecture_section(configs: dict[str, dict]) -> list[str]:
     """Geometry, parameter budget, and the decisions the brief asks about."""
     out = ["\n## 1. Architecture\n"]
@@ -146,8 +164,16 @@ def _training_section(configs: dict[str, dict], results: dict[str, dict]) -> lis
     rows = [
         ("Training tokens available", lambda c, r: f"{c['train_tokens']:,}"),
         ("Planned steps (one epoch)", lambda c, r: f"{c['train']['max_steps']:,}"),
-        ("Steps completed", lambda c, r: f"{r['step']:,}" if r else "not yet run"),
-        ("Tokens seen", lambda c, r: f"{r['tokens_seen']:,}" if r else "--"),
+        ("Steps completed", lambda c, r: f"{c['last']['step']:,}"
+         if c.get("last", {}).get("step") else "not yet run"),
+        ("Tokens seen", lambda c, r: f"{c['last']['tokens']:,}"
+         if c.get("last", {}).get("tokens") else "--"),
+        ("Final validation loss", lambda c, r: f"{c['last']['val_loss']:.4f}"
+         if c.get("last", {}).get("val_loss") else "--"),
+        ("Mean throughput", lambda c, r: f"{c['throughput']:,.0f} tok/s"
+         if c.get("throughput") else "--"),
+        ("Wall-clock time", lambda c, r: f"{c['last']['elapsed'] / 3600:.2f} h"
+         if c.get("last", {}).get("elapsed") else "--"),
         ("Micro-batch", lambda c, r: str(c["train"]["batch_size"])),
         ("Gradient accumulation", lambda c, r: str(c["train"]["grad_accum"])),
         ("Tokens per optimiser step", lambda c, r: f"{c['train']['batch_size'] * c['train']['grad_accum'] * c['model']['block_size']:,}"),
@@ -335,6 +361,12 @@ def build(runs: dict[str, Path], figures: str) -> str:
         packed = _read_json(Path(config.get("tokens", ".")) / "_stats_pack.json")
         if packed:
             config["train_tokens"] = packed["splits"]["train"]["tokens"]
+        config["last"] = _last_training_record(run_dir)
+        rows = [json.loads(line)
+                for line in (run_dir / "metrics.jsonl").read_text(encoding="utf-8").splitlines()
+                if line.strip()] if (run_dir / "metrics.jsonl").exists() else []
+        speeds = [r["tokens_per_second"] for r in rows if "tokens_per_second" in r]
+        config["throughput"] = sum(speeds) / len(speeds) if speeds else None
         configs[lang] = config
         results[lang] = _final_metrics(run_dir)
 
