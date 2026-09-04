@@ -1,0 +1,638 @@
+2026-09-04 09:52:33,895 INFO tokens: Nepali/data/tokens, packed with Nepali/tokenizer/ne_unigram_16000.model
+2026-09-04 09:52:33,899 INFO 358339370 training tokens, 10909 planned steps, 1.00 epochs
+2026-09-04 09:52:34,064 INFO device cuda:1, autocast dtype torch.float16
+2026-09-04 09:52:34,954 INFO model: 24.09M parameters
+2026-09-04 09:52:34,955 INFO optimizer: 42 decayed tensors (24035328 params), 82 undecayed (50688 params)
+2026-09-04 09:52:40,002 INFO no checkpoint found; starting from scratch
+2026-09-04 09:52:58,482 INFO step     20/10909  loss 9.1608  lr 7.32e-05  |g| 1.07  35465 tok/s  eta 2h47m
+2026-09-04 09:53:16,469 INFO step     40/10909  loss 8.5098  lr 1.46e-04  |g| 0.90  36435 tok/s  eta 2h42m
+2026-09-04 09:53:34,921 INFO step     60/10909  loss 7.9443  lr 2.20e-04  |g| 0.63  35517 tok/s  eta 2h46m
+2026-09-04 09:53:54,678 INFO step     80/10909  loss 7.7868  lr 2.93e-04  |g| 0.51  33170 tok/s  eta 2h58m
+2026-09-04 09:54:16,022 INFO step    100/10909  loss 7.5649  lr 3.66e-04  |g| 0.74  30706 tok/s  eta 3h12m
+2026-09-04 09:54:36,006 INFO step    120/10909  loss 7.3171  lr 4.39e-04  |g| 0.48  32794 tok/s  eta 2h59m
+2026-09-04 09:54:55,535 INFO step    140/10909  loss 7.1457  lr 5.12e-04  |g| 0.55  33559 tok/s  eta 2h55m
+2026-09-04 09:55:15,611 INFO step    160/10909  loss 6.9303  lr 5.85e-04  |g| 0.57  32644 tok/s  eta 2h59m
+2026-09-04 09:55:36,270 INFO step    180/10909  loss 6.8083  lr 6.00e-04  |g| 0.48  31723 tok/s  eta 3h04m
+2026-09-04 09:55:56,547 INFO step    200/10909  loss 6.7317  lr 6.00e-04  |g| 0.53  32320 tok/s  eta 3h00m
+2026-09-04 09:56:16,407 INFO step    220/10909  loss 6.6251  lr 6.00e-04  |g| 0.46  32999 tok/s  eta 2h56m
+2026-09-04 09:56:36,407 INFO step    240/10909  loss 6.5476  lr 6.00e-04  |g| 0.44  32768 tok/s  eta 2h57m
+2026-09-04 09:56:56,688 INFO step    260/10909  loss 6.5075  lr 6.00e-04  |g| 0.43  32314 tok/s  eta 2h59m
+2026-09-04 09:57:16,942 INFO step    280/10909  loss 6.3477  lr 6.00e-04  |g| 0.41  32357 tok/s  eta 2h59m
+2026-09-04 09:57:37,143 INFO step    300/10909  loss 6.3336  lr 6.00e-04  |g| 0.64  32441 tok/s  eta 2h58m
+2026-09-04 09:57:57,293 INFO step    320/10909  loss 6.2925  lr 6.00e-04  |g| 0.44  32525 tok/s  eta 2h57m
+2026-09-04 09:58:17,404 INFO step    340/10909  loss 6.1733  lr 6.00e-04  |g| 0.51  32587 tok/s  eta 2h57m
+2026-09-04 09:58:37,501 INFO step    360/10909  loss 6.1221  lr 6.00e-04  |g| 0.51  32609 tok/s  eta 2h56m
+2026-09-04 09:58:57,532 INFO step    380/10909  loss 6.0054  lr 5.99e-04  |g| 0.54  32717 tok/s  eta 2h55m
+2026-09-04 09:59:17,584 INFO step    400/10909  loss 5.9973  lr 5.99e-04  |g| 0.59  32684 tok/s  eta 2h55m
+2026-09-04 09:59:37,604 INFO step    420/10909  loss 6.0076  lr 5.99e-04  |g| 0.59  32735 tok/s  eta 2h54m
+2026-09-04 09:59:57,590 INFO step    440/10909  loss 5.9308  lr 5.99e-04  |g| 0.56  32790 tok/s  eta 2h54m
+2026-09-04 10:00:17,605 INFO step    460/10909  loss 5.8546  lr 5.99e-04  |g| 0.52  32743 tok/s  eta 2h54m
+2026-09-04 10:00:37,603 INFO step    480/10909  loss 5.7849  lr 5.99e-04  |g| 0.66  32772 tok/s  eta 2h53m
+2026-09-04 10:00:57,654 INFO step    500/10909  loss 5.7266  lr 5.99e-04  |g| 0.49  32684 tok/s  eta 2h53m
+2026-09-04 10:01:01,143 INFO step    500  val loss 5.7797  val ppl 323.67
+2026-09-04 10:01:01,520 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 500)
+2026-09-04 10:01:01,908 INFO saved /kaggle/working/checkpoints/Nepali/step_000500.pt (step 500)
+2026-09-04 10:01:21,856 INFO step    520/10909  loss 5.7459  lr 5.99e-04  |g| 0.52  27079 tok/s  eta 3h29m
+2026-09-04 10:01:41,865 INFO step    540/10909  loss 5.7130  lr 5.98e-04  |g| 0.68  32752 tok/s  eta 2h52m
+2026-09-04 10:02:01,901 INFO step    560/10909  loss 5.7063  lr 5.98e-04  |g| 0.49  32710 tok/s  eta 2h52m
+2026-09-04 10:02:21,937 INFO step    580/10909  loss 5.7161  lr 5.98e-04  |g| 0.57  32710 tok/s  eta 2h52m
+2026-09-04 10:02:42,018 INFO step    600/10909  loss 5.6410  lr 5.98e-04  |g| 0.64  32635 tok/s  eta 2h52m
+2026-09-04 10:03:02,081 INFO step    620/10909  loss 5.6624  lr 5.98e-04  |g| 0.50  32664 tok/s  eta 2h52m
+2026-09-04 10:03:22,141 INFO step    640/10909  loss 5.5836  lr 5.97e-04  |g| 0.64  32671 tok/s  eta 2h51m
+2026-09-04 10:03:42,250 INFO step    660/10909  loss 5.5351  lr 5.97e-04  |g| 0.51  32591 tok/s  eta 2h51m
+2026-09-04 10:04:02,308 INFO step    680/10909  loss 5.5275  lr 5.97e-04  |g| 0.54  32673 tok/s  eta 2h50m
+2026-09-04 10:04:22,398 INFO step    700/10909  loss 5.5260  lr 5.97e-04  |g| 0.66  32622 tok/s  eta 2h50m
+2026-09-04 10:04:42,496 INFO step    720/10909  loss 5.4484  lr 5.96e-04  |g| 0.62  32608 tok/s  eta 2h50m
+2026-09-04 10:05:02,534 INFO step    740/10909  loss 5.3210  lr 5.96e-04  |g| 0.53  32706 tok/s  eta 2h49m
+2026-09-04 10:05:22,596 INFO step    760/10909  loss 5.4818  lr 5.96e-04  |g| 0.72  32666 tok/s  eta 2h49m
+2026-09-04 10:05:42,718 INFO step    780/10909  loss 5.4636  lr 5.96e-04  |g| 0.73  32570 tok/s  eta 2h49m
+2026-09-04 10:06:02,782 INFO step    800/10909  loss 5.3820  lr 5.95e-04  |g| 0.57  32663 tok/s  eta 2h49m
+2026-09-04 10:06:22,822 INFO step    820/10909  loss 5.3385  lr 5.95e-04  |g| 0.58  32703 tok/s  eta 2h48m
+2026-09-04 10:06:42,913 INFO step    840/10909  loss 5.2752  lr 5.95e-04  |g| 0.69  32619 tok/s  eta 2h48m
+2026-09-04 10:07:02,962 INFO step    860/10909  loss 5.3500  lr 5.94e-04  |g| 0.61  32688 tok/s  eta 2h47m
+2026-09-04 10:07:22,999 INFO step    880/10909  loss 5.1942  lr 5.94e-04  |g| 0.58  32708 tok/s  eta 2h47m
+2026-09-04 10:07:43,044 INFO step    900/10909  loss 5.2555  lr 5.94e-04  |g| 0.61  32694 tok/s  eta 2h47m
+2026-09-04 10:08:03,113 INFO step    920/10909  loss 5.2922  lr 5.93e-04  |g| 0.59  32655 tok/s  eta 2h47m
+2026-09-04 10:08:23,180 INFO step    940/10909  loss 5.2591  lr 5.93e-04  |g| 0.57  32659 tok/s  eta 2h46m
+2026-09-04 10:08:43,237 INFO step    960/10909  loss 5.2629  lr 5.93e-04  |g| 0.62  32675 tok/s  eta 2h46m
+2026-09-04 10:09:03,285 INFO step    980/10909  loss 5.1218  lr 5.92e-04  |g| 0.52  32689 tok/s  eta 2h45m
+2026-09-04 10:09:23,362 INFO step   1000/10909  loss 5.1462  lr 5.92e-04  |g| 0.59  32643 tok/s  eta 2h45m
+2026-09-04 10:09:26,856 INFO step   1000  val loss 5.0913  val ppl 162.61
+2026-09-04 10:09:27,453 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 1000)
+2026-09-04 10:09:27,836 INFO saved /kaggle/working/checkpoints/Nepali/step_001000.pt (step 1000)
+2026-09-04 10:09:47,836 INFO step   1020/10909  loss 5.1884  lr 5.92e-04  |g| 0.64  26778 tok/s  eta 3h21m
+2026-09-04 10:10:07,925 INFO step   1040/10909  loss 5.1344  lr 5.91e-04  |g| 0.63  32624 tok/s  eta 2h45m
+2026-09-04 10:10:28,092 INFO step   1060/10909  loss 5.1233  lr 5.91e-04  |g| 0.67  32496 tok/s  eta 2h45m
+2026-09-04 10:10:48,247 INFO step   1080/10909  loss 5.0853  lr 5.90e-04  |g| 0.60  32516 tok/s  eta 2h45m
+2026-09-04 10:11:08,310 INFO step   1100/10909  loss 5.0351  lr 5.90e-04  |g| 0.82  32665 tok/s  eta 2h43m
+2026-09-04 10:11:28,241 INFO step   1120/10909  loss 5.1216  lr 5.90e-04  |g| 0.61  32882 tok/s  eta 2h42m
+2026-09-04 10:11:48,128 INFO step   1140/10909  loss 5.0946  lr 5.89e-04  |g| 0.57  32954 tok/s  eta 2h41m
+2026-09-04 10:12:07,994 INFO step   1160/10909  loss 5.0271  lr 5.89e-04  |g| 0.63  32989 tok/s  eta 2h41m
+2026-09-04 10:12:27,845 INFO step   1180/10909  loss 4.9781  lr 5.88e-04  |g| 0.66  33013 tok/s  eta 2h40m
+2026-09-04 10:12:47,687 INFO step   1200/10909  loss 5.0544  lr 5.88e-04  |g| 0.61  33030 tok/s  eta 2h40m
+2026-09-04 10:13:07,549 INFO step   1220/10909  loss 5.1238  lr 5.87e-04  |g| 0.58  32995 tok/s  eta 2h40m
+2026-09-04 10:13:27,404 INFO step   1240/10909  loss 4.9221  lr 5.87e-04  |g| 0.51  33008 tok/s  eta 2h39m
+2026-09-04 10:13:47,264 INFO step   1260/10909  loss 4.9527  lr 5.86e-04  |g| 0.59  32999 tok/s  eta 2h39m
+2026-09-04 10:14:07,115 INFO step   1280/10909  loss 5.0734  lr 5.86e-04  |g| 0.66  33013 tok/s  eta 2h39m
+2026-09-04 10:14:26,992 INFO step   1300/10909  loss 4.8794  lr 5.85e-04  |g| 0.59  32971 tok/s  eta 2h39m
+2026-09-04 10:14:46,882 INFO step   1320/10909  loss 4.9276  lr 5.85e-04  |g| 0.72  32950 tok/s  eta 2h38m
+2026-09-04 10:15:06,808 INFO step   1340/10909  loss 4.8796  lr 5.84e-04  |g| 0.74  32890 tok/s  eta 2h38m
+2026-09-04 10:15:26,696 INFO step   1360/10909  loss 4.8837  lr 5.84e-04  |g| 0.65  32951 tok/s  eta 2h38m
+2026-09-04 10:15:46,579 INFO step   1380/10909  loss 4.8914  lr 5.83e-04  |g| 0.60  32961 tok/s  eta 2h37m
+2026-09-04 10:16:06,481 INFO step   1400/10909  loss 4.7734  lr 5.83e-04  |g| 0.62  32929 tok/s  eta 2h37m
+2026-09-04 10:16:26,388 INFO step   1420/10909  loss 4.8599  lr 5.82e-04  |g| 0.70  32922 tok/s  eta 2h37m
+2026-09-04 10:16:46,293 INFO step   1440/10909  loss 4.9131  lr 5.81e-04  |g| 0.60  32924 tok/s  eta 2h37m
+2026-09-04 10:17:06,246 INFO step   1460/10909  loss 4.8680  lr 5.81e-04  |g| 0.67  32845 tok/s  eta 2h37m
+2026-09-04 10:17:26,192 INFO step   1480/10909  loss 4.8592  lr 5.80e-04  |g| 0.62  32857 tok/s  eta 2h36m
+2026-09-04 10:17:46,109 INFO step   1500/10909  loss 4.7759  lr 5.80e-04  |g| 0.71  32905 tok/s  eta 2h36m
+2026-09-04 10:17:49,602 INFO step   1500  val loss 4.7126  val ppl 111.35
+2026-09-04 10:17:50,220 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 1500)
+2026-09-04 10:17:50,573 INFO saved /kaggle/working/checkpoints/Nepali/step_001500.pt (step 1500)
+2026-09-04 10:17:50,616 INFO pruned /kaggle/working/checkpoints/Nepali/step_000500.pt
+2026-09-04 10:18:10,473 INFO step   1520/10909  loss 4.8395  lr 5.79e-04  |g| 0.59  26899 tok/s  eta 3h10m
+2026-09-04 10:18:30,381 INFO step   1540/10909  loss 4.7839  lr 5.78e-04  |g| 0.62  32918 tok/s  eta 2h35m
+2026-09-04 10:18:50,284 INFO step   1560/10909  loss 4.7952  lr 5.78e-04  |g| 0.60  32928 tok/s  eta 2h35m
+2026-09-04 10:19:10,223 INFO step   1580/10909  loss 4.7301  lr 5.77e-04  |g| 0.60  32868 tok/s  eta 2h35m
+2026-09-04 10:19:30,225 INFO step   1600/10909  loss 4.7979  lr 5.77e-04  |g| 0.62  32766 tok/s  eta 2h35m
+2026-09-04 10:19:50,209 INFO step   1620/10909  loss 4.7365  lr 5.76e-04  |g| 0.59  32795 tok/s  eta 2h34m
+2026-09-04 10:20:10,177 INFO step   1640/10909  loss 4.7569  lr 5.75e-04  |g| 0.65  32819 tok/s  eta 2h34m
+2026-09-04 10:20:30,163 INFO step   1660/10909  loss 4.7076  lr 5.75e-04  |g| 0.62  32791 tok/s  eta 2h34m
+2026-09-04 10:20:50,142 INFO step   1680/10909  loss 4.6677  lr 5.74e-04  |g| 0.70  32803 tok/s  eta 2h33m
+2026-09-04 10:21:10,112 INFO step   1700/10909  loss 4.7413  lr 5.73e-04  |g| 0.65  32817 tok/s  eta 2h33m
+2026-09-04 10:21:30,135 INFO step   1720/10909  loss 4.7496  lr 5.73e-04  |g| 0.61  32730 tok/s  eta 2h33m
+2026-09-04 10:21:50,155 INFO step   1740/10909  loss 4.6325  lr 5.72e-04  |g| 0.65  32736 tok/s  eta 2h32m
+2026-09-04 10:22:10,124 INFO step   1760/10909  loss 4.8281  lr 5.71e-04  |g| 0.60  32819 tok/s  eta 2h32m
+2026-09-04 10:22:30,115 INFO step   1780/10909  loss 4.6734  lr 5.70e-04  |g| 0.66  32783 tok/s  eta 2h32m
+2026-09-04 10:22:50,129 INFO step   1800/10909  loss 4.6711  lr 5.70e-04  |g| 0.61  32745 tok/s  eta 2h31m
+2026-09-04 10:23:10,112 INFO step   1820/10909  loss 4.6580  lr 5.69e-04  |g| 0.63  32796 tok/s  eta 2h31m
+2026-09-04 10:23:30,091 INFO step   1840/10909  loss 4.7519  lr 5.68e-04  |g| 0.69  32801 tok/s  eta 2h30m
+2026-09-04 10:23:50,081 INFO step   1860/10909  loss 4.6571  lr 5.68e-04  |g| 0.68  32785 tok/s  eta 2h30m
+2026-09-04 10:24:09,985 INFO step   1880/10909  loss 4.6531  lr 5.67e-04  |g| 0.58  32925 tok/s  eta 2h29m
+2026-09-04 10:24:29,933 INFO step   1900/10909  loss 4.6360  lr 5.66e-04  |g| 0.59  32854 tok/s  eta 2h29m
+2026-09-04 10:24:49,920 INFO step   1920/10909  loss 4.6389  lr 5.65e-04  |g| 0.61  32789 tok/s  eta 2h29m
+2026-09-04 10:25:09,900 INFO step   1940/10909  loss 4.6719  lr 5.64e-04  |g| 0.65  32800 tok/s  eta 2h29m
+2026-09-04 10:25:29,895 INFO step   1960/10909  loss 4.6684  lr 5.64e-04  |g| 0.62  32777 tok/s  eta 2h29m
+2026-09-04 10:25:49,850 INFO step   1980/10909  loss 4.4697  lr 5.63e-04  |g| 0.63  32841 tok/s  eta 2h28m
+2026-09-04 10:26:09,815 INFO step   2000/10909  loss 4.6860  lr 5.62e-04  |g| 0.63  32826 tok/s  eta 2h28m
+2026-09-04 10:26:13,307 INFO step   2000  val loss 4.4872  val ppl 88.87
+2026-09-04 10:26:13,899 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 2000)
+2026-09-04 10:26:14,270 INFO saved /kaggle/working/checkpoints/Nepali/step_002000.pt (step 2000)
+2026-09-04 10:26:14,312 INFO pruned /kaggle/working/checkpoints/Nepali/step_001000.pt
+2026-09-04 10:26:34,267 INFO step   2020/10909  loss 4.6257  lr 5.61e-04  |g| 0.64  26802 tok/s  eta 3h01m
+2026-09-04 10:26:54,377 INFO step   2040/10909  loss 4.8005  lr 5.60e-04  |g| 0.63  32590 tok/s  eta 2h28m
+2026-09-04 10:27:14,567 INFO step   2060/10909  loss 4.6494  lr 5.60e-04  |g| 0.60  32459 tok/s  eta 2h28m
+2026-09-04 10:27:34,759 INFO step   2080/10909  loss 4.5942  lr 5.59e-04  |g| 0.61  32457 tok/s  eta 2h28m
+2026-09-04 10:27:54,854 INFO step   2100/10909  loss 4.5651  lr 5.58e-04  |g| 0.63  32613 tok/s  eta 2h27m
+2026-09-04 10:28:14,957 INFO step   2120/10909  loss 4.5802  lr 5.57e-04  |g| 0.62  32601 tok/s  eta 2h27m
+2026-09-04 10:28:35,099 INFO step   2140/10909  loss 4.5470  lr 5.56e-04  |g| 0.55  32536 tok/s  eta 2h27m
+2026-09-04 10:28:55,253 INFO step   2160/10909  loss 4.6256  lr 5.55e-04  |g| 0.67  32518 tok/s  eta 2h26m
+2026-09-04 10:29:15,330 INFO step   2180/10909  loss 4.5078  lr 5.54e-04  |g| 0.65  32643 tok/s  eta 2h26m
+2026-09-04 10:29:35,429 INFO step   2200/10909  loss 4.7154  lr 5.54e-04  |g| 0.60  32606 tok/s  eta 2h25m
+2026-09-04 10:29:55,515 INFO step   2220/10909  loss 4.5517  lr 5.53e-04  |g| 0.72  32628 tok/s  eta 2h25m
+2026-09-04 10:30:15,627 INFO step   2240/10909  loss 4.5981  lr 5.52e-04  |g| 0.64  32584 tok/s  eta 2h25m
+2026-09-04 10:30:35,729 INFO step   2260/10909  loss 4.4960  lr 5.51e-04  |g| 0.57  32603 tok/s  eta 2h24m
+2026-09-04 10:30:55,829 INFO step   2280/10909  loss 4.6088  lr 5.50e-04  |g| 0.60  32605 tok/s  eta 2h24m
+2026-09-04 10:31:15,898 INFO step   2300/10909  loss 4.5773  lr 5.49e-04  |g| 0.58  32656 tok/s  eta 2h23m
+2026-09-04 10:31:35,971 INFO step   2320/10909  loss 4.6122  lr 5.48e-04  |g| 0.61  32649 tok/s  eta 2h23m
+2026-09-04 10:31:56,079 INFO step   2340/10909  loss 4.4615  lr 5.47e-04  |g| 0.58  32591 tok/s  eta 2h23m
+2026-09-04 10:32:16,200 INFO step   2360/10909  loss 4.5262  lr 5.46e-04  |g| 0.63  32571 tok/s  eta 2h23m
+2026-09-04 10:32:36,284 INFO step   2380/10909  loss 4.6706  lr 5.45e-04  |g| 0.58  32630 tok/s  eta 2h22m
+2026-09-04 10:32:56,360 INFO step   2400/10909  loss 4.5559  lr 5.44e-04  |g| 0.61  32645 tok/s  eta 2h22m
+2026-09-04 10:33:16,454 INFO step   2420/10909  loss 4.6073  lr 5.43e-04  |g| 0.53  32615 tok/s  eta 2h22m
+2026-09-04 10:33:36,543 INFO step   2440/10909  loss 4.5478  lr 5.42e-04  |g| 0.64  32622 tok/s  eta 2h21m
+2026-09-04 10:33:56,632 INFO step   2460/10909  loss 4.5365  lr 5.41e-04  |g| 0.57  32623 tok/s  eta 2h21m
+2026-09-04 10:34:16,745 INFO step   2480/10909  loss 4.5094  lr 5.40e-04  |g| 0.61  32584 tok/s  eta 2h21m
+2026-09-04 10:34:36,773 INFO step   2500/10909  loss 4.4173  lr 5.39e-04  |g| 0.63  32722 tok/s  eta 2h20m
+2026-09-04 10:34:40,278 INFO step   2500  val loss 4.3430  val ppl 76.93
+2026-09-04 10:34:40,880 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 2500)
+2026-09-04 10:34:41,265 INFO saved /kaggle/working/checkpoints/Nepali/step_002500.pt (step 2500)
+2026-09-04 10:34:41,307 INFO pruned /kaggle/working/checkpoints/Nepali/step_001500.pt
+2026-09-04 10:35:01,298 INFO step   2520/10909  loss 4.5569  lr 5.38e-04  |g| 0.58  26721 tok/s  eta 2h51m
+2026-09-04 10:35:21,472 INFO step   2540/10909  loss 4.5198  lr 5.37e-04  |g| 0.58  32486 tok/s  eta 2h20m
+2026-09-04 10:35:41,692 INFO step   2560/10909  loss 4.4887  lr 5.36e-04  |g| 0.63  32411 tok/s  eta 2h20m
+2026-09-04 10:36:01,796 INFO step   2580/10909  loss 4.4871  lr 5.35e-04  |g| 0.58  32599 tok/s  eta 2h19m
+2026-09-04 10:36:21,835 INFO step   2600/10909  loss 4.5266  lr 5.34e-04  |g| 0.62  32705 tok/s  eta 2h18m
+2026-09-04 10:36:41,754 INFO step   2620/10909  loss 4.4730  lr 5.33e-04  |g| 0.54  32900 tok/s  eta 2h17m
+2026-09-04 10:37:01,639 INFO step   2640/10909  loss 4.5364  lr 5.32e-04  |g| 0.60  32958 tok/s  eta 2h17m
+2026-09-04 10:37:21,479 INFO step   2660/10909  loss 4.4632  lr 5.31e-04  |g| 0.55  33032 tok/s  eta 2h16m
+2026-09-04 10:37:41,319 INFO step   2680/10909  loss 4.4150  lr 5.30e-04  |g| 0.63  33032 tok/s  eta 2h16m
+2026-09-04 10:38:01,192 INFO step   2700/10909  loss 4.3568  lr 5.29e-04  |g| 0.57  32977 tok/s  eta 2h15m
+2026-09-04 10:38:21,041 INFO step   2720/10909  loss 4.3783  lr 5.28e-04  |g| 0.58  33018 tok/s  eta 2h15m
+2026-09-04 10:38:40,976 INFO step   2740/10909  loss 4.3066  lr 5.27e-04  |g| 0.56  32876 tok/s  eta 2h15m
+2026-09-04 10:39:00,968 INFO step   2760/10909  loss 4.4464  lr 5.26e-04  |g| 0.56  32781 tok/s  eta 2h15m
+2026-09-04 10:39:21,097 INFO step   2780/10909  loss 4.4425  lr 5.25e-04  |g| 0.57  32557 tok/s  eta 2h16m
+2026-09-04 10:39:41,286 INFO step   2800/10909  loss 4.4045  lr 5.24e-04  |g| 0.58  32462 tok/s  eta 2h16m
+2026-09-04 10:40:01,473 INFO step   2820/10909  loss 4.4732  lr 5.23e-04  |g| 0.57  32465 tok/s  eta 2h16m
+2026-09-04 10:40:21,593 INFO step   2840/10909  loss 4.4593  lr 5.22e-04  |g| 0.62  32573 tok/s  eta 2h15m
+2026-09-04 10:40:41,707 INFO step   2860/10909  loss 4.4062  lr 5.20e-04  |g| 0.59  32582 tok/s  eta 2h14m
+2026-09-04 10:41:01,819 INFO step   2880/10909  loss 4.4236  lr 5.19e-04  |g| 0.55  32585 tok/s  eta 2h14m
+2026-09-04 10:41:21,949 INFO step   2900/10909  loss 4.3776  lr 5.18e-04  |g| 0.60  32556 tok/s  eta 2h14m
+2026-09-04 10:41:42,077 INFO step   2920/10909  loss 4.4212  lr 5.17e-04  |g| 0.55  32560 tok/s  eta 2h14m
+2026-09-04 10:42:02,196 INFO step   2940/10909  loss 4.4470  lr 5.16e-04  |g| 0.58  32575 tok/s  eta 2h13m
+2026-09-04 10:42:22,285 INFO step   2960/10909  loss 4.5926  lr 5.15e-04  |g| 0.61  32622 tok/s  eta 2h13m
+2026-09-04 10:42:42,433 INFO step   2980/10909  loss 4.3457  lr 5.14e-04  |g| 0.59  32528 tok/s  eta 2h13m
+2026-09-04 10:43:02,557 INFO step   3000/10909  loss 4.3190  lr 5.12e-04  |g| 0.54  32565 tok/s  eta 2h12m
+2026-09-04 10:43:06,063 INFO step   3000  val loss 4.2419  val ppl 69.54
+2026-09-04 10:43:06,670 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 3000)
+2026-09-04 10:43:07,050 INFO saved /kaggle/working/checkpoints/Nepali/step_003000.pt (step 3000)
+2026-09-04 10:43:07,113 INFO pruned /kaggle/working/checkpoints/Nepali/step_002000.pt
+2026-09-04 10:43:27,150 INFO step   3020/10909  loss 4.3515  lr 5.11e-04  |g| 0.58  26649 tok/s  eta 2h41m
+2026-09-04 10:43:47,280 INFO step   3040/10909  loss 4.3833  lr 5.10e-04  |g| 0.56  32556 tok/s  eta 2h12m
+2026-09-04 10:44:07,520 INFO step   3060/10909  loss 4.4667  lr 5.09e-04  |g| 0.60  32379 tok/s  eta 2h12m
+2026-09-04 10:44:27,554 INFO step   3080/10909  loss 4.2954  lr 5.08e-04  |g| 0.57  32713 tok/s  eta 2h10m
+2026-09-04 10:44:47,429 INFO step   3100/10909  loss 4.4377  lr 5.07e-04  |g| 0.61  32974 tok/s  eta 2h09m
+2026-09-04 10:45:07,290 INFO step   3120/10909  loss 4.3537  lr 5.05e-04  |g| 0.52  32998 tok/s  eta 2h08m
+2026-09-04 10:45:27,133 INFO step   3140/10909  loss 4.4413  lr 5.04e-04  |g| 0.56  33027 tok/s  eta 2h08m
+2026-09-04 10:45:47,028 INFO step   3160/10909  loss 4.4623  lr 5.03e-04  |g| 0.58  32940 tok/s  eta 2h08m
+2026-09-04 10:46:07,048 INFO step   3180/10909  loss 4.2655  lr 5.02e-04  |g| 0.55  32737 tok/s  eta 2h08m
+2026-09-04 10:46:27,170 INFO step   3200/10909  loss 4.3361  lr 5.00e-04  |g| 0.57  32569 tok/s  eta 2h09m
+2026-09-04 10:46:47,327 INFO step   3220/10909  loss 4.3880  lr 4.99e-04  |g| 0.57  32512 tok/s  eta 2h09m
+2026-09-04 10:47:07,578 INFO step   3240/10909  loss 4.4263  lr 4.98e-04  |g| 0.58  32362 tok/s  eta 2h09m
+2026-09-04 10:47:27,718 INFO step   3260/10909  loss 4.3263  lr 4.97e-04  |g| 0.57  32540 tok/s  eta 2h08m
+2026-09-04 10:47:47,859 INFO step   3280/10909  loss 4.3681  lr 4.96e-04  |g| 0.54  32538 tok/s  eta 2h08m
+2026-09-04 10:48:07,936 INFO step   3300/10909  loss 4.3168  lr 4.94e-04  |g| 0.56  32643 tok/s  eta 2h07m
+2026-09-04 10:48:27,969 INFO step   3320/10909  loss 4.3323  lr 4.93e-04  |g| 0.58  32713 tok/s  eta 2h06m
+2026-09-04 10:48:48,004 INFO step   3340/10909  loss 4.3184  lr 4.92e-04  |g| 0.55  32711 tok/s  eta 2h06m
+2026-09-04 10:49:08,012 INFO step   3360/10909  loss 4.4567  lr 4.91e-04  |g| 0.54  32756 tok/s  eta 2h05m
+2026-09-04 10:49:27,999 INFO step   3380/10909  loss 4.3389  lr 4.89e-04  |g| 0.56  32789 tok/s  eta 2h05m
+2026-09-04 10:49:47,986 INFO step   3400/10909  loss 4.2907  lr 4.88e-04  |g| 0.57  32789 tok/s  eta 2h05m
+2026-09-04 10:50:07,947 INFO step   3420/10909  loss 4.2034  lr 4.87e-04  |g| 0.54  32833 tok/s  eta 2h04m
+2026-09-04 10:50:27,944 INFO step   3440/10909  loss 4.3648  lr 4.85e-04  |g| 0.60  32772 tok/s  eta 2h04m
+2026-09-04 10:50:47,935 INFO step   3460/10909  loss 4.3950  lr 4.84e-04  |g| 0.57  32782 tok/s  eta 2h04m
+2026-09-04 10:51:07,914 INFO step   3480/10909  loss 4.3460  lr 4.83e-04  |g| 0.55  32803 tok/s  eta 2h03m
+2026-09-04 10:51:27,878 INFO step   3500/10909  loss 4.4365  lr 4.81e-04  |g| 0.53  32827 tok/s  eta 2h03m
+2026-09-04 10:51:31,372 INFO step   3500  val loss 4.1655  val ppl 64.42
+2026-09-04 10:51:31,962 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 3500)
+2026-09-04 10:51:32,333 INFO saved /kaggle/working/checkpoints/Nepali/step_003500.pt (step 3500)
+2026-09-04 10:51:32,375 INFO pruned /kaggle/working/checkpoints/Nepali/step_002500.pt
+2026-09-04 10:51:52,245 INFO step   3520/10909  loss 4.2823  lr 4.80e-04  |g| 0.59  26896 tok/s  eta 2h30m
+2026-09-04 10:52:12,234 INFO step   3540/10909  loss 4.3496  lr 4.79e-04  |g| 0.56  32786 tok/s  eta 2h02m
+2026-09-04 10:52:32,257 INFO step   3560/10909  loss 4.2899  lr 4.78e-04  |g| 0.65  32730 tok/s  eta 2h02m
+2026-09-04 10:52:52,261 INFO step   3580/10909  loss 4.3123  lr 4.76e-04  |g| 0.56  32761 tok/s  eta 2h02m
+2026-09-04 10:53:12,248 INFO step   3600/10909  loss 4.3227  lr 4.75e-04  |g| 0.58  32789 tok/s  eta 2h01m
+2026-09-04 10:53:32,285 INFO step   3620/10909  loss 4.2835  lr 4.74e-04  |g| 0.61  32707 tok/s  eta 2h01m
+2026-09-04 10:53:52,315 INFO step   3640/10909  loss 4.3520  lr 4.72e-04  |g| 0.53  32718 tok/s  eta 2h01m
+2026-09-04 10:54:12,363 INFO step   3660/10909  loss 4.4203  lr 4.71e-04  |g| 0.53  32690 tok/s  eta 2h01m
+2026-09-04 10:54:32,410 INFO step   3680/10909  loss 4.2168  lr 4.70e-04  |g| 0.55  32691 tok/s  eta 2h00m
+2026-09-04 10:54:52,389 INFO step   3700/10909  loss 4.3565  lr 4.68e-04  |g| 0.54  32802 tok/s  eta 2h00m
+2026-09-04 10:55:12,458 INFO step   3720/10909  loss 4.3762  lr 4.67e-04  |g| 0.56  32656 tok/s  eta 2h00m
+2026-09-04 10:55:32,602 INFO step   3740/10909  loss 4.3190  lr 4.65e-04  |g| 0.58  32534 tok/s  eta 2h00m
+2026-09-04 10:55:52,747 INFO step   3760/10909  loss 4.4930  lr 4.64e-04  |g| 0.56  32532 tok/s  eta 2h00m
+2026-09-04 10:56:12,896 INFO step   3780/10909  loss 4.2842  lr 4.63e-04  |g| 0.55  32525 tok/s  eta 1h59m
+2026-09-04 10:56:33,056 INFO step   3800/10909  loss 4.3678  lr 4.61e-04  |g| 0.61  32509 tok/s  eta 1h59m
+2026-09-04 10:56:53,219 INFO step   3820/10909  loss 4.3139  lr 4.60e-04  |g| 0.59  32503 tok/s  eta 1h59m
+2026-09-04 10:57:13,299 INFO step   3840/10909  loss 4.3563  lr 4.59e-04  |g| 0.53  32638 tok/s  eta 1h58m
+2026-09-04 10:57:33,444 INFO step   3860/10909  loss 4.2547  lr 4.57e-04  |g| 0.55  32531 tok/s  eta 1h58m
+2026-09-04 10:57:53,572 INFO step   3880/10909  loss 4.3811  lr 4.56e-04  |g| 0.57  32560 tok/s  eta 1h57m
+2026-09-04 10:58:13,686 INFO step   3900/10909  loss 4.2704  lr 4.54e-04  |g| 0.59  32582 tok/s  eta 1h57m
+2026-09-04 10:58:33,802 INFO step   3920/10909  loss 4.3200  lr 4.53e-04  |g| 0.53  32580 tok/s  eta 1h57m
+2026-09-04 10:58:53,889 INFO step   3940/10909  loss 4.2605  lr 4.52e-04  |g| 0.55  32625 tok/s  eta 1h56m
+2026-09-04 10:59:14,036 INFO step   3960/10909  loss 4.3742  lr 4.50e-04  |g| 0.54  32529 tok/s  eta 1h56m
+2026-09-04 10:59:34,070 INFO step   3980/10909  loss 4.2970  lr 4.49e-04  |g| 0.57  32712 tok/s  eta 1h55m
+2026-09-04 10:59:54,152 INFO step   4000/10909  loss 4.1930  lr 4.47e-04  |g| 0.56  32635 tok/s  eta 1h55m
+2026-09-04 10:59:57,659 INFO step   4000  val loss 4.0990  val ppl 60.28
+2026-09-04 10:59:58,276 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 4000)
+2026-09-04 10:59:58,662 INFO saved /kaggle/working/checkpoints/Nepali/step_004000.pt (step 4000)
+2026-09-04 10:59:58,704 INFO pruned /kaggle/working/checkpoints/Nepali/step_003000.pt
+2026-09-04 11:00:18,823 INFO step   4020/10909  loss 4.3550  lr 4.46e-04  |g| 0.54  26564 tok/s  eta 2h21m
+2026-09-04 11:00:39,028 INFO step   4040/10909  loss 4.3328  lr 4.44e-04  |g| 0.50  32436 tok/s  eta 1h55m
+2026-09-04 11:00:59,295 INFO step   4060/10909  loss 4.2834  lr 4.43e-04  |g| 0.57  32336 tok/s  eta 1h55m
+2026-09-04 11:01:19,456 INFO step   4080/10909  loss 4.1552  lr 4.42e-04  |g| 0.56  32508 tok/s  eta 1h54m
+2026-09-04 11:01:39,480 INFO step   4100/10909  loss 4.1964  lr 4.40e-04  |g| 0.56  32728 tok/s  eta 1h53m
+2026-09-04 11:01:59,401 INFO step   4120/10909  loss 4.3260  lr 4.39e-04  |g| 0.53  32898 tok/s  eta 1h52m
+2026-09-04 11:02:19,237 INFO step   4140/10909  loss 4.2410  lr 4.37e-04  |g| 0.56  33039 tok/s  eta 1h51m
+2026-09-04 11:02:39,123 INFO step   4160/10909  loss 4.2746  lr 4.36e-04  |g| 0.59  32956 tok/s  eta 1h51m
+2026-09-04 11:02:59,034 INFO step   4180/10909  loss 4.3621  lr 4.34e-04  |g| 0.57  32913 tok/s  eta 1h51m
+2026-09-04 11:03:19,119 INFO step   4200/10909  loss 4.1814  lr 4.33e-04  |g| 0.54  32629 tok/s  eta 1h52m
+2026-09-04 11:03:39,213 INFO step   4220/10909  loss 4.2215  lr 4.31e-04  |g| 0.60  32615 tok/s  eta 1h52m
+2026-09-04 11:03:59,287 INFO step   4240/10909  loss 4.3201  lr 4.30e-04  |g| 0.53  32648 tok/s  eta 1h51m
+2026-09-04 11:04:19,328 INFO step   4260/10909  loss 4.2830  lr 4.29e-04  |g| 0.53  32700 tok/s  eta 1h51m
+2026-09-04 11:04:39,409 INFO step   4280/10909  loss 4.2950  lr 4.27e-04  |g| 0.54  32637 tok/s  eta 1h50m
+2026-09-04 11:04:59,419 INFO step   4300/10909  loss 4.2892  lr 4.26e-04  |g| 0.59  32751 tok/s  eta 1h50m
+2026-09-04 11:05:19,506 INFO step   4320/10909  loss 4.2666  lr 4.24e-04  |g| 0.55  32626 tok/s  eta 1h50m
+2026-09-04 11:05:39,568 INFO step   4340/10909  loss 4.2857  lr 4.23e-04  |g| 0.59  32666 tok/s  eta 1h49m
+2026-09-04 11:05:59,674 INFO step   4360/10909  loss 4.1330  lr 4.21e-04  |g| 0.54  32595 tok/s  eta 1h49m
+2026-09-04 11:06:19,673 INFO step   4380/10909  loss 4.2382  lr 4.20e-04  |g| 0.54  32770 tok/s  eta 1h48m
+2026-09-04 11:06:39,776 INFO step   4400/10909  loss 4.2866  lr 4.18e-04  |g| 0.56  32600 tok/s  eta 1h49m
+2026-09-04 11:06:59,870 INFO step   4420/10909  loss 4.1407  lr 4.17e-04  |g| 0.58  32614 tok/s  eta 1h48m
+2026-09-04 11:07:19,935 INFO step   4440/10909  loss 4.1738  lr 4.15e-04  |g| 0.54  32662 tok/s  eta 1h48m
+2026-09-04 11:07:40,003 INFO step   4460/10909  loss 4.2042  lr 4.14e-04  |g| 0.53  32657 tok/s  eta 1h47m
+2026-09-04 11:08:00,100 INFO step   4480/10909  loss 4.0739  lr 4.12e-04  |g| 0.55  32611 tok/s  eta 1h47m
+2026-09-04 11:08:20,225 INFO step   4500/10909  loss 4.2276  lr 4.11e-04  |g| 0.52  32564 tok/s  eta 1h47m
+2026-09-04 11:08:23,731 INFO step   4500  val loss 4.0534  val ppl 57.59
+2026-09-04 11:08:24,344 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 4500)
+2026-09-04 11:08:24,731 INFO saved /kaggle/working/checkpoints/Nepali/step_004500.pt (step 4500)
+2026-09-04 11:08:24,772 INFO pruned /kaggle/working/checkpoints/Nepali/step_003500.pt
+2026-09-04 11:08:44,838 INFO step   4520/10909  loss 4.2489  lr 4.09e-04  |g| 0.54  26626 tok/s  eta 2h11m
+2026-09-04 11:09:05,067 INFO step   4540/10909  loss 4.1102  lr 4.08e-04  |g| 0.54  32397 tok/s  eta 1h47m
+2026-09-04 11:09:25,335 INFO step   4560/10909  loss 4.2238  lr 4.06e-04  |g| 0.55  32334 tok/s  eta 1h47m
+2026-09-04 11:09:45,551 INFO step   4580/10909  loss 4.2185  lr 4.05e-04  |g| 0.56  32419 tok/s  eta 1h46m
+2026-09-04 11:10:05,701 INFO step   4600/10909  loss 4.2947  lr 4.03e-04  |g| 0.55  32524 tok/s  eta 1h45m
+2026-09-04 11:10:25,832 INFO step   4620/10909  loss 4.2123  lr 4.02e-04  |g| 0.54  32554 tok/s  eta 1h45m
+2026-09-04 11:10:45,910 INFO step   4640/10909  loss 4.2352  lr 4.00e-04  |g| 0.58  32641 tok/s  eta 1h44m
+2026-09-04 11:11:06,004 INFO step   4660/10909  loss 4.1769  lr 3.99e-04  |g| 0.53  32614 tok/s  eta 1h44m
+2026-09-04 11:11:26,097 INFO step   4680/10909  loss 4.1818  lr 3.97e-04  |g| 0.57  32616 tok/s  eta 1h44m
+2026-09-04 11:11:46,160 INFO step   4700/10909  loss 4.0740  lr 3.95e-04  |g| 0.56  32666 tok/s  eta 1h43m
+2026-09-04 11:12:06,263 INFO step   4720/10909  loss 4.3377  lr 3.94e-04  |g| 0.55  32599 tok/s  eta 1h43m
+2026-09-04 11:12:26,420 INFO step   4740/10909  loss 4.3256  lr 3.92e-04  |g| 0.54  32513 tok/s  eta 1h43m
+2026-09-04 11:12:46,517 INFO step   4760/10909  loss 4.2452  lr 3.91e-04  |g| 0.52  32610 tok/s  eta 1h42m
+2026-09-04 11:13:06,543 INFO step   4780/10909  loss 4.1388  lr 3.89e-04  |g| 0.56  32726 tok/s  eta 1h42m
+2026-09-04 11:13:26,606 INFO step   4800/10909  loss 4.1093  lr 3.88e-04  |g| 0.55  32665 tok/s  eta 1h42m
+2026-09-04 11:13:46,657 INFO step   4820/10909  loss 4.1225  lr 3.86e-04  |g| 0.50  32685 tok/s  eta 1h41m
+2026-09-04 11:14:06,671 INFO step   4840/10909  loss 4.1298  lr 3.85e-04  |g| 0.54  32744 tok/s  eta 1h41m
+2026-09-04 11:14:26,713 INFO step   4860/10909  loss 4.2209  lr 3.83e-04  |g| 0.57  32700 tok/s  eta 1h41m
+2026-09-04 11:14:46,779 INFO step   4880/10909  loss 4.2622  lr 3.82e-04  |g| 0.53  32660 tok/s  eta 1h40m
+2026-09-04 11:15:06,733 INFO step   4900/10909  loss 4.0885  lr 3.80e-04  |g| 0.53  32843 tok/s  eta 1h39m
+2026-09-04 11:15:26,772 INFO step   4920/10909  loss 4.2379  lr 3.78e-04  |g| 0.56  32705 tok/s  eta 1h40m
+2026-09-04 11:15:46,844 INFO step   4940/10909  loss 4.2287  lr 3.77e-04  |g| 0.55  32649 tok/s  eta 1h39m
+2026-09-04 11:16:06,907 INFO step   4960/10909  loss 4.1721  lr 3.75e-04  |g| 0.56  32666 tok/s  eta 1h39m
+2026-09-04 11:16:26,902 INFO step   4980/10909  loss 4.2354  lr 3.74e-04  |g| 0.55  32776 tok/s  eta 1h38m
+2026-09-04 11:16:46,947 INFO step   5000/10909  loss 4.2958  lr 3.72e-04  |g| 0.57  32696 tok/s  eta 1h38m
+2026-09-04 11:16:50,444 INFO step   5000  val loss 4.0039  val ppl 54.81
+2026-09-04 11:16:51,065 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 5000)
+2026-09-04 11:16:51,457 INFO saved /kaggle/working/checkpoints/Nepali/step_005000.pt (step 5000)
+2026-09-04 11:16:51,498 INFO pruned /kaggle/working/checkpoints/Nepali/step_004000.pt
+2026-09-04 11:17:11,518 INFO step   5020/10909  loss 4.1495  lr 3.71e-04  |g| 0.52  26671 tok/s  eta 2h00m
+2026-09-04 11:17:31,651 INFO step   5040/10909  loss 4.1756  lr 3.69e-04  |g| 0.53  32552 tok/s  eta 1h38m
+2026-09-04 11:17:51,873 INFO step   5060/10909  loss 4.1459  lr 3.68e-04  |g| 0.56  32409 tok/s  eta 1h38m
+2026-09-04 11:18:12,120 INFO step   5080/10909  loss 4.0329  lr 3.66e-04  |g| 0.52  32367 tok/s  eta 1h38m
+2026-09-04 11:18:32,366 INFO step   5100/10909  loss 4.0840  lr 3.64e-04  |g| 0.52  32370 tok/s  eta 1h38m
+2026-09-04 11:18:52,497 INFO step   5120/10909  loss 4.2668  lr 3.63e-04  |g| 0.58  32556 tok/s  eta 1h37m
+2026-09-04 11:19:12,641 INFO step   5140/10909  loss 4.0246  lr 3.61e-04  |g| 0.53  32533 tok/s  eta 1h36m
+2026-09-04 11:19:32,748 INFO step   5160/10909  loss 4.1836  lr 3.60e-04  |g| 0.54  32594 tok/s  eta 1h36m
+2026-09-04 11:19:52,842 INFO step   5180/10909  loss 4.1836  lr 3.58e-04  |g| 0.52  32615 tok/s  eta 1h35m
+2026-09-04 11:20:12,947 INFO step   5200/10909  loss 4.1927  lr 3.57e-04  |g| 0.58  32596 tok/s  eta 1h35m
+2026-09-04 11:20:32,999 INFO step   5220/10909  loss 4.1154  lr 3.55e-04  |g| 0.53  32684 tok/s  eta 1h35m
+2026-09-04 11:20:53,041 INFO step   5240/10909  loss 4.1612  lr 3.53e-04  |g| 0.54  32699 tok/s  eta 1h34m
+2026-09-04 11:21:13,094 INFO step   5260/10909  loss 4.1140  lr 3.52e-04  |g| 0.54  32681 tok/s  eta 1h34m
+2026-09-04 11:21:33,123 INFO step   5280/10909  loss 4.0756  lr 3.50e-04  |g| 0.54  32720 tok/s  eta 1h33m
+2026-09-04 11:21:53,187 INFO step   5300/10909  loss 4.2028  lr 3.49e-04  |g| 0.52  32664 tok/s  eta 1h33m
+2026-09-04 11:22:13,190 INFO step   5320/10909  loss 4.2293  lr 3.47e-04  |g| 0.55  32762 tok/s  eta 1h33m
+2026-09-04 11:22:33,195 INFO step   5340/10909  loss 4.1752  lr 3.46e-04  |g| 0.55  32760 tok/s  eta 1h32m
+2026-09-04 11:22:53,200 INFO step   5360/10909  loss 4.1135  lr 3.44e-04  |g| 0.53  32759 tok/s  eta 1h32m
+2026-09-04 11:23:13,248 INFO step   5380/10909  loss 4.1185  lr 3.42e-04  |g| 0.55  32691 tok/s  eta 1h32m
+2026-09-04 11:23:33,265 INFO step   5400/10909  loss 4.1615  lr 3.41e-04  |g| 0.61  32740 tok/s  eta 1h31m
+2026-09-04 11:23:53,359 INFO step   5420/10909  loss 4.0775  lr 3.39e-04  |g| 0.56  32614 tok/s  eta 1h31m
+2026-09-04 11:24:13,363 INFO step   5440/10909  loss 4.0711  lr 3.38e-04  |g| 0.54  32763 tok/s  eta 1h31m
+2026-09-04 11:24:33,372 INFO step   5460/10909  loss 4.1778  lr 3.36e-04  |g| 0.62  32753 tok/s  eta 1h30m
+2026-09-04 11:24:53,441 INFO step   5480/10909  loss 4.1430  lr 3.35e-04  |g| 0.54  32655 tok/s  eta 1h30m
+2026-09-04 11:25:13,449 INFO step   5500/10909  loss 4.1612  lr 3.33e-04  |g| 0.52  32755 tok/s  eta 1h30m
+2026-09-04 11:25:16,944 INFO step   5500  val loss 3.9615  val ppl 52.54
+2026-09-04 11:25:17,545 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 5500)
+2026-09-04 11:25:17,931 INFO saved /kaggle/working/checkpoints/Nepali/step_005500.pt (step 5500)
+2026-09-04 11:25:17,972 INFO pruned /kaggle/working/checkpoints/Nepali/step_004500.pt
+2026-09-04 11:25:37,900 INFO step   5520/10909  loss 4.1114  lr 3.31e-04  |g| 0.53  26802 tok/s  eta 1h49m
+2026-09-04 11:25:57,835 INFO step   5540/10909  loss 4.1347  lr 3.30e-04  |g| 0.57  32875 tok/s  eta 1h29m
+2026-09-04 11:26:17,896 INFO step   5560/10909  loss 4.1409  lr 3.28e-04  |g| 0.56  32668 tok/s  eta 1h29m
+2026-09-04 11:26:37,942 INFO step   5580/10909  loss 4.0345  lr 3.27e-04  |g| 0.54  32693 tok/s  eta 1h29m
+2026-09-04 11:26:58,007 INFO step   5600/10909  loss 4.2101  lr 3.25e-04  |g| 0.55  32662 tok/s  eta 1h28m
+2026-09-04 11:27:18,113 INFO step   5620/10909  loss 4.1857  lr 3.23e-04  |g| 0.55  32595 tok/s  eta 1h28m
+2026-09-04 11:27:38,164 INFO step   5640/10909  loss 4.1402  lr 3.22e-04  |g| 0.54  32685 tok/s  eta 1h28m
+2026-09-04 11:27:58,271 INFO step   5660/10909  loss 4.0686  lr 3.20e-04  |g| 0.52  32595 tok/s  eta 1h27m
+2026-09-04 11:28:18,348 INFO step   5680/10909  loss 4.0664  lr 3.19e-04  |g| 0.53  32641 tok/s  eta 1h27m
+2026-09-04 11:28:38,425 INFO step   5700/10909  loss 4.1501  lr 3.17e-04  |g| 0.53  32643 tok/s  eta 1h27m
+2026-09-04 11:28:58,500 INFO step   5720/10909  loss 4.1381  lr 3.16e-04  |g| 0.57  32646 tok/s  eta 1h26m
+2026-09-04 11:29:18,619 INFO step   5740/10909  loss 4.1482  lr 3.14e-04  |g| 0.54  32573 tok/s  eta 1h26m
+2026-09-04 11:29:38,694 INFO step   5760/10909  loss 4.1383  lr 3.12e-04  |g| 0.57  32646 tok/s  eta 1h26m
+2026-09-04 11:29:58,770 INFO step   5780/10909  loss 4.0998  lr 3.11e-04  |g| 0.54  32644 tok/s  eta 1h25m
+2026-09-04 11:30:18,920 INFO step   5800/10909  loss 4.0507  lr 3.09e-04  |g| 0.55  32523 tok/s  eta 1h25m
+2026-09-04 11:30:39,025 INFO step   5820/10909  loss 4.1211  lr 3.08e-04  |g| 0.57  32597 tok/s  eta 1h25m
+2026-09-04 11:30:59,169 INFO step   5840/10909  loss 4.0497  lr 3.06e-04  |g| 0.58  32534 tok/s  eta 1h25m
+2026-09-04 11:31:19,305 INFO step   5860/10909  loss 4.1215  lr 3.05e-04  |g| 0.51  32547 tok/s  eta 1h24m
+2026-09-04 11:31:39,404 INFO step   5880/10909  loss 4.1610  lr 3.03e-04  |g| 0.54  32606 tok/s  eta 1h24m
+2026-09-04 11:31:59,472 INFO step   5900/10909  loss 4.1811  lr 3.01e-04  |g| 0.53  32656 tok/s  eta 1h23m
+2026-09-04 11:32:19,507 INFO step   5920/10909  loss 4.0392  lr 3.00e-04  |g| 0.53  32711 tok/s  eta 1h23m
+2026-09-04 11:32:39,552 INFO step   5940/10909  loss 4.0356  lr 2.98e-04  |g| 0.55  32695 tok/s  eta 1h23m
+2026-09-04 11:32:59,594 INFO step   5960/10909  loss 4.0874  lr 2.97e-04  |g| 0.51  32700 tok/s  eta 1h22m
+2026-09-04 11:33:19,674 INFO step   5980/10909  loss 4.2040  lr 2.95e-04  |g| 0.55  32637 tok/s  eta 1h22m
+2026-09-04 11:33:39,698 INFO step   6000/10909  loss 4.0590  lr 2.94e-04  |g| 0.54  32728 tok/s  eta 1h21m
+2026-09-04 11:33:43,191 INFO step   6000  val loss 3.9255  val ppl 50.68
+2026-09-04 11:33:43,799 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 6000)
+2026-09-04 11:33:44,137 INFO saved /kaggle/working/checkpoints/Nepali/step_006000.pt (step 6000)
+2026-09-04 11:33:44,180 INFO pruned /kaggle/working/checkpoints/Nepali/step_005000.pt
+2026-09-04 11:34:04,123 INFO step   6020/10909  loss 4.1050  lr 2.92e-04  |g| 0.55  26832 tok/s  eta 1h39m
+2026-09-04 11:34:24,143 INFO step   6040/10909  loss 4.0264  lr 2.90e-04  |g| 0.56  32736 tok/s  eta 1h21m
+2026-09-04 11:34:44,263 INFO step   6060/10909  loss 4.0081  lr 2.89e-04  |g| 0.53  32572 tok/s  eta 1h21m
+2026-09-04 11:35:04,396 INFO step   6080/10909  loss 4.0352  lr 2.87e-04  |g| 0.54  32551 tok/s  eta 1h21m
+2026-09-04 11:35:24,578 INFO step   6100/10909  loss 4.1834  lr 2.86e-04  |g| 0.57  32473 tok/s  eta 1h20m
+2026-09-04 11:35:44,702 INFO step   6120/10909  loss 4.0896  lr 2.84e-04  |g| 0.53  32567 tok/s  eta 1h20m
+2026-09-04 11:36:04,888 INFO step   6140/10909  loss 4.1067  lr 2.83e-04  |g| 0.56  32466 tok/s  eta 1h20m
+2026-09-04 11:36:25,035 INFO step   6160/10909  loss 4.0420  lr 2.81e-04  |g| 0.52  32529 tok/s  eta 1h19m
+2026-09-04 11:36:45,195 INFO step   6180/10909  loss 4.1205  lr 2.80e-04  |g| 0.59  32508 tok/s  eta 1h19m
+2026-09-04 11:37:05,336 INFO step   6200/10909  loss 4.0008  lr 2.78e-04  |g| 0.56  32539 tok/s  eta 1h19m
+2026-09-04 11:37:25,522 INFO step   6220/10909  loss 4.1321  lr 2.76e-04  |g| 0.57  32466 tok/s  eta 1h18m
+2026-09-04 11:37:45,657 INFO step   6240/10909  loss 4.1248  lr 2.75e-04  |g| 0.54  32548 tok/s  eta 1h18m
+2026-09-04 11:38:05,827 INFO step   6260/10909  loss 4.1257  lr 2.73e-04  |g| 0.56  32492 tok/s  eta 1h18m
+2026-09-04 11:38:25,975 INFO step   6280/10909  loss 4.0542  lr 2.72e-04  |g| 0.54  32527 tok/s  eta 1h17m
+2026-09-04 11:38:46,143 INFO step   6300/10909  loss 4.1004  lr 2.70e-04  |g| 0.54  32495 tok/s  eta 1h17m
+2026-09-04 11:39:06,287 INFO step   6320/10909  loss 4.0457  lr 2.69e-04  |g| 0.56  32534 tok/s  eta 1h17m
+2026-09-04 11:39:26,445 INFO step   6340/10909  loss 4.2541  lr 2.67e-04  |g| 0.56  32510 tok/s  eta 1h16m
+2026-09-04 11:39:46,603 INFO step   6360/10909  loss 4.0603  lr 2.66e-04  |g| 0.53  32513 tok/s  eta 1h16m
+2026-09-04 11:40:06,756 INFO step   6380/10909  loss 3.9977  lr 2.64e-04  |g| 0.54  32519 tok/s  eta 1h16m
+2026-09-04 11:40:26,897 INFO step   6400/10909  loss 3.9697  lr 2.63e-04  |g| 0.54  32538 tok/s  eta 1h15m
+2026-09-04 11:40:47,021 INFO step   6420/10909  loss 4.0004  lr 2.61e-04  |g| 0.53  32567 tok/s  eta 1h15m
+2026-09-04 11:41:07,152 INFO step   6440/10909  loss 4.1243  lr 2.60e-04  |g| 0.56  32554 tok/s  eta 1h14m
+2026-09-04 11:41:27,335 INFO step   6460/10909  loss 4.0380  lr 2.58e-04  |g| 0.56  32471 tok/s  eta 1h14m
+2026-09-04 11:41:47,517 INFO step   6480/10909  loss 4.0065  lr 2.57e-04  |g| 0.56  32473 tok/s  eta 1h14m
+2026-09-04 11:42:07,677 INFO step   6500/10909  loss 4.1366  lr 2.55e-04  |g| 0.54  32509 tok/s  eta 1h14m
+2026-09-04 11:42:11,181 INFO step   6500  val loss 3.8929  val ppl 49.05
+2026-09-04 11:42:11,788 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 6500)
+2026-09-04 11:42:12,175 INFO saved /kaggle/working/checkpoints/Nepali/step_006500.pt (step 6500)
+2026-09-04 11:42:12,216 INFO pruned /kaggle/working/checkpoints/Nepali/step_005500.pt
+2026-09-04 11:42:32,330 INFO step   6520/10909  loss 4.0167  lr 2.54e-04  |g| 0.58  26583 tok/s  eta 1h30m
+2026-09-04 11:42:52,567 INFO step   6540/10909  loss 4.0390  lr 2.52e-04  |g| 0.55  32383 tok/s  eta 1h13m
+2026-09-04 11:43:12,834 INFO step   6560/10909  loss 4.0438  lr 2.50e-04  |g| 0.54  32337 tok/s  eta 1h13m
+2026-09-04 11:43:33,042 INFO step   6580/10909  loss 4.1519  lr 2.49e-04  |g| 0.55  32430 tok/s  eta 1h12m
+2026-09-04 11:43:53,205 INFO step   6600/10909  loss 4.0486  lr 2.47e-04  |g| 0.55  32503 tok/s  eta 1h12m
+2026-09-04 11:44:13,430 INFO step   6620/10909  loss 3.9946  lr 2.46e-04  |g| 0.53  32403 tok/s  eta 1h12m
+2026-09-04 11:44:33,565 INFO step   6640/10909  loss 4.1450  lr 2.44e-04  |g| 0.56  32548 tok/s  eta 1h11m
+2026-09-04 11:44:53,714 INFO step   6660/10909  loss 4.0122  lr 2.43e-04  |g| 0.56  32526 tok/s  eta 1h11m
+2026-09-04 11:45:13,882 INFO step   6680/10909  loss 4.0408  lr 2.41e-04  |g| 0.55  32495 tok/s  eta 1h11m
+2026-09-04 11:45:33,959 INFO step   6700/10909  loss 3.9914  lr 2.40e-04  |g| 0.53  32642 tok/s  eta 1h10m
+2026-09-04 11:45:54,127 INFO step   6720/10909  loss 4.0882  lr 2.38e-04  |g| 0.56  32496 tok/s  eta 1h10m
+2026-09-04 11:46:14,272 INFO step   6740/10909  loss 3.9634  lr 2.37e-04  |g| 0.63  32531 tok/s  eta 1h09m
+2026-09-04 11:46:34,384 INFO step   6760/10909  loss 4.0215  lr 2.36e-04  |g| 0.56  32586 tok/s  eta 1h09m
+2026-09-04 11:46:54,504 INFO step   6780/10909  loss 4.0863  lr 2.34e-04  |g| 0.54  32572 tok/s  eta 1h09m
+2026-09-04 11:47:14,629 INFO step   6800/10909  loss 3.9713  lr 2.33e-04  |g| 0.53  32564 tok/s  eta 1h08m
+2026-09-04 11:47:34,736 INFO step   6820/10909  loss 4.0811  lr 2.31e-04  |g| 0.56  32593 tok/s  eta 1h08m
+2026-09-04 11:47:54,877 INFO step   6840/10909  loss 4.0852  lr 2.30e-04  |g| 0.58  32539 tok/s  eta 1h08m
+2026-09-04 11:48:15,039 INFO step   6860/10909  loss 4.0936  lr 2.28e-04  |g| 0.53  32506 tok/s  eta 1h08m
+2026-09-04 11:48:35,186 INFO step   6880/10909  loss 4.1374  lr 2.27e-04  |g| 0.56  32529 tok/s  eta 1h07m
+2026-09-04 11:48:55,297 INFO step   6900/10909  loss 4.0761  lr 2.25e-04  |g| 0.57  32586 tok/s  eta 1h07m
+2026-09-04 11:49:15,432 INFO step   6920/10909  loss 4.0546  lr 2.24e-04  |g| 0.52  32549 tok/s  eta 1h06m
+2026-09-04 11:49:35,550 INFO step   6940/10909  loss 4.0432  lr 2.22e-04  |g| 0.54  32575 tok/s  eta 1h06m
+2026-09-04 11:49:55,640 INFO step   6960/10909  loss 4.1335  lr 2.21e-04  |g| 0.58  32621 tok/s  eta 1h06m
+2026-09-04 11:50:15,728 INFO step   6980/10909  loss 4.0752  lr 2.19e-04  |g| 0.56  32625 tok/s  eta 1h05m
+2026-09-04 11:50:35,903 INFO step   7000/10909  loss 4.1522  lr 2.18e-04  |g| 0.53  32483 tok/s  eta 1h05m
+2026-09-04 11:50:39,398 INFO step   7000  val loss 3.8636  val ppl 47.64
+2026-09-04 11:50:40,046 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 7000)
+2026-09-04 11:50:40,408 INFO saved /kaggle/working/checkpoints/Nepali/step_007000.pt (step 7000)
+2026-09-04 11:50:40,450 INFO pruned /kaggle/working/checkpoints/Nepali/step_006000.pt
+2026-09-04 11:51:00,446 INFO step   7020/10909  loss 4.0255  lr 2.17e-04  |g| 0.53  26702 tok/s  eta 1h19m
+2026-09-04 11:51:20,458 INFO step   7040/10909  loss 4.0926  lr 2.15e-04  |g| 0.56  32749 tok/s  eta 1h04m
+2026-09-04 11:51:40,552 INFO step   7060/10909  loss 4.0328  lr 2.14e-04  |g| 0.56  32614 tok/s  eta 1h04m
+2026-09-04 11:52:00,705 INFO step   7080/10909  loss 4.0626  lr 2.12e-04  |g| 0.54  32519 tok/s  eta 1h04m
+2026-09-04 11:52:20,816 INFO step   7100/10909  loss 4.0868  lr 2.11e-04  |g| 0.58  32588 tok/s  eta 1h03m
+2026-09-04 11:52:40,939 INFO step   7120/10909  loss 4.1147  lr 2.09e-04  |g| 0.57  32567 tok/s  eta 1h03m
+2026-09-04 11:53:01,001 INFO step   7140/10909  loss 3.9983  lr 2.08e-04  |g| 0.55  32668 tok/s  eta 1h03m
+2026-09-04 11:53:21,071 INFO step   7160/10909  loss 4.0351  lr 2.07e-04  |g| 0.55  32653 tok/s  eta 1h02m
+2026-09-04 11:53:41,148 INFO step   7180/10909  loss 3.8957  lr 2.05e-04  |g| 0.56  32643 tok/s  eta 1h02m
+2026-09-04 11:54:01,250 INFO step   7200/10909  loss 4.0698  lr 2.04e-04  |g| 0.57  32601 tok/s  eta 1h02m
+2026-09-04 11:54:21,346 INFO step   7220/10909  loss 4.0167  lr 2.02e-04  |g| 0.55  32611 tok/s  eta 1h01m
+2026-09-04 11:54:41,403 INFO step   7240/10909  loss 4.0356  lr 2.01e-04  |g| 0.54  32675 tok/s  eta 1h01m
+2026-09-04 11:55:01,530 INFO step   7260/10909  loss 4.0700  lr 2.00e-04  |g| 0.55  32560 tok/s  eta 1h01m
+2026-09-04 11:55:21,603 INFO step   7280/10909  loss 4.0058  lr 1.98e-04  |g| 0.54  32649 tok/s  eta 1h00m
+2026-09-04 11:55:41,689 INFO step   7300/10909  loss 3.9715  lr 1.97e-04  |g| 0.56  32628 tok/s  eta 1h00m
+2026-09-04 11:56:01,785 INFO step   7320/10909  loss 4.0472  lr 1.96e-04  |g| 0.58  32611 tok/s  eta 1h00m
+2026-09-04 11:56:21,886 INFO step   7340/10909  loss 3.9550  lr 1.94e-04  |g| 0.57  32604 tok/s  eta 0h59m
+2026-09-04 11:56:42,048 INFO step   7360/10909  loss 3.9939  lr 1.93e-04  |g| 0.55  32504 tok/s  eta 0h59m
+2026-09-04 11:57:02,128 INFO step   7380/10909  loss 3.9622  lr 1.91e-04  |g| 0.57  32638 tok/s  eta 0h59m
+2026-09-04 11:57:22,263 INFO step   7400/10909  loss 3.9585  lr 1.90e-04  |g| 0.55  32547 tok/s  eta 0h58m
+2026-09-04 11:57:42,394 INFO step   7420/10909  loss 3.9932  lr 1.89e-04  |g| 0.55  32554 tok/s  eta 0h58m
+2026-09-04 11:58:02,549 INFO step   7440/10909  loss 3.9221  lr 1.87e-04  |g| 0.53  32517 tok/s  eta 0h58m
+2026-09-04 11:58:22,681 INFO step   7460/10909  loss 4.1269  lr 1.86e-04  |g| 0.56  32553 tok/s  eta 0h57m
+2026-09-04 11:58:42,810 INFO step   7480/10909  loss 4.0629  lr 1.85e-04  |g| 0.55  32557 tok/s  eta 0h57m
+2026-09-04 11:59:02,939 INFO step   7500/10909  loss 3.9706  lr 1.83e-04  |g| 0.55  32559 tok/s  eta 0h57m
+2026-09-04 11:59:06,441 INFO step   7500  val loss 3.8350  val ppl 46.29
+2026-09-04 11:59:07,034 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 7500)
+2026-09-04 11:59:07,378 INFO saved /kaggle/working/checkpoints/Nepali/step_007500.pt (step 7500)
+2026-09-04 11:59:07,420 INFO pruned /kaggle/working/checkpoints/Nepali/step_006500.pt
+2026-09-04 11:59:27,504 INFO step   7520/10909  loss 4.0062  lr 1.82e-04  |g| 0.58  26678 tok/s  eta 1h09m
+2026-09-04 11:59:47,718 INFO step   7540/10909  loss 4.0423  lr 1.81e-04  |g| 0.54  32421 tok/s  eta 0h56m
+2026-09-04 12:00:07,992 INFO step   7560/10909  loss 4.0530  lr 1.79e-04  |g| 0.56  32326 tok/s  eta 0h56m
+2026-09-04 12:00:28,250 INFO step   7580/10909  loss 3.9955  lr 1.78e-04  |g| 0.56  32350 tok/s  eta 0h56m
+2026-09-04 12:00:48,498 INFO step   7600/10909  loss 3.8400  lr 1.77e-04  |g| 0.57  32367 tok/s  eta 0h55m
+2026-09-04 12:01:08,727 INFO step   7620/10909  loss 4.0273  lr 1.76e-04  |g| 0.54  32396 tok/s  eta 0h55m
+2026-09-04 12:01:28,916 INFO step   7640/10909  loss 4.0914  lr 1.74e-04  |g| 0.58  32463 tok/s  eta 0h54m
+2026-09-04 12:01:49,074 INFO step   7660/10909  loss 4.0110  lr 1.73e-04  |g| 0.58  32510 tok/s  eta 0h54m
+2026-09-04 12:02:09,219 INFO step   7680/10909  loss 3.9017  lr 1.72e-04  |g| 0.55  32533 tok/s  eta 0h54m
+2026-09-04 12:02:29,399 INFO step   7700/10909  loss 4.1388  lr 1.70e-04  |g| 0.54  32475 tok/s  eta 0h53m
+2026-09-04 12:02:49,547 INFO step   7720/10909  loss 3.9960  lr 1.69e-04  |g| 0.57  32528 tok/s  eta 0h53m
+2026-09-04 12:03:09,676 INFO step   7740/10909  loss 3.9978  lr 1.68e-04  |g| 0.55  32558 tok/s  eta 0h53m
+2026-09-04 12:03:29,753 INFO step   7760/10909  loss 3.9787  lr 1.67e-04  |g| 0.57  32642 tok/s  eta 0h52m
+2026-09-04 12:03:49,876 INFO step   7780/10909  loss 4.0368  lr 1.65e-04  |g| 0.57  32568 tok/s  eta 0h52m
+2026-09-04 12:04:10,065 INFO step   7800/10909  loss 4.0030  lr 1.64e-04  |g| 0.58  32462 tok/s  eta 0h52m
+2026-09-04 12:04:30,184 INFO step   7820/10909  loss 3.9737  lr 1.63e-04  |g| 0.58  32574 tok/s  eta 0h51m
+2026-09-04 12:04:50,330 INFO step   7840/10909  loss 4.0989  lr 1.62e-04  |g| 0.57  32530 tok/s  eta 0h51m
+2026-09-04 12:05:10,482 INFO step   7860/10909  loss 4.0835  lr 1.60e-04  |g| 0.56  32522 tok/s  eta 0h51m
+2026-09-04 12:05:30,638 INFO step   7880/10909  loss 3.8682  lr 1.59e-04  |g| 0.57  32513 tok/s  eta 0h50m
+2026-09-04 12:05:50,743 INFO step   7900/10909  loss 3.9203  lr 1.58e-04  |g| 0.54  32597 tok/s  eta 0h50m
+2026-09-04 12:06:10,912 INFO step   7920/10909  loss 4.0855  lr 1.57e-04  |g| 0.55  32493 tok/s  eta 0h50m
+2026-09-04 12:06:31,065 INFO step   7940/10909  loss 4.1154  lr 1.56e-04  |g| 0.56  32520 tok/s  eta 0h49m
+2026-09-04 12:06:51,203 INFO step   7960/10909  loss 4.0240  lr 1.54e-04  |g| 0.55  32544 tok/s  eta 0h49m
+2026-09-04 12:07:11,351 INFO step   7980/10909  loss 4.0295  lr 1.53e-04  |g| 0.53  32528 tok/s  eta 0h49m
+2026-09-04 12:07:31,476 INFO step   8000/10909  loss 4.0195  lr 1.52e-04  |g| 0.57  32564 tok/s  eta 0h48m
+2026-09-04 12:07:34,975 INFO step   8000  val loss 3.8153  val ppl 45.39
+2026-09-04 12:07:35,592 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 8000)
+2026-09-04 12:07:35,963 INFO saved /kaggle/working/checkpoints/Nepali/step_008000.pt (step 8000)
+2026-09-04 12:07:36,006 INFO pruned /kaggle/working/checkpoints/Nepali/step_007000.pt
+2026-09-04 12:07:56,108 INFO step   8020/10909  loss 3.9185  lr 1.51e-04  |g| 0.55  26606 tok/s  eta 0h59m
+2026-09-04 12:08:16,307 INFO step   8040/10909  loss 4.0220  lr 1.50e-04  |g| 0.57  32445 tok/s  eta 0h48m
+2026-09-04 12:08:36,547 INFO step   8060/10909  loss 4.0077  lr 1.48e-04  |g| 0.58  32380 tok/s  eta 0h48m
+2026-09-04 12:08:56,837 INFO step   8080/10909  loss 3.9387  lr 1.47e-04  |g| 0.56  32300 tok/s  eta 0h47m
+2026-09-04 12:09:17,117 INFO step   8100/10909  loss 3.9861  lr 1.46e-04  |g| 0.56  32314 tok/s  eta 0h47m
+2026-09-04 12:09:37,339 INFO step   8120/10909  loss 3.9695  lr 1.45e-04  |g| 0.58  32409 tok/s  eta 0h46m
+2026-09-04 12:09:57,353 INFO step   8140/10909  loss 4.0166  lr 1.44e-04  |g| 0.55  32744 tok/s  eta 0h46m
+2026-09-04 12:10:17,206 INFO step   8160/10909  loss 4.0349  lr 1.43e-04  |g| 0.57  33010 tok/s  eta 0h45m
+2026-09-04 12:10:37,062 INFO step   8180/10909  loss 3.9661  lr 1.42e-04  |g| 0.55  33006 tok/s  eta 0h45m
+2026-09-04 12:10:56,932 INFO step   8200/10909  loss 3.9772  lr 1.40e-04  |g| 0.54  32983 tok/s  eta 0h44m
+2026-09-04 12:11:16,815 INFO step   8220/10909  loss 4.0414  lr 1.39e-04  |g| 0.54  32960 tok/s  eta 0h44m
+2026-09-04 12:11:36,770 INFO step   8240/10909  loss 3.9391  lr 1.38e-04  |g| 0.57  32843 tok/s  eta 0h44m
+2026-09-04 12:11:56,778 INFO step   8260/10909  loss 3.9487  lr 1.37e-04  |g| 0.56  32754 tok/s  eta 0h44m
+2026-09-04 12:12:16,792 INFO step   8280/10909  loss 3.9951  lr 1.36e-04  |g| 0.55  32745 tok/s  eta 0h43m
+2026-09-04 12:12:36,788 INFO step   8300/10909  loss 3.9384  lr 1.35e-04  |g| 0.55  32774 tok/s  eta 0h43m
+2026-09-04 12:12:56,843 INFO step   8320/10909  loss 3.9476  lr 1.34e-04  |g| 0.58  32678 tok/s  eta 0h43m
+2026-09-04 12:13:16,975 INFO step   8340/10909  loss 4.0397  lr 1.33e-04  |g| 0.56  32553 tok/s  eta 0h43m
+2026-09-04 12:13:37,139 INFO step   8360/10909  loss 4.0362  lr 1.32e-04  |g| 0.56  32502 tok/s  eta 0h42m
+2026-09-04 12:13:57,286 INFO step   8380/10909  loss 4.0084  lr 1.31e-04  |g| 0.58  32529 tok/s  eta 0h42m
+2026-09-04 12:14:17,456 INFO step   8400/10909  loss 4.0979  lr 1.30e-04  |g| 0.58  32491 tok/s  eta 0h42m
+2026-09-04 12:14:37,599 INFO step   8420/10909  loss 4.0133  lr 1.28e-04  |g| 0.55  32536 tok/s  eta 0h41m
+2026-09-04 12:14:57,668 INFO step   8440/10909  loss 3.9945  lr 1.27e-04  |g| 0.57  32654 tok/s  eta 0h41m
+2026-09-04 12:15:17,774 INFO step   8460/10909  loss 3.9414  lr 1.26e-04  |g| 0.55  32596 tok/s  eta 0h41m
+2026-09-04 12:15:37,928 INFO step   8480/10909  loss 4.0338  lr 1.25e-04  |g| 0.56  32518 tok/s  eta 0h40m
+2026-09-04 12:15:58,038 INFO step   8500/10909  loss 3.9768  lr 1.24e-04  |g| 0.55  32588 tok/s  eta 0h40m
+2026-09-04 12:16:01,536 INFO step   8500  val loss 3.7948  val ppl 44.47
+2026-09-04 12:16:02,139 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 8500)
+2026-09-04 12:16:02,498 INFO saved /kaggle/working/checkpoints/Nepali/step_008500.pt (step 8500)
+2026-09-04 12:16:02,541 INFO pruned /kaggle/working/checkpoints/Nepali/step_007500.pt
+2026-09-04 12:16:22,540 INFO step   8520/10909  loss 3.9292  lr 1.23e-04  |g| 0.54  26748 tok/s  eta 0h48m
+2026-09-04 12:16:42,739 INFO step   8540/10909  loss 3.8917  lr 1.22e-04  |g| 0.56  32445 tok/s  eta 0h39m
+2026-09-04 12:17:03,017 INFO step   8560/10909  loss 3.9279  lr 1.21e-04  |g| 0.55  32319 tok/s  eta 0h39m
+2026-09-04 12:17:23,268 INFO step   8580/10909  loss 3.9028  lr 1.20e-04  |g| 0.56  32362 tok/s  eta 0h39m
+2026-09-04 12:17:43,521 INFO step   8600/10909  loss 3.9676  lr 1.19e-04  |g| 0.55  32359 tok/s  eta 0h38m
+2026-09-04 12:18:03,720 INFO step   8620/10909  loss 4.0753  lr 1.18e-04  |g| 0.54  32445 tok/s  eta 0h38m
+2026-09-04 12:18:23,919 INFO step   8640/10909  loss 4.0083  lr 1.17e-04  |g| 0.55  32445 tok/s  eta 0h38m
+2026-09-04 12:18:44,110 INFO step   8660/10909  loss 4.0212  lr 1.16e-04  |g| 0.54  32459 tok/s  eta 0h37m
+2026-09-04 12:19:04,311 INFO step   8680/10909  loss 3.8606  lr 1.15e-04  |g| 0.55  32442 tok/s  eta 0h37m
+2026-09-04 12:19:24,491 INFO step   8700/10909  loss 3.9656  lr 1.14e-04  |g| 0.55  32476 tok/s  eta 0h37m
+2026-09-04 12:19:44,663 INFO step   8720/10909  loss 3.9624  lr 1.13e-04  |g| 0.55  32489 tok/s  eta 0h36m
+2026-09-04 12:20:04,799 INFO step   8740/10909  loss 3.9927  lr 1.13e-04  |g| 0.57  32546 tok/s  eta 0h36m
+2026-09-04 12:20:24,920 INFO step   8760/10909  loss 3.9644  lr 1.12e-04  |g| 0.55  32571 tok/s  eta 0h36m
+2026-09-04 12:20:45,085 INFO step   8780/10909  loss 3.9137  lr 1.11e-04  |g| 0.54  32500 tok/s  eta 0h35m
+2026-09-04 12:21:05,291 INFO step   8800/10909  loss 4.0013  lr 1.10e-04  |g| 0.56  32435 tok/s  eta 0h35m
+2026-09-04 12:21:25,505 INFO step   8820/10909  loss 3.9916  lr 1.09e-04  |g| 0.56  32421 tok/s  eta 0h35m
+2026-09-04 12:21:45,746 INFO step   8840/10909  loss 4.0441  lr 1.08e-04  |g| 0.54  32377 tok/s  eta 0h34m
+2026-09-04 12:22:05,962 INFO step   8860/10909  loss 3.9509  lr 1.07e-04  |g| 0.54  32419 tok/s  eta 0h34m
+2026-09-04 12:22:26,149 INFO step   8880/10909  loss 3.9788  lr 1.06e-04  |g| 0.54  32464 tok/s  eta 0h34m
+2026-09-04 12:22:46,268 INFO step   8900/10909  loss 4.0715  lr 1.05e-04  |g| 0.53  32573 tok/s  eta 0h33m
+2026-09-04 12:23:06,469 INFO step   8920/10909  loss 4.0054  lr 1.04e-04  |g| 0.58  32442 tok/s  eta 0h33m
+2026-09-04 12:23:26,639 INFO step   8940/10909  loss 3.8899  lr 1.04e-04  |g| 0.56  32493 tok/s  eta 0h33m
+2026-09-04 12:23:46,782 INFO step   8960/10909  loss 3.9595  lr 1.03e-04  |g| 0.58  32535 tok/s  eta 0h32m
+2026-09-04 12:24:06,956 INFO step   8980/10909  loss 4.0365  lr 1.02e-04  |g| 0.55  32486 tok/s  eta 0h32m
+2026-09-04 12:24:27,167 INFO step   9000/10909  loss 3.9682  lr 1.01e-04  |g| 0.55  32426 tok/s  eta 0h32m
+2026-09-04 12:24:30,662 INFO step   9000  val loss 3.7788  val ppl 43.76
+2026-09-04 12:24:31,207 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 9000)
+2026-09-04 12:24:31,563 INFO saved /kaggle/working/checkpoints/Nepali/step_009000.pt (step 9000)
+2026-09-04 12:24:31,605 INFO pruned /kaggle/working/checkpoints/Nepali/step_008000.pt
+2026-09-04 12:24:51,593 INFO step   9020/10909  loss 3.9293  lr 1.00e-04  |g| 0.57  26830 tok/s  eta 0h38m
+2026-09-04 12:25:11,801 INFO step   9040/10909  loss 3.9024  lr 9.94e-05  |g| 0.55  32430 tok/s  eta 0h31m
+2026-09-04 12:25:32,054 INFO step   9060/10909  loss 3.9137  lr 9.85e-05  |g| 0.56  32360 tok/s  eta 0h31m
+2026-09-04 12:25:52,329 INFO step   9080/10909  loss 3.8292  lr 9.77e-05  |g| 0.55  32322 tok/s  eta 0h30m
+2026-09-04 12:26:12,551 INFO step   9100/10909  loss 4.1284  lr 9.69e-05  |g| 0.57  32408 tok/s  eta 0h30m
+2026-09-04 12:26:32,721 INFO step   9120/10909  loss 3.8721  lr 9.61e-05  |g| 0.57  32491 tok/s  eta 0h30m
+2026-09-04 12:26:52,872 INFO step   9140/10909  loss 3.9841  lr 9.54e-05  |g| 0.56  32524 tok/s  eta 0h29m
+2026-09-04 12:27:13,000 INFO step   9160/10909  loss 3.9175  lr 9.46e-05  |g| 0.55  32560 tok/s  eta 0h29m
+2026-09-04 12:27:33,128 INFO step   9180/10909  loss 3.9910  lr 9.38e-05  |g| 0.56  32559 tok/s  eta 0h29m
+2026-09-04 12:27:53,216 INFO step   9200/10909  loss 4.1003  lr 9.30e-05  |g| 0.57  32626 tok/s  eta 0h28m
+2026-09-04 12:28:13,213 INFO step   9220/10909  loss 3.8729  lr 9.23e-05  |g| 0.57  32773 tok/s  eta 0h28m
+2026-09-04 12:28:33,294 INFO step   9240/10909  loss 3.9715  lr 9.16e-05  |g| 0.57  32635 tok/s  eta 0h27m
+2026-09-04 12:28:53,388 INFO step   9260/10909  loss 4.0575  lr 9.08e-05  |g| 0.55  32614 tok/s  eta 0h27m
+2026-09-04 12:29:13,537 INFO step   9280/10909  loss 3.8812  lr 9.01e-05  |g| 0.54  32526 tok/s  eta 0h27m
+2026-09-04 12:29:33,648 INFO step   9300/10909  loss 3.9273  lr 8.94e-05  |g| 0.57  32588 tok/s  eta 0h26m
+2026-09-04 12:29:53,748 INFO step   9320/10909  loss 3.9540  lr 8.87e-05  |g| 0.55  32604 tok/s  eta 0h26m
+2026-09-04 12:30:13,837 INFO step   9340/10909  loss 3.9654  lr 8.79e-05  |g| 0.57  32623 tok/s  eta 0h26m
+2026-09-04 12:30:33,853 INFO step   9360/10909  loss 3.8565  lr 8.73e-05  |g| 0.56  32743 tok/s  eta 0h25m
+2026-09-04 12:30:53,876 INFO step   9380/10909  loss 4.0381  lr 8.66e-05  |g| 0.55  32730 tok/s  eta 0h25m
+2026-09-04 12:31:13,876 INFO step   9400/10909  loss 3.9169  lr 8.59e-05  |g| 0.55  32767 tok/s  eta 0h25m
+2026-09-04 12:31:33,836 INFO step   9420/10909  loss 3.9561  lr 8.52e-05  |g| 0.56  32834 tok/s  eta 0h24m
+2026-09-04 12:31:53,809 INFO step   9440/10909  loss 3.9747  lr 8.46e-05  |g| 0.56  32811 tok/s  eta 0h24m
+2026-09-04 12:32:13,779 INFO step   9460/10909  loss 4.0895  lr 8.39e-05  |g| 0.55  32818 tok/s  eta 0h24m
+2026-09-04 12:32:33,784 INFO step   9480/10909  loss 3.8777  lr 8.33e-05  |g| 0.55  32759 tok/s  eta 0h23m
+2026-09-04 12:32:53,814 INFO step   9500/10909  loss 3.9741  lr 8.26e-05  |g| 0.57  32720 tok/s  eta 0h23m
+2026-09-04 12:32:57,293 INFO step   9500  val loss 3.7655  val ppl 43.18
+2026-09-04 12:32:57,910 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 9500)
+2026-09-04 12:32:58,302 INFO saved /kaggle/working/checkpoints/Nepali/step_009500.pt (step 9500)
+2026-09-04 12:32:58,345 INFO pruned /kaggle/working/checkpoints/Nepali/step_008500.pt
+2026-09-04 12:33:18,358 INFO step   9520/10909  loss 3.8830  lr 8.20e-05  |g| 0.55  26701 tok/s  eta 0h28m
+2026-09-04 12:33:38,511 INFO step   9540/10909  loss 3.9432  lr 8.14e-05  |g| 0.59  32519 tok/s  eta 0h22m
+2026-09-04 12:33:58,743 INFO step   9560/10909  loss 3.9746  lr 8.08e-05  |g| 0.57  32392 tok/s  eta 0h22m
+2026-09-04 12:34:19,025 INFO step   9580/10909  loss 4.0583  lr 8.02e-05  |g| 0.60  32313 tok/s  eta 0h22m
+2026-09-04 12:34:39,249 INFO step   9600/10909  loss 3.9726  lr 7.96e-05  |g| 0.55  32405 tok/s  eta 0h22m
+2026-09-04 12:34:59,428 INFO step   9620/10909  loss 3.9864  lr 7.90e-05  |g| 0.57  32478 tok/s  eta 0h21m
+2026-09-04 12:35:19,553 INFO step   9640/10909  loss 3.9538  lr 7.84e-05  |g| 0.55  32564 tok/s  eta 0h21m
+2026-09-04 12:35:39,700 INFO step   9660/10909  loss 3.9878  lr 7.78e-05  |g| 0.57  32528 tok/s  eta 0h20m
+2026-09-04 12:35:59,778 INFO step   9680/10909  loss 3.9360  lr 7.73e-05  |g| 0.57  32641 tok/s  eta 0h20m
+2026-09-04 12:36:19,845 INFO step   9700/10909  loss 3.9486  lr 7.67e-05  |g| 0.58  32659 tok/s  eta 0h20m
+2026-09-04 12:36:39,931 INFO step   9720/10909  loss 3.9806  lr 7.62e-05  |g| 0.56  32629 tok/s  eta 0h19m
+2026-09-04 12:36:59,983 INFO step   9740/10909  loss 3.9046  lr 7.56e-05  |g| 0.55  32682 tok/s  eta 0h19m
+2026-09-04 12:37:20,053 INFO step   9760/10909  loss 4.0856  lr 7.51e-05  |g| 0.57  32654 tok/s  eta 0h19m
+2026-09-04 12:37:40,217 INFO step   9780/10909  loss 3.9375  lr 7.46e-05  |g| 0.56  32502 tok/s  eta 0h18m
+2026-09-04 12:38:00,248 INFO step   9800/10909  loss 4.0572  lr 7.41e-05  |g| 0.55  32717 tok/s  eta 0h18m
+2026-09-04 12:38:20,362 INFO step   9820/10909  loss 3.8527  lr 7.36e-05  |g| 0.57  32583 tok/s  eta 0h18m
+2026-09-04 12:38:40,463 INFO step   9840/10909  loss 3.9266  lr 7.31e-05  |g| 0.55  32602 tok/s  eta 0h17m
+2026-09-04 12:39:00,563 INFO step   9860/10909  loss 3.9627  lr 7.26e-05  |g| 0.56  32606 tok/s  eta 0h17m
+2026-09-04 12:39:20,589 INFO step   9880/10909  loss 3.9247  lr 7.22e-05  |g| 0.56  32725 tok/s  eta 0h17m
+2026-09-04 12:39:40,662 INFO step   9900/10909  loss 3.9136  lr 7.17e-05  |g| 0.57  32649 tok/s  eta 0h16m
+2026-09-04 12:40:00,707 INFO step   9920/10909  loss 3.9505  lr 7.12e-05  |g| 0.56  32694 tok/s  eta 0h16m
+2026-09-04 12:40:20,761 INFO step   9940/10909  loss 3.9003  lr 7.08e-05  |g| 0.56  32679 tok/s  eta 0h16m
+2026-09-04 12:40:40,813 INFO step   9960/10909  loss 4.0116  lr 7.03e-05  |g| 0.56  32684 tok/s  eta 0h15m
+2026-09-04 12:41:00,854 INFO step   9980/10909  loss 4.0054  lr 6.99e-05  |g| 0.58  32700 tok/s  eta 0h15m
+2026-09-04 12:41:20,918 INFO step  10000/10909  loss 3.9710  lr 6.95e-05  |g| 0.54  32664 tok/s  eta 0h15m
+2026-09-04 12:41:24,410 INFO step  10000  val loss 3.7548  val ppl 42.73
+2026-09-04 12:41:24,941 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 10000)
+2026-09-04 12:41:25,295 INFO saved /kaggle/working/checkpoints/Nepali/step_010000.pt (step 10000)
+2026-09-04 12:41:25,336 INFO pruned /kaggle/working/checkpoints/Nepali/step_009000.pt
+2026-09-04 12:41:45,340 INFO step  10020/10909  loss 3.9686  lr 6.91e-05  |g| 0.55  26835 tok/s  eta 0h18m
+2026-09-04 12:42:05,421 INFO step  10040/10909  loss 3.8656  lr 6.87e-05  |g| 0.55  32635 tok/s  eta 0h14m
+2026-09-04 12:42:25,525 INFO step  10060/10909  loss 3.9827  lr 6.83e-05  |g| 0.57  32599 tok/s  eta 0h14m
+2026-09-04 12:42:45,617 INFO step  10080/10909  loss 3.9697  lr 6.79e-05  |g| 0.57  32617 tok/s  eta 0h13m
+2026-09-04 12:43:05,661 INFO step  10100/10909  loss 4.0159  lr 6.75e-05  |g| 0.57  32697 tok/s  eta 0h13m
+2026-09-04 12:43:25,800 INFO step  10120/10909  loss 3.9885  lr 6.72e-05  |g| 0.58  32541 tok/s  eta 0h13m
+2026-09-04 12:43:45,921 INFO step  10140/10909  loss 3.9752  lr 6.68e-05  |g| 0.55  32571 tok/s  eta 0h12m
+2026-09-04 12:44:06,031 INFO step  10160/10909  loss 3.9637  lr 6.65e-05  |g| 0.56  32589 tok/s  eta 0h12m
+2026-09-04 12:44:26,143 INFO step  10180/10909  loss 4.0480  lr 6.61e-05  |g| 0.56  32586 tok/s  eta 0h12m
+2026-09-04 12:44:46,292 INFO step  10200/10909  loss 4.0195  lr 6.58e-05  |g| 0.56  32525 tok/s  eta 0h11m
+2026-09-04 12:45:06,404 INFO step  10220/10909  loss 4.0813  lr 6.55e-05  |g| 0.56  32586 tok/s  eta 0h11m
+2026-09-04 12:45:26,542 INFO step  10240/10909  loss 4.0253  lr 6.52e-05  |g| 0.54  32543 tok/s  eta 0h11m
+2026-09-04 12:45:46,694 INFO step  10260/10909  loss 4.0526  lr 6.49e-05  |g| 0.58  32520 tok/s  eta 0h10m
+2026-09-04 12:46:06,816 INFO step  10280/10909  loss 3.8803  lr 6.46e-05  |g| 0.55  32570 tok/s  eta 0h10m
+2026-09-04 12:46:26,929 INFO step  10300/10909  loss 3.9937  lr 6.43e-05  |g| 0.57  32584 tok/s  eta 0h10m
+2026-09-04 12:46:47,083 INFO step  10320/10909  loss 4.0705  lr 6.40e-05  |g| 0.56  32518 tok/s  eta 0h09m
+2026-09-04 12:47:07,194 INFO step  10340/10909  loss 3.8189  lr 6.37e-05  |g| 0.58  32587 tok/s  eta 0h09m
+2026-09-04 12:47:27,295 INFO step  10360/10909  loss 3.9764  lr 6.35e-05  |g| 0.54  32603 tok/s  eta 0h09m
+2026-09-04 12:47:47,423 INFO step  10380/10909  loss 4.0074  lr 6.32e-05  |g| 0.56  32561 tok/s  eta 0h08m
+2026-09-04 12:48:07,617 INFO step  10400/10909  loss 3.9324  lr 6.30e-05  |g| 0.57  32452 tok/s  eta 0h08m
+2026-09-04 12:48:27,781 INFO step  10420/10909  loss 3.9699  lr 6.28e-05  |g| 0.57  32502 tok/s  eta 0h08m
+2026-09-04 12:48:47,906 INFO step  10440/10909  loss 3.8689  lr 6.25e-05  |g| 0.55  32565 tok/s  eta 0h07m
+2026-09-04 12:49:08,000 INFO step  10460/10909  loss 3.9171  lr 6.23e-05  |g| 0.58  32615 tok/s  eta 0h07m
+2026-09-04 12:49:28,144 INFO step  10480/10909  loss 3.9337  lr 6.21e-05  |g| 0.59  32533 tok/s  eta 0h07m
+2026-09-04 12:49:48,223 INFO step  10500/10909  loss 3.9287  lr 6.19e-05  |g| 0.56  32640 tok/s  eta 0h06m
+2026-09-04 12:49:51,714 INFO step  10500  val loss 3.7466  val ppl 42.38
+2026-09-04 12:49:52,238 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 10500)
+2026-09-04 12:49:52,573 INFO saved /kaggle/working/checkpoints/Nepali/step_010500.pt (step 10500)
+2026-09-04 12:49:52,616 INFO pruned /kaggle/working/checkpoints/Nepali/step_009500.pt
+2026-09-04 12:50:12,608 INFO step  10520/10909  loss 3.9854  lr 6.18e-05  |g| 0.58  26876 tok/s  eta 0h07m
+2026-09-04 12:50:32,691 INFO step  10540/10909  loss 4.0851  lr 6.16e-05  |g| 0.59  32632 tok/s  eta 0h06m
+2026-09-04 12:50:52,800 INFO step  10560/10909  loss 4.0760  lr 6.14e-05  |g| 0.57  32591 tok/s  eta 0h05m
+2026-09-04 12:51:12,979 INFO step  10580/10909  loss 3.9894  lr 6.13e-05  |g| 0.57  32477 tok/s  eta 0h05m
+2026-09-04 12:51:33,149 INFO step  10600/10909  loss 3.9676  lr 6.11e-05  |g| 0.58  32492 tok/s  eta 0h05m
+2026-09-04 12:51:53,301 INFO step  10620/10909  loss 4.0324  lr 6.10e-05  |g| 0.56  32522 tok/s  eta 0h04m
+2026-09-04 12:52:13,460 INFO step  10640/10909  loss 3.9408  lr 6.08e-05  |g| 0.56  32509 tok/s  eta 0h04m
+2026-09-04 12:52:33,650 INFO step  10660/10909  loss 4.0887  lr 6.07e-05  |g| 0.57  32460 tok/s  eta 0h04m
+2026-09-04 12:52:53,874 INFO step  10680/10909  loss 3.8923  lr 6.06e-05  |g| 0.56  32405 tok/s  eta 0h03m
+2026-09-04 12:53:14,106 INFO step  10700/10909  loss 4.0263  lr 6.05e-05  |g| 0.56  32391 tok/s  eta 0h03m
+2026-09-04 12:53:34,332 INFO step  10720/10909  loss 3.9490  lr 6.04e-05  |g| 0.56  32402 tok/s  eta 0h03m
+2026-09-04 12:53:54,488 INFO step  10740/10909  loss 4.0448  lr 6.03e-05  |g| 0.59  32515 tok/s  eta 0h02m
+2026-09-04 12:54:14,611 INFO step  10760/10909  loss 3.9375  lr 6.03e-05  |g| 0.55  32568 tok/s  eta 0h02m
+2026-09-04 12:54:34,741 INFO step  10780/10909  loss 3.9654  lr 6.02e-05  |g| 0.58  32556 tok/s  eta 0h02m
+2026-09-04 12:54:54,868 INFO step  10800/10909  loss 3.9496  lr 6.01e-05  |g| 0.59  32562 tok/s  eta 0h01m
+2026-09-04 12:55:14,954 INFO step  10820/10909  loss 3.9497  lr 6.01e-05  |g| 0.57  32627 tok/s  eta 0h01m
+2026-09-04 12:55:35,042 INFO step  10840/10909  loss 3.9694  lr 6.01e-05  |g| 0.58  32625 tok/s  eta 0h01m
+2026-09-04 12:55:55,163 INFO step  10860/10909  loss 3.9897  lr 6.00e-05  |g| 0.58  32570 tok/s  eta 0h00m
+2026-09-04 12:56:15,343 INFO step  10880/10909  loss 3.9476  lr 6.00e-05  |g| 0.58  32477 tok/s  eta 0h00m
+2026-09-04 12:56:35,428 INFO step  10900/10909  loss 3.9157  lr 6.00e-05  |g| 0.57  32630 tok/s  eta 0h00m
+2026-09-04 12:56:47,980 INFO step  10909  val loss 3.7410  val ppl 42.14
+2026-09-04 12:56:48,615 INFO saved /kaggle/working/checkpoints/Nepali/best.pt (step 10909)
+2026-09-04 12:56:49,000 INFO saved /kaggle/working/checkpoints/Nepali/step_010909.pt (step 10909)
+2026-09-04 12:56:49,000 INFO finished at step 10909/10909, 357466112 tokens seen, best val loss 3.7410
+2026-09-04 12:56:49,002 INFO done: step 10909, best val loss 3.7410

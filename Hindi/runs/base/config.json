@@ -1,0 +1,47 @@
+{
+  "model": {
+    "vocab_size": 16000,
+    "block_size": 512,
+    "n_layer": 10,
+    "n_head": 6,
+    "d_model": 384,
+    "d_ff": 1536,
+    "dropout": 0.1,
+    "bias": true,
+    "tie_embeddings": true,
+    "use_positional": true
+  },
+  "train": {
+    "batch_size": 16,
+    "grad_accum": 4,
+    "max_steps": 15981,
+    "weight_decay": 0.1,
+    "beta1": 0.9,
+    "beta2": 0.95,
+    "grad_clip": 1.0,
+    "eval_interval": 500,
+    "eval_batches": 40,
+    "checkpoint_interval": 500,
+    "keep_checkpoints": 2,
+    "log_interval": 20,
+    "seed": 1337,
+    "device": "cuda:0",
+    "dtype": "auto"
+  },
+  "schedule": {
+    "max_lr": 0.0006,
+    "min_lr": 6e-05,
+    "warmup_steps": 240,
+    "max_steps": 15981
+  },
+  "tokens": "Hindi/data/tokens",
+  "checkpoint_dir": "/kaggle/working/checkpoints/Hindi",
+  "parameters": {
+    "embedding": 6144000,
+    "positional": 196608,
+    "blocks": 17744640,
+    "final_norm": 768,
+    "lm_head": 0,
+    "total": 24086016
+  }
+}
