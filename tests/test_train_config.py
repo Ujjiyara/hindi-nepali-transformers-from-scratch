@@ -54,9 +54,30 @@ def test_tokens_per_step_is_the_effective_batch() -> None:
     assert cfg.tokens_per_step(512) == 32_768
 
 
-def test_dtype_resolution_never_assumes_bfloat16() -> None:
-    """Kaggle's T4s are Turing: fp16 tensor cores, no bf16."""
+def test_dtype_resolution_never_assumes_bfloat16(monkeypatch) -> None:
+    """Bfloat16 only from Ampere on, decided by compute capability.
+
+    ``torch.cuda.is_bf16_supported()`` reports True for Pascal and Turing,
+    where the type is emulated in software rather than run on tensor cores, so
+    trusting it costs most of a T4's throughput. Kaggle serves both a P100
+    (sm_60) and T4s (sm_75), so this is not hypothetical.
+    """
     cpu = torch.device("cpu")
     assert resolve_dtype("auto", cpu) is torch.float32
     assert resolve_dtype("float16", cpu) is torch.float16
     assert resolve_device("cpu").type == "cpu"
+
+    cuda = torch.device("cuda")
+    for capability, expected in (
+        ((6, 0), torch.float16),   # P100, Pascal
+        ((7, 5), torch.float16),   # T4, Turing
+        ((8, 0), torch.bfloat16),  # A100, Ampere
+        ((9, 0), torch.bfloat16),  # H100, Hopper
+    ):
+        monkeypatch.setattr(torch.cuda, "get_device_capability",
+                            lambda _device=None, c=capability: c)
+        assert resolve_dtype("auto", cuda) is expected
+
+    # An explicit request is still honoured whatever the hardware reports.
+    monkeypatch.setattr(torch.cuda, "get_device_capability", lambda _d=None: (6, 0))
+    assert resolve_dtype("bfloat16", cuda) is torch.bfloat16

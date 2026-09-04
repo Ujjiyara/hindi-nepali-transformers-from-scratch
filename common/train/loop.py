@@ -145,7 +145,15 @@ def resolve_dtype(requested: str, device: torch.device) -> torch.dtype:
         return getattr(torch, requested)
     if device.type != "cuda":
         return torch.float32
-    return torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+
+    # Compute capability, not is_bf16_supported(). That helper returns True on
+    # cards with no bfloat16 tensor cores -- Pascal (sm_60) and Turing (sm_75)
+    # included -- because PyTorch can emulate the type in software. Taking it
+    # at its word picks a dtype the hardware runs slowly, which on a T4 means
+    # giving up the fp16 tensor cores that make the card worth using.
+    # Bfloat16 arrives with Ampere, sm_80.
+    major, _ = torch.cuda.get_device_capability(device)
+    return torch.bfloat16 if major >= 8 else torch.float16
 
 
 def build_optimizer(
