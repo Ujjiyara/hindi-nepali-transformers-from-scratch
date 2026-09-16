@@ -178,17 +178,24 @@ def plot_accuracy_by_hops(runs: list[Run], out_dir: Path) -> Path:
             for stage, results, style, key in (
                     ("finetuned exact match", run.finetuned, "-", "exact_match"),
                     ("pretrained choice accuracy", run.pretrained, ":", "choice_accuracy")):
-                points = {}
-                for split in ("test", "test_long"):
+                # The two splits are kept as separate series: test_long
+                # relation questions also span 1-3 hops, but over longer
+                # chains, so merging them would overwrite the test points.
+                for split, marker, suffix in (("test", "o", "3–4 entity chains"),
+                                              ("test_long", "D", "5 entity chains")):
+                    points = {}
                     for bucket, summary in results["splits"][split]["by_task_hops"].items():
                         name, hops = bucket.split("/")
                         if name == task:
-                            points[int(hops)] = (100 * summary[key], summary["examples"])
-                hops = sorted(points)
-                axes.plot(hops, [points[h][0] for h in hops], linestyle=style, marker="o",
-                          color=f"C{index}", label=f"{run.label} — {stage}")
+                            points[int(hops)] = 100 * summary[key]
+                    hops = sorted(points)
+                    axes.plot(hops, [points[h] for h in hops], linestyle=style,
+                              marker=marker, color=f"C{index}",
+                              alpha=1.0 if split == "test" else 0.6,
+                              label=f"{run.label} — {stage} ({suffix})")
         axes.set_title(f"{TASK_LABELS[task]}: accuracy by hops")
-        axes.set_xlabel("Comparisons separating the entities (hops); 4 = unseen length")
+        axes.set_xticks(range(1, 5))
+        axes.set_xlabel("Comparisons separating the entities (hops); 5-entity chains are an unseen length")
         axes.set_ylabel("Accuracy (%)")
         axes.set_ylim(0, 105)
         axes.grid(True, alpha=0.3, linestyle="--")
