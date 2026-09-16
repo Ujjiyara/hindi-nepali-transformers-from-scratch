@@ -16,7 +16,7 @@ over unchanged:
    match is logged: the fraction of validation examples for which the argmax
    at *every* answer position (EOS included) is the right token. It is cheap --
    one forward pass, no decoding -- and tracks the quantity the finetune is
-   for, where loss alone can keep falling on examples already answered right.
+   for, so ``best.pt`` is selected on it rather than on loss.
 
 Checkpoints are written with :func:`common.train.checkpoint.save_checkpoint`,
 so they are the same format as pretraining checkpoints -- weights, optimizer,
@@ -190,6 +190,9 @@ def finetune(
     model.train()
     started = time.time()
     window_started = started
+    # Loss of the current best.pt, for tie-breaking; unknown after a resume,
+    # when only an exact-match improvement can replace it.
+    best_loss_at_best = float("inf")
 
     while state.step < target:
         lr = learning_rate(state.step, schedule_cfg)
@@ -247,8 +250,17 @@ def finetune(
                                "val_exact_match": result["exact_match"],
                                "val_ppl": math.exp(result["loss"]),
                                "elapsed": time.time() - started})
-            if result["loss"] < state.best_val_loss:
-                state.best_val_loss = result["loss"]
+            # best.pt is chosen on exact match, the quantity the finetune is
+            # for; loss breaks ties. On held-out names the two can move in
+            # opposite directions -- loss rises as the model grows confident
+            # on the examples it gets wrong -- so loss alone picks the wrong
+            # checkpoint.
+            state.best_val_loss = min(state.best_val_loss, result["loss"])
+            improved = (result["exact_match"], -result["loss"]) > (
+                state.best_val_exact_match, -best_loss_at_best)
+            if improved:
+                state.best_val_exact_match = result["exact_match"]
+                best_loss_at_best = result["loss"]
                 save_checkpoint(checkpoint_dir / "best.pt", model, optimizer, scaler,
                                 state, model_cfg, schedule_cfg, extra)
 
@@ -260,7 +272,8 @@ def finetune(
     if state.step % train_cfg.checkpoint_interval != 0:
         save_checkpoint(checkpoint_dir / f"step_{state.step:06d}.pt", model,
                         optimizer, scaler, state, model_cfg, schedule_cfg, extra)
-    log.info("%s at step %d/%d, best val answer loss %.4f",
+    log.info("%s at step %d/%d, best val exact match %.3f, best val answer loss %.4f",
              "finished" if state.step >= train_cfg.max_steps else "stopped early",
-             state.step, train_cfg.max_steps, state.best_val_loss)
+             state.step, train_cfg.max_steps, state.best_val_exact_match,
+             state.best_val_loss)
     return state

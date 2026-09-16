@@ -63,6 +63,9 @@ class TrainingState:
         tokens_seen: Training tokens consumed, for the report's x-axis.
         best_val_loss: Lowest validation loss seen, for keeping ``best.pt``.
         seed: Run seed, which together with ``micro_step`` determines the data.
+        best_val_exact_match: Highest validation exact match seen. Only the
+            reasoning finetune uses it, to select ``best.pt``; checkpoints
+            written before it existed load with the default.
     """
 
     step: int = 0
@@ -70,6 +73,7 @@ class TrainingState:
     tokens_seen: int = 0
     best_val_loss: float = float("inf")
     seed: int = 1337
+    best_val_exact_match: float = -1.0
 
 
 def save_checkpoint(
