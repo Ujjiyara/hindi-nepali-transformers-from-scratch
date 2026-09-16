@@ -1,0 +1,194 @@
+{
+  "lang": "ne",
+  "seed": 20260916,
+  "splits": {
+    "train": {
+      "examples": 20000,
+      "by_task": {
+        "chain_relation": 5000,
+        "chain_superlative": 5000,
+        "numeric_pair": 5000,
+        "numeric_triple": 5000
+      },
+      "by_attribute": {
+        "age": 5057,
+        "height": 4928,
+        "price": 4996,
+        "weight": 5019
+      },
+      "by_hops": {
+        "1": 6003,
+        "2": 10844,
+        "3": 3153
+      },
+      "templates": 64,
+      "baselines": {
+        "numeric_pair": {
+          "chance": 0.3894333333333333,
+          "most_common_answer_share": 0.169
+        },
+        "chain_relation": {
+          "chance": 0.5,
+          "most_common_answer_share": 0.5018
+        },
+        "numeric_triple": {
+          "chance": 0.3333333333333333,
+          "most_common_answer_share": 0.02
+        },
+        "chain_superlative": {
+          "chance": 0.2917333333333333,
+          "most_common_answer_share": 0.0202
+        }
+      },
+      "mean_prompt_chars": 112.33705,
+      "answer_is_first_entity": 0.32219759341355286,
+      "tokens_mean": 31.85845,
+      "tokens_max": 47
+    },
+    "validation": {
+      "examples": 1000,
+      "by_task": {
+        "chain_relation": 250,
+        "chain_superlative": 250,
+        "numeric_pair": 250,
+        "numeric_triple": 250
+      },
+      "by_attribute": {
+        "age": 240,
+        "height": 238,
+        "price": 257,
+        "weight": 265
+      },
+      "by_hops": {
+        "1": 302,
+        "2": 526,
+        "3": 172
+      },
+      "templates": 64,
+      "baselines": {
+        "numeric_pair": {
+          "chance": 0.3893333333333333,
+          "most_common_answer_share": 0.172
+        },
+        "chain_superlative": {
+          "chance": 0.2886666666666667,
+          "most_common_answer_share": 0.088
+        },
+        "chain_relation": {
+          "chance": 0.5,
+          "most_common_answer_share": 0.56
+        },
+        "numeric_triple": {
+          "chance": 0.3333333333333333,
+          "most_common_answer_share": 0.068
+        }
+      },
+      "mean_prompt_chars": 114.577,
+      "answer_is_first_entity": 0.31811023622047246,
+      "tokens_mean": 32.082,
+      "tokens_max": 44
+    },
+    "test": {
+      "examples": 2000,
+      "by_task": {
+        "chain_relation": 500,
+        "chain_superlative": 500,
+        "numeric_pair": 500,
+        "numeric_triple": 500
+      },
+      "by_attribute": {
+        "age": 514,
+        "height": 493,
+        "price": 500,
+        "weight": 493
+      },
+      "by_hops": {
+        "1": 619,
+        "2": 1058,
+        "3": 323
+      },
+      "templates": 64,
+      "baselines": {
+        "chain_relation": {
+          "chance": 0.5,
+          "most_common_answer_share": 0.526
+        },
+        "numeric_pair": {
+          "chance": 0.3916666666666666,
+          "most_common_answer_share": 0.184
+        },
+        "chain_superlative": {
+          "chance": 0.2915,
+          "most_common_answer_share": 0.066
+        },
+        "numeric_triple": {
+          "chance": 0.3333333333333333,
+          "most_common_answer_share": 0.076
+        }
+      },
+      "mean_prompt_chars": 114.205,
+      "answer_is_first_entity": 0.3054226475279107,
+      "tokens_mean": 31.633,
+      "tokens_max": 43
+    },
+    "test_long": {
+      "examples": 1000,
+      "by_task": {
+        "chain_relation": 500,
+        "chain_superlative": 500
+      },
+      "by_attribute": {
+        "age": 267,
+        "height": 236,
+        "price": 248,
+        "weight": 249
+      },
+      "by_hops": {
+        "1": 90,
+        "2": 195,
+        "3": 140,
+        "4": 575
+      },
+      "templates": 24,
+      "baselines": {
+        "chain_superlative": {
+          "chance": 0.2,
+          "most_common_answer_share": 0.068
+        },
+        "chain_relation": {
+          "chance": 0.5,
+          "most_common_answer_share": 0.538
+        }
+      },
+      "mean_prompt_chars": 156.309,
+      "answer_is_first_entity": 0.102,
+      "tokens_mean": 40.99,
+      "tokens_max": 50
+    }
+  },
+  "entities": {
+    "train": {
+      "people": 48,
+      "objects": 16
+    },
+    "validation": {
+      "people": 16,
+      "objects": 5
+    },
+    "test": {
+      "people": 16,
+      "objects": 5
+    }
+  },
+  "leakage": {
+    "name_overlap_train_validation": 0,
+    "name_overlap_train_test": 0,
+    "name_overlap_validation_test": 0,
+    "prompt_overlap_with_train": {
+      "validation": 0,
+      "test": 0,
+      "test_long": 0
+    },
+    "train_examples_mentioning_heldout_names": 0
+  }
+}
