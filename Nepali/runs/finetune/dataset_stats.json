@@ -11,39 +11,39 @@
         "numeric_triple": 5000
       },
       "by_attribute": {
-        "age": 5057,
-        "height": 4928,
-        "price": 4996,
-        "weight": 5019
+        "age": 5014,
+        "height": 4899,
+        "price": 5022,
+        "weight": 5065
       },
       "by_hops": {
-        "1": 6003,
-        "2": 10844,
-        "3": 3153
+        "1": 6019,
+        "2": 10771,
+        "3": 3210
       },
       "templates": 64,
       "baselines": {
+        "chain_superlative": {
+          "chance": 0.2916,
+          "most_common_answer_share": 0.0106
+        },
         "numeric_pair": {
-          "chance": 0.3894333333333333,
-          "most_common_answer_share": 0.169
+          "chance": 0.38966666666666666,
+          "most_common_answer_share": 0.1704
         },
         "chain_relation": {
           "chance": 0.5,
-          "most_common_answer_share": 0.5018
+          "most_common_answer_share": 0.5098
         },
         "numeric_triple": {
           "chance": 0.3333333333333333,
-          "most_common_answer_share": 0.02
-        },
-        "chain_superlative": {
-          "chance": 0.2917333333333333,
-          "most_common_answer_share": 0.0202
+          "most_common_answer_share": 0.0104
         }
       },
-      "mean_prompt_chars": 112.33705,
-      "answer_is_first_entity": 0.32219759341355286,
-      "tokens_mean": 31.85845,
-      "tokens_max": 47
+      "mean_prompt_chars": 113.53635,
+      "answer_is_first_entity": 0.31771781277201866,
+      "tokens_mean": 33.30685,
+      "tokens_max": 53
     },
     "validation": {
       "examples": 1000,
@@ -54,39 +54,39 @@
         "numeric_triple": 250
       },
       "by_attribute": {
-        "age": 240,
-        "height": 238,
-        "price": 257,
-        "weight": 265
+        "age": 241,
+        "height": 252,
+        "price": 246,
+        "weight": 261
       },
       "by_hops": {
-        "1": 302,
-        "2": 526,
-        "3": 172
+        "1": 309,
+        "2": 528,
+        "3": 163
       },
       "templates": 64,
       "baselines": {
-        "numeric_pair": {
-          "chance": 0.3893333333333333,
-          "most_common_answer_share": 0.172
-        },
         "chain_superlative": {
-          "chance": 0.2886666666666667,
-          "most_common_answer_share": 0.088
-        },
-        "chain_relation": {
-          "chance": 0.5,
-          "most_common_answer_share": 0.56
+          "chance": 0.29033333333333333,
+          "most_common_answer_share": 0.04
         },
         "numeric_triple": {
           "chance": 0.3333333333333333,
-          "most_common_answer_share": 0.068
+          "most_common_answer_share": 0.044
+        },
+        "chain_relation": {
+          "chance": 0.5,
+          "most_common_answer_share": 0.504
+        },
+        "numeric_pair": {
+          "chance": 0.38066666666666665,
+          "most_common_answer_share": 0.152
         }
       },
-      "mean_prompt_chars": 114.577,
-      "answer_is_first_entity": 0.31811023622047246,
-      "tokens_mean": 32.082,
-      "tokens_max": 44
+      "mean_prompt_chars": 112.806,
+      "answer_is_first_entity": 0.3328173374613003,
+      "tokens_mean": 33.846,
+      "tokens_max": 49
     },
     "test": {
       "examples": 2000,
@@ -97,39 +97,39 @@
         "numeric_triple": 500
       },
       "by_attribute": {
-        "age": 514,
-        "height": 493,
-        "price": 500,
-        "weight": 493
+        "age": 483,
+        "height": 496,
+        "price": 496,
+        "weight": 525
       },
       "by_hops": {
-        "1": 619,
-        "2": 1058,
-        "3": 323
+        "1": 591,
+        "2": 1082,
+        "3": 327
       },
       "templates": 64,
       "baselines": {
         "chain_relation": {
           "chance": 0.5,
-          "most_common_answer_share": 0.526
-        },
-        "numeric_pair": {
-          "chance": 0.3916666666666666,
-          "most_common_answer_share": 0.184
+          "most_common_answer_share": 0.506
         },
         "chain_superlative": {
-          "chance": 0.2915,
-          "most_common_answer_share": 0.066
+          "chance": 0.2935,
+          "most_common_answer_share": 0.038
+        },
+        "numeric_pair": {
+          "chance": 0.382,
+          "most_common_answer_share": 0.156
         },
         "numeric_triple": {
           "chance": 0.3333333333333333,
-          "most_common_answer_share": 0.076
+          "most_common_answer_share": 0.036
         }
       },
-      "mean_prompt_chars": 114.205,
-      "answer_is_first_entity": 0.3054226475279107,
-      "tokens_mean": 31.633,
-      "tokens_max": 43
+      "mean_prompt_chars": 113.2375,
+      "answer_is_first_entity": 0.3181818181818182,
+      "tokens_mean": 33.3825,
+      "tokens_max": 48
     },
     "test_long": {
       "examples": 1000,
@@ -138,46 +138,46 @@
         "chain_superlative": 500
       },
       "by_attribute": {
-        "age": 267,
-        "height": 236,
-        "price": 248,
-        "weight": 249
+        "age": 251,
+        "height": 232,
+        "price": 243,
+        "weight": 274
       },
       "by_hops": {
-        "1": 90,
-        "2": 195,
-        "3": 140,
-        "4": 575
+        "1": 103,
+        "2": 215,
+        "3": 119,
+        "4": 563
       },
       "templates": 24,
       "baselines": {
         "chain_superlative": {
           "chance": 0.2,
-          "most_common_answer_share": 0.068
+          "most_common_answer_share": 0.034
         },
         "chain_relation": {
           "chance": 0.5,
-          "most_common_answer_share": 0.538
+          "most_common_answer_share": 0.51
         }
       },
-      "mean_prompt_chars": 156.309,
-      "answer_is_first_entity": 0.102,
-      "tokens_mean": 40.99,
-      "tokens_max": 50
+      "mean_prompt_chars": 153.454,
+      "answer_is_first_entity": 0.14,
+      "tokens_mean": 43.792,
+      "tokens_max": 59
     }
   },
   "entities": {
     "train": {
-      "people": 48,
-      "objects": 16
+      "people": 118,
+      "objects": 35
     },
     "validation": {
-      "people": 16,
-      "objects": 5
+      "people": 40,
+      "objects": 11
     },
     "test": {
-      "people": 16,
-      "objects": 5
+      "people": 40,
+      "objects": 11
     }
   },
   "leakage": {
