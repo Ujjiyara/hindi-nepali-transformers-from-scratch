@@ -3,48 +3,49 @@
 # Same keys as train.yaml, read by the same loader, plus freeze_embeddings.
 # Every pretraining setting not mentioned here means what it did there.
 #
-# Data: 20,000 training examples of ~34 tokens (reasoning.yaml). One step is
-# batch_size * grad_accum = 32 examples, so 3,000 steps is 96,000 examples,
-# 4.8 epochs. The first attempt (runs/finetune_ablations/) ran two epochs'
-# worth of schedule and was stopped at 250 steps, still picking among the
-# prompt's entities at chance; the comparison itself needs more optimisation
-# than learning the answer format does.
+# Data: 20,000 training examples of ~34 tokens (reasoning.yaml), of which only
+# the answer (one or two tokens) and EOS are supervised.
+#
+# Effective batch 128 examples (32 x grad_accum 4). Because each example
+# contributes so few supervised tokens, a batch of 32 carries only ~50 target
+# tokens -- a very noisy gradient -- and at that batch size neither training
+# nor validation loss improved at a 3e-4 peak (ablation
+# frozen_bs32_lr3e-4_stopped300). 750 steps x 128 = 96,000 examples, 4.8 epochs.
+#
+# Peak learning rate 1e-4, warmup 50 steps, cosine to 1e-5. In the short
+# ablations validation accuracy improved only while the rate was decaying
+# towards 3e-5; at a sustained 3e-4 it fell. The pretrained weights already sit
+# in a good basin and large steps knock them out of it.
 #
 # freeze_embeddings: true keeps the tied token embedding / output head at its
 # pretrained values. Without it the finetune memorised the training names as
 # an answer vocabulary and answered held-out questions with names that were
 # not in the prompt (runs/finetune_ablations/v1_unfrozen_48names/
-# diagnosis_step250.json). Frozen, validation exact match at matched steps was
-# consistently higher (ablations frozen_* vs unfrozen_*).
+# diagnosis_step250.json).
 #
-# Peak learning rate 3e-4 is half the pretraining peak: a smaller step for
-# weights that already sit in a good basin, but large enough to move a model
-# whose target format is far from anything in the corpus. Warmup is 100 steps;
-# the AdamW moments start from zero, since pretraining's moments describe a
-# different loss surface and are deliberately not loaded.
-#
-# Dropout stays at the pretraining value, 0.1, read from the checkpoint.
-# best.pt is the checkpoint with the highest validation exact match.
-# eval_batches 16 x batch_size 32 = 512 validation examples per check.
+# AdamW moments start from zero; pretraining's describe a different loss
+# surface and are deliberately not loaded. Dropout stays at 0.1 from the
+# checkpoint. best.pt is the checkpoint with the highest validation exact
+# match; eval_batches 16 x 32 = 512 validation examples every 50 steps.
 batch_size: 32
-grad_accum: 1
-max_steps: 3000
+grad_accum: 4
+max_steps: 750
 weight_decay: 0.1
 beta1: 0.9
 beta2: 0.95
 grad_clip: 1.0
-eval_interval: 100
+eval_interval: 50
 eval_batches: 16
-checkpoint_interval: 250
+checkpoint_interval: 50
 keep_checkpoints: 2
-log_interval: 25
+log_interval: 10
 seed: 1337
 device: auto
 dtype: auto
 freeze_embeddings: true
 
 schedule:
-  max_lr: 3.0e-4
-  min_lr: 3.0e-5
-  warmup_steps: 100
-  max_steps: 3000
+  max_lr: 1.0e-4
+  min_lr: 1.0e-5
+  warmup_steps: 50
+  max_steps: 750

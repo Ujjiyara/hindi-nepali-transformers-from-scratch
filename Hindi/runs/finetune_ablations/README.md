@@ -13,6 +13,8 @@ the `finetune.yaml` it was run with. All start from the same pretrained
 | Hindi `unfrozen_lr1e-4_48names` | 48 | trained | 1e-4 | 0: 6.363 / 0.0; 50: 1.278 / 0.234; 100: 1.565 / 0.195; 150: 1.765 / 0.207; 200: 1.908 / 0.213; 250: 1.994 / 0.184; 300: 1.944 / 0.205 |
 | Hindi `v1_unfrozen_48names` | 48 | trained | 3e-4 | 0: 6.363 / 0.0; 125: 2.792 / 0.189; 250: 3.313 / 0.191 |
 | Nepali `v1_unfrozen_48names` | 48 | trained | 3e-4 | 0: 7.342 / 0.0; 125: 2.828 / 0.18; 250: 3.941 / 0.158 |
+| Hindi `frozen_bs32_lr3e-4_stopped300` | 138 | frozen | 3e-4 (3,000-step schedule) | 0: 6.185 / 0.000; 100: 1.125 / 0.379; 200: 1.169 / 0.350; 300: 1.284 / 0.281 |
+| Nepali `frozen_bs32_lr3e-4_stopped300` | 118 | frozen | 3e-4 (3,000-step schedule) | 0: 6.292 / 0.000; 100: 1.206 / 0.348; 200: 1.425 / 0.287; 300: 1.751 / 0.273 |
 
 **What they showed.**
 
@@ -30,8 +32,14 @@ the `finetune.yaml` it was run with. All start from the same pretrained
 3. A lower learning rate alone did not help.
 4. After 300 steps the model still chose among the prompt's entities at
    about chance, with training loss no lower than validation loss: it was
-   underfitting the comparison, not overfitting. The final run therefore
-   trains for 3,000 steps instead of 1,250.
+   underfitting the comparison, not overfitting.
+5. Training longer at the same batch (`frozen_bs32_lr3e-4_stopped300`, a
+   3,000-step schedule) made it worse once the rate reached its 3e-4 peak:
+   validation exact match fell from 0.38 to 0.28 (Hindi) and 0.35 to 0.27
+   (Nepali) by step 300, with training loss flat near 1.0. Each example
+   supervises only one or two answer tokens, so a batch of 32 is ~50 target
+   tokens -- too noisy a gradient for a large rate. The final configuration
+   uses an effective batch of 128 and a 1e-4 peak.
 
 The 48-name dataset these early runs used is reproducible from
 `<Language>/configs/reasoning.yaml` at commit `e11c38d`; the `data` path in

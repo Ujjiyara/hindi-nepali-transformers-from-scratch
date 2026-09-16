@@ -1,0 +1,24 @@
+2026-09-16 14:46:21,827 INFO 20000 train / 1000 validation examples; 3000 steps = 4.80 epochs
+2026-09-16 14:46:22,222 INFO token embedding and tied output head frozen
+2026-09-16 14:46:22,222 INFO optimizer: 41 decayed tensors (17891328 params), 82 undecayed (50688 params)
+2026-09-16 14:46:23,064 INFO resumed Nepali/checkpoints/best.pt at step 10909 (357466112 tokens seen)
+2026-09-16 14:46:23,079 INFO initialised from Nepali/checkpoints/best.pt (pretrained to step 10909)
+2026-09-16 14:46:29,517 INFO step 0 (pretrained)  val answer loss 6.2923  val exact 0.000
+2026-09-16 14:47:05,497 INFO step    25/3000  loss 1.3227  lr 7.50e-05  |g| 9.14  epoch 0.04  1.44s/step  eta 1h11m
+2026-09-16 14:47:45,022 INFO step    50/3000  loss 1.1778  lr 1.50e-04  |g| 7.88  epoch 0.08  1.58s/step  eta 1h17m
+2026-09-16 14:48:34,676 INFO step    75/3000  loss 1.2133  lr 2.25e-04  |g| 6.42  epoch 0.12  1.99s/step  eta 1h36m
+2026-09-16 14:49:26,606 INFO step   100/3000  loss 1.2595  lr 3.00e-04  |g| 9.26  epoch 0.16  2.08s/step  eta 1h40m
+2026-09-16 14:49:37,345 INFO step   100  val answer loss 1.2059  val exact 0.348
+2026-09-16 14:49:37,548 INFO saved Nepali/checkpoints/finetune/best.pt (step 100)
+2026-09-16 14:50:26,270 INFO step   125/3000  loss 1.0808  lr 3.00e-04  |g| 4.29  epoch 0.20  2.39s/step  eta 1h54m
+2026-09-16 14:51:18,224 INFO step   150/3000  loss 0.8339  lr 3.00e-04  |g| 4.29  epoch 0.24  2.08s/step  eta 1h38m
+2026-09-16 14:52:12,571 INFO step   175/3000  loss 0.7928  lr 3.00e-04  |g| 4.10  epoch 0.28  2.17s/step  eta 1h42m
+2026-09-16 14:53:06,774 INFO step   200/3000  loss 0.8568  lr 2.99e-04  |g| 4.41  epoch 0.32  2.17s/step  eta 1h41m
+2026-09-16 14:53:17,544 INFO step   200  val answer loss 1.4249  val exact 0.287
+2026-09-16 14:54:08,875 INFO step   225/3000  loss 1.0955  lr 2.99e-04  |g| 5.75  epoch 0.36  2.48s/step  eta 1h54m
+2026-09-16 14:55:03,580 INFO step   250/3000  loss 0.8839  lr 2.98e-04  |g| 5.53  epoch 0.40  2.19s/step  eta 1h40m
+2026-09-16 14:55:03,712 INFO saved Nepali/checkpoints/finetune/step_000250.pt (step 250)
+2026-09-16 14:55:49,429 INFO step   275/3000  loss 0.9739  lr 2.98e-04  |g| 3.66  epoch 0.44  1.83s/step  eta 1h23m
+2026-09-16 14:56:37,165 INFO step   300/3000  loss 1.2504  lr 2.97e-04  |g| 5.88  epoch 0.48  1.91s/step  eta 1h25m
+2026-09-16 14:56:48,087 INFO step   300  val answer loss 1.7510  val exact 0.273
+2026-09-16 14:57:40,201 INFO step   325/3000  loss 0.9869  lr 2.96e-04  |g| 4.21  epoch 0.52  2.52s/step  eta 1h52m
