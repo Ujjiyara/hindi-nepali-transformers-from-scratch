@@ -60,6 +60,30 @@ uninterrupted run's losses exactly.
 python -m pytest tests/ -q
 ```
 
+### Phase 3 result
+
+Each model was finetuned from its own pretrained checkpoint on 20,000
+synthetic comparative-reasoning examples in its own language, and tested on
+2,000 examples whose entity names never occur in training (`test`), plus
+1,000 with five-entity chains, longer than any seen in training (`test_long`).
+
+| Model | Split | Pretrained exact / choice | Finetuned exact / choice | Chance |
+|---|---|---|---|---|
+| **Model H** (Hindi) | `test` | 0.0% / 34.8% | **40.8%** / 40.9% | 37.8% |
+| **Model H** (Hindi) | `test_long` | 0.0% / 29.7% | **37.4%** / 38.0% | 35.0% |
+| **Model L** (Nepali) | `test` | 0.0% / 35.8% | **37.5%** / 38.1% | 37.7% |
+| **Model L** (Nepali) | `test_long` | 0.0% / 29.8% | **32.3%** / 33.6% | 35.0% |
+
+*Exact* is greedy decoding to EOS matching the answer; *choice* picks the
+candidate answer the model assigns the highest log-probability. Finetuning
+taught both models the answer format (exact match rises from 0), but the
+comparison itself is learned only weakly: Model H ends a few points above
+chance on held-out names and Model L at chance. The finetuning ablations in
+[`Hindi/runs/finetune_ablations/`](Hindi/runs/finetune_ablations/README.md)
+record how the configuration was reached, including a first attempt that
+memorised its training names. Per-task, per-hop and attention results are in
+`<Language>/runs/finetune/eval/` and `report/figures/`.
+
 ---
 
 ## Google Drive
@@ -532,23 +556,25 @@ and the same for Nepali. Each model starts from **its own** pretrained
 `best.pt` (weights only; fresh AdamW state), keeps its own tokenizer unchanged,
 and is trained with cross-entropy on the answer tokens and EOS only — prompt
 targets are masked to -1. Hyperparameters are in `<Language>/configs/finetune.yaml`
-and are copied into `runs/finetune/config.json`: batch 32, 3,000 steps (4.8
-epochs), AdamW (β = 0.9/0.95, weight decay 0.1 on matrices), peak LR 3e-4 with
-100 warmup steps and cosine decay to 3e-5, gradient clip 1.0, dropout 0.1, and
-the tied token embedding / output head **frozen**. Validation (512 held-out-name
-examples) runs every 100 steps, and `best.pt` is the checkpoint with the highest
-validation exact match. Re-running the same command resumes from the newest
+and are copied into `runs/finetune/config.json`: effective batch 128 (32 ×
+4 accumulation), 750 steps (4.8 epochs), AdamW (β = 0.9/0.95, weight decay 0.1
+on matrices), peak LR 1e-4 with 50 warmup steps and cosine decay to 1e-5,
+gradient clip 1.0, dropout 0.1, and the tied token embedding / output head
+**frozen**. Validation (512 held-out-name examples) runs every 50 steps, and
+`best.pt` is the checkpoint with the highest validation exact match. Re-running the same command resumes from the newest
 `step_*.pt`.
 
-Why frozen embeddings and 3,000 steps: the first attempt, with a trainable
-embedding and 48 training names, memorised those names as an answer vocabulary
-and answered held-out questions with names absent from the prompt. The short
-runs that established this, and the fix, are kept with their logs in
+Why these settings: the first attempt, with a trainable embedding and 48
+training names, memorised those names as an answer vocabulary and answered
+held-out questions with names absent from the prompt; and at batch 32 with a
+3e-4 rate validation accuracy fell, because one or two supervised tokens per
+example make a small batch's gradient very noisy. The short runs that
+established this are kept with their logs in
 [`Hindi/runs/finetune_ablations/`](Hindi/runs/finetune_ablations/README.md).
 
 These runs were done on CPU (Intel Core Ultra 9 185H, both languages in
-parallel with 11 threads each, ~1.9 s/step): sequences are ~34 tokens, so a
-GPU is not needed. On a GPU, drop `--threads`.
+parallel with 11 threads each, ~8.5 s per 128-example step, ~1h35m): sequences
+are ~34 tokens, so a GPU is not needed. On a GPU, drop `--threads`.
 
 ### 14. Reasoning evaluation
 
