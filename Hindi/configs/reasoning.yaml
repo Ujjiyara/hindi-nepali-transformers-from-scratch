@@ -1,0 +1,123 @@
+# Model H -- Hindi synthetic comparative-reasoning dataset.
+#
+# Read by common/reasoning/generate.py. Every sentence the generator writes is
+# assembled from the pieces below, so the ground-truth label of every example
+# is known by construction.
+#
+# Grammar the templates have to respect:
+#   * Predicate adjectives agree with the subject's gender: "राहुल लंबा है",
+#     "प्रिया लंबी है". Each adjective therefore has a masculine and a feminine
+#     form, and every entity carries a gender. Invariant adjectives (भारी) list
+#     the same word twice.
+#   * Masculine nouns ending in -ा take an oblique form before a postposition
+#     ("छाता" -> "छाते से"). Object names were chosen to avoid that class, so
+#     "{name} से" is always correct without a declension table.
+#   * The possessive before the measured quantity agrees with that quantity's
+#     noun, not with the owner: "की लंबाई" (f), "का वज़न" (m).
+#
+# Numbers are written in ASCII digits, which is what the Hindi corpus -- and so
+# the Hindi tokenizer -- mostly uses ("▁15", "2").
+
+lang: hi
+digits: ascii
+seed: 20260916
+
+sizes:
+  train: 20000
+  validation: 1000
+  test: 2000
+  test_long: 1000
+
+# Entity names are split three ways, disjointly, before any example is built:
+# no name that appears in a validation or test example ever appears in training.
+name_split: {train: 0.6, validation: 0.2, test: 0.2}
+
+prompt: "प्रश्न: {body} उत्तर:"
+answer_yes: "हाँ"
+answer_no: "नहीं"
+answer_equal: "दोनों बराबर हैं"
+
+people:
+  m: [राहुल, अमित, सुरेश, विकास, रोहित, अजय, संजय, मनोज, राजेश, दिनेश,
+      मुकेश, अनिल, सुनील, विनोद, प्रदीप, आकाश, विवेक, नितिन, पंकज, गौरव,
+      अभिषेक, सौरभ, हरीश, महेश, नरेश, रमेश, कमल, अर्जुन, करण, तरुण,
+      मोहन, सोहन, अशोक, प्रकाश, दीपक, आलोक, उमेश, योगेश, जतिन, कुणाल]
+  f: [प्रिया, नेहा, पूजा, सुनीता, अंजलि, कविता, रेखा, सीमा, ममता, ज्योति,
+      स्वाति, रचना, अनीता, मीना, गीता, सरिता, शालिनी, पल्लवी, दिव्या, श्वेता,
+      निधि, रुचि, सोनम, आरती, भारती, वंदना, रीता, सपना, काजल, तनु,
+      मधु, उषा, किरण, नीलम, अर्चना, वर्षा, ऋतु, मानसी, दीपिका, स्नेहा]
+
+objects:
+  f: [किताब, घड़ी, कुर्सी, साइकिल, कलम, मेज़, टोपी, कमीज़, गाड़ी, चप्पल,
+      थाली, चादर, अलमारी, बाल्टी]
+  m: [फ़ोन, बैग, रेडियो, लैपटॉप, मोबाइल, स्कूटर, हार, बिस्तर, गिलास, टीवी,
+      कंप्यूटर, कैलेंडर]
+
+# Each attribute: which entity pool it applies to, the value range, how a
+# measured value is stated, the comparative adjectives (greater, smaller) in
+# both genders, and how a superlative question is asked.
+attributes:
+  height:
+    entities: people
+    range: [140, 190]
+    step: 1
+    fact:
+      - "{name} की लंबाई {value} सेंटीमीटर है।"
+      - "{name} का कद {value} सेंटीमीटर है।"
+    greater: {m: लंबा, f: लंबी}
+    smaller: {m: नाटा, f: नाटी}
+    compare: "{a}, {b} से {adj} है।"
+    ask_pair: "{a} और {b} में से कौन ज़्यादा {adj} है?"
+    ask_most: "सबसे {adj} कौन है?"
+    ask_most_alt: "इनमें सबसे {adj} कौन है?"
+    ask_relation: "क्या {a}, {b} से {adj} है?"
+    ask_equal: "क्या {a} और {b} का कद बराबर है?"
+  age:
+    entities: people
+    range: [18, 70]
+    step: 1
+    fact:
+      - "{name} की उम्र {value} साल है।"
+      - "{name} {value} साल का है।"
+    fact_f:
+      - "{name} की उम्र {value} साल है।"
+      - "{name} {value} साल की है।"
+    greater: {m: बड़ा, f: बड़ी}
+    smaller: {m: छोटा, f: छोटी}
+    compare: "{a}, {b} से {adj} है।"
+    ask_pair: "{a} और {b} में से कौन ज़्यादा {adj} है?"
+    ask_most: "सबसे {adj} कौन है?"
+    ask_most_alt: "इनमें उम्र में सबसे {adj} कौन है?"
+    ask_relation: "क्या {a}, {b} से {adj} है?"
+    ask_equal: "क्या {a} और {b} की उम्र बराबर है?"
+  weight:
+    entities: people
+    range: [40, 95]
+    step: 1
+    fact:
+      - "{name} का वज़न {value} किलो है।"
+      - "{name} का वज़न {value} किलोग्राम है।"
+    greater: {m: भारी, f: भारी}
+    smaller: {m: हल्का, f: हल्की}
+    compare: "{a}, {b} से {adj} है।"
+    ask_pair: "{a} और {b} में से कौन ज़्यादा {adj} है?"
+    ask_most: "सबसे {adj} कौन है?"
+    ask_most_alt: "इनमें सबसे {adj} कौन है?"
+    ask_relation: "क्या {a}, {b} से {adj} है?"
+    ask_equal: "क्या {a} और {b} का वज़न बराबर है?"
+  price:
+    entities: objects
+    range: [50, 2000]
+    step: 10
+    fact:
+      - "{name} की कीमत {value} रुपये है।"
+      - "{name} का दाम {value} रुपये है।"
+    greater: {m: महँगा, f: महँगी}
+    smaller: {m: सस्ता, f: सस्ती}
+    compare: "{a}, {b} से {adj} है।"
+    # "चीज़" is feminine, so the superlative adjective is always feminine here.
+    ask_pair: "{a} और {b} में से कौन सी चीज़ ज़्यादा {adj_f} है?"
+    ask_most: "कौन सी चीज़ सबसे {adj_f} है?"
+    ask_most_alt: "इनमें सबसे {adj_f} चीज़ कौन सी है?"
+    ask_relation: "क्या {a}, {b} से {adj} है?"
+    ask_equal: "क्या {a} और {b} की कीमत बराबर है?"

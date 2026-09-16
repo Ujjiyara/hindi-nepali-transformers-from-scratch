@@ -1,0 +1,115 @@
+# Model L -- Nepali synthetic comparative-reasoning dataset.
+#
+# Read by common/reasoning/generate.py. Same task families as the Hindi set,
+# but written from Nepali grammar rather than translated from the Hindi file:
+#
+#   * Postpositions attach to the noun with no space: "रामको", "श्यामभन्दा".
+#     Templates therefore write "{name}को" and "{b}भन्दा".
+#   * Comparison is "A B-भन्दा ADJ छ", with no comparative morpheme on the
+#     adjective. Adjectives in -ो take -ी for a feminine subject (अग्लो/अग्ली),
+#     and the copula follows the subject too: "छ" for a masculine subject,
+#     "छिन्" for a feminine one. Invariant adjectives (गह्रौं, हलुका) list the
+#     same word twice.
+#   * Objects take the masculine forms and "छ" throughout.
+#
+# Numbers are written in Devanagari digits, which is what the Nepali corpus --
+# and so the Nepali tokenizer -- uses ("▁१५", "२").
+
+lang: ne
+digits: devanagari
+seed: 20260916
+
+sizes:
+  train: 20000
+  validation: 1000
+  test: 2000
+  test_long: 1000
+
+name_split: {train: 0.6, validation: 0.2, test: 0.2}
+
+prompt: "प्रश्न: {body} उत्तर:"
+answer_yes: "हो"
+answer_no: "होइन"
+answer_equal: "दुवै बराबर छन्"
+
+copula: {m: छ, f: छिन्}
+
+people:
+  m: [राम, हरि, श्याम, बिकास, प्रकाश, दीपक, सुरेश, रमेश, दिनेश, गणेश,
+      महेश, नवीन, सन्तोष, राजन, सुजन, रोशन, बिनोद, प्रदीप, कृष्ण, गोपाल,
+      अर्जुन, बसन्त, हेमन्त, सागर, आकाश, मनोज, अनिल, सुनिल, भरत, केशव,
+      नरेन्द्र, उमेश, योगेश, किशोर, शिव, रवि, विष्णु, नारायण, पवन, सरोज]
+  f: [सीता, गीता, सरिता, कमला, पार्वती, सुनिता, अनिता, बिन्दु, मञ्जु, सविता,
+      रिता, शान्ति, लक्ष्मी, सुष्मा, पूजा, अस्मिता, प्रतिभा, रेणु, सपना, निर्मला,
+      शर्मिला, उर्मिला, अञ्जना, कल्पना, रचना, मनिषा, बबिता, सुमित्रा, इन्दिरा, राधा,
+      दीपा, सृजना, प्रमिला, जमुना, गंगा, सरस्वती, तारा, मीना, नीता, कविता]
+
+objects:
+  m: [किताब, घडी, कुर्सी, साइकल, कलम, टेबल, टोपी, कमिज, मोबाइल, झोला,
+      छाता, जुत्ता, रेडियो, ल्यापटप, क्यामेरा, स्कुटर, गिलास, चस्मा, पङ्खा, सोफा,
+      हार, ओछ्यान, थाल, बाल्टिन, कम्प्युटर, टिभी]
+
+attributes:
+  height:
+    entities: people
+    range: [140, 190]
+    step: 1
+    fact:
+      - "{name}को उचाइ {value} सेन्टिमिटर {cop}।"
+      - "{name} {value} सेन्टिमिटर अग्लो {cop}।"
+    fact_f:
+      - "{name}को उचाइ {value} सेन्टिमिटर छ।"
+      - "{name} {value} सेन्टिमिटर अग्ली {cop}।"
+    greater: {m: अग्लो, f: अग्ली}
+    smaller: {m: पुड्को, f: पुड्की}
+    compare: "{a} {b}भन्दा {adj} {cop}।"
+    ask_pair: "{a} र {b}मध्ये को बढी {adj} {cop}?"
+    ask_most: "सबैभन्दा {adj} को {cop}?"
+    ask_most_alt: "यिनीहरूमध्ये सबैभन्दा {adj} को {cop}?"
+    ask_relation: "के {a} {b}भन्दा {adj} {cop}?"
+    ask_equal: "के {a} र {b}को उचाइ बराबर छ?"
+  age:
+    entities: people
+    range: [18, 70]
+    step: 1
+    fact:
+      - "{name}को उमेर {value} वर्ष छ।"
+      - "{name} {value} वर्षको {cop}।"
+    greater: {m: जेठो, f: जेठी}
+    smaller: {m: कान्छो, f: कान्छी}
+    compare: "{a} {b}भन्दा {adj} {cop}।"
+    ask_pair: "{a} र {b}मध्ये को बढी {adj} {cop}?"
+    ask_most: "सबैभन्दा {adj} को {cop}?"
+    ask_most_alt: "यिनीहरूमध्ये उमेरमा सबैभन्दा {adj} को {cop}?"
+    ask_relation: "के {a} {b}भन्दा {adj} {cop}?"
+    ask_equal: "के {a} र {b}को उमेर बराबर छ?"
+  weight:
+    entities: people
+    range: [40, 95]
+    step: 1
+    fact:
+      - "{name}को तौल {value} किलो छ।"
+      - "{name}को तौल {value} किलोग्राम छ।"
+    greater: {m: गह्रौं, f: गह्रौं}
+    smaller: {m: हलुका, f: हलुका}
+    compare: "{a} {b}भन्दा {adj} {cop}।"
+    ask_pair: "{a} र {b}मध्ये को बढी {adj} {cop}?"
+    ask_most: "सबैभन्दा {adj} को {cop}?"
+    ask_most_alt: "यिनीहरूमध्ये सबैभन्दा {adj} को {cop}?"
+    ask_relation: "के {a} {b}भन्दा {adj} {cop}?"
+    ask_equal: "के {a} र {b}को तौल बराबर छ?"
+  price:
+    entities: objects
+    range: [50, 2000]
+    step: 10
+    fact:
+      - "{name}को मूल्य {value} रुपैयाँ छ।"
+      - "{name}को दाम {value} रुपैयाँ छ।"
+    greater: {m: महँगो, f: महँगो}
+    smaller: {m: सस्तो, f: सस्तो}
+    compare: "{a} {b}भन्दा {adj} {cop}।"
+    ask_pair: "{a} र {b}मध्ये कुन चिज बढी {adj} छ?"
+    ask_most: "कुन चिज सबैभन्दा {adj} छ?"
+    ask_most_alt: "यिनीहरूमध्ये सबैभन्दा {adj} चिज कुन हो?"
+    ask_relation: "के {a} {b}भन्दा {adj} {cop}?"
+    ask_equal: "के {a} र {b}को मूल्य बराबर छ?"
