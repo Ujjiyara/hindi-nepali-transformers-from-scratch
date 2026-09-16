@@ -103,7 +103,9 @@ class TrainConfig:
         return self.batch_size * self.grad_accum * block_size
 
 
-def load_run_config(path: str | Path) -> tuple[TrainConfig, ScheduleConfig]:
+def load_run_config(
+    path: str | Path, run_cls: type = TrainConfig
+) -> tuple[TrainConfig, ScheduleConfig]:
     """Read a per-language ``train.yaml`` into its two config objects.
 
     The file holds run settings at the top level and the learning-rate curve
@@ -111,6 +113,9 @@ def load_run_config(path: str | Path) -> tuple[TrainConfig, ScheduleConfig]:
     otherwise silently leave a hyperparameter at its default while the config
     file on the branch claims otherwise, which is exactly the kind of drift the
     brief's reproducibility requirement is about.
+
+    ``run_cls`` lets a stage with extra settings (the Phase 3 finetune) reuse
+    the same file format and the same unknown-key check.
     """
     import yaml
 
@@ -119,13 +124,13 @@ def load_run_config(path: str | Path) -> tuple[TrainConfig, ScheduleConfig]:
 
     for name, values, cls in (
         ("schedule", schedule_raw, ScheduleConfig),
-        ("run", raw, TrainConfig),
+        ("run", raw, run_cls),
     ):
         unknown = set(values) - {f.name for f in fields(cls)}
         if unknown:
             raise ValueError(f"{path}: unknown {name} keys {sorted(unknown)}")
 
-    return TrainConfig(**raw), ScheduleConfig(**schedule_raw)
+    return run_cls(**raw), ScheduleConfig(**schedule_raw)
 
 
 def resolve_device(requested: str) -> torch.device:

@@ -27,7 +27,7 @@ import sentencepiece as spm
 import torch
 
 from common.finetune.data import encode_examples
-from common.finetune.loop import finetune
+from common.finetune.loop import FinetuneConfig, finetune
 from common.reasoning.generate import read_jsonl
 from common.train.checkpoint import load_config
 from common.train.loop import MetricLog, load_run_config
@@ -62,7 +62,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.threads:
         torch.set_num_threads(args.threads)
 
-    train_cfg, schedule_cfg = load_run_config(args.train_config)
+    train_cfg, schedule_cfg = load_run_config(args.train_config, FinetuneConfig)
     if args.device:
         train_cfg = replace(train_cfg, device=args.device)
 

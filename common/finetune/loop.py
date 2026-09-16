@@ -29,6 +29,7 @@ from __future__ import annotations
 import logging
 import math
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import torch
@@ -54,6 +55,24 @@ from common.train.loop import (
 from common.train.schedule import ScheduleConfig, learning_rate
 
 log = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class FinetuneConfig(TrainConfig):
+    """Pretraining run settings plus the finetune-only ones.
+
+    Attributes:
+        freeze_embeddings: Keep the token embedding -- and so, because it is
+            tied, the output projection -- fixed at its pretrained values.
+            Answers here are mostly entity names, and a finetune that can move
+            the output matrix learns the cheapest shortcut available: raise the
+            scores of the names it was trained on. Those names never appear in
+            the test split, so the shortcut fails exactly there. With the
+            matrix frozen, the only way to produce a name is to route it from
+            the prompt through the transformer blocks.
+    """
+
+    freeze_embeddings: bool = False
 
 
 @torch.no_grad()
@@ -136,6 +155,10 @@ def finetune(
     model_cfg, _ = load_config(init_checkpoint)
     torch.manual_seed(train_cfg.seed)
     model = GPT(model_cfg).to(device)
+    if getattr(train_cfg, "freeze_embeddings", False):
+        # Before the optimizer is built, so the frozen matrix is not handed to it.
+        model.token_embedding.weight.requires_grad_(False)
+        log.info("token embedding and tied output head frozen")
     optimizer = build_optimizer(model, train_cfg, schedule_cfg.max_lr)
     scaler = torch.amp.GradScaler(
         device.type, enabled=use_amp and autocast_dtype is torch.float16

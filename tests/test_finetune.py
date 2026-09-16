@@ -153,3 +153,34 @@ def test_interrupted_finetune_matches_an_uninterrupted_one(pretrained, tmp_path)
 
     assert len(first) == 3
     assert both == straight
+
+
+def test_frozen_embeddings_stay_at_their_pretrained_values(pretrained, tmp_path) -> None:
+    """With freeze_embeddings the tied embedding/output matrix must not move."""
+    from common.finetune.loop import FinetuneConfig
+
+    cfg = FinetuneConfig(batch_size=4, grad_accum=1, max_steps=3, eval_interval=100,
+                         eval_batches=1, checkpoint_interval=100, log_interval=1,
+                         seed=5, device="cpu", dtype="float32", freeze_embeddings=True)
+    schedule = ScheduleConfig(max_lr=1e-2, min_lr=1e-3, warmup_steps=1, max_steps=3)
+    finetune(pretrained, cfg, schedule, _examples(20), _examples(8, seed=1), PAD,
+             tmp_path / "checkpoints", MetricLog(tmp_path / "metrics.jsonl"))
+
+    before = torch.load(pretrained, weights_only=False)["model"]
+    after = torch.load(tmp_path / "checkpoints" / "step_000003.pt", weights_only=False)["model"]
+    assert torch.equal(before["token_embedding.weight"], after["token_embedding.weight"])
+    assert torch.equal(after["lm_head.weight"], after["token_embedding.weight"])
+    assert not torch.equal(before["blocks.0.attn.qkv.weight"], after["blocks.0.attn.qkv.weight"])
+
+
+def test_finetune_config_file_accepts_its_extra_key(tmp_path) -> None:
+    from common.finetune.loop import FinetuneConfig
+    from common.train.loop import load_run_config
+
+    path = tmp_path / "finetune.yaml"
+    path.write_text("batch_size: 8\nfreeze_embeddings: true\nschedule:\n  max_steps: 10\n"
+                    "  warmup_steps: 1\n")
+    cfg, schedule = load_run_config(path, FinetuneConfig)
+    assert cfg.freeze_embeddings and cfg.batch_size == 8 and schedule.max_steps == 10
+    with pytest.raises(ValueError, match="unknown run keys"):
+        load_run_config(path)  # the pretraining loader still rejects it
