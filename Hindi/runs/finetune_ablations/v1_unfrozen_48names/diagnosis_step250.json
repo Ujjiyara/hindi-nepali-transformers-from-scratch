@@ -1,0 +1,118 @@
+{
+  "what": "Greedy predictions of the v1 finetune (unfrozen embeddings, 48 training names) at step 250 on the first 200 validation examples, whose entity names never occur in training.",
+  "checkpoint_step": 250,
+  "summary": {
+    "examples": 200,
+    "exact_match": 0.2,
+    "prefix_match": 0.2,
+    "choice_accuracy": 0.365,
+    "chance": 0.3770833333333334
+  },
+  "by_task": {
+    "chain_relation": {
+      "examples": 53,
+      "exact_match": 0.5094339622641509,
+      "prefix_match": 0.5094339622641509,
+      "choice_accuracy": 0.5094339622641509,
+      "chance": 0.5
+    },
+    "chain_superlative": {
+      "examples": 59,
+      "exact_match": 0.0,
+      "prefix_match": 0.0,
+      "choice_accuracy": 0.288135593220339,
+      "chance": 0.2951977401129943
+    },
+    "numeric_pair": {
+      "examples": 38,
+      "exact_match": 0.34210526315789475,
+      "prefix_match": 0.34210526315789475,
+      "choice_accuracy": 0.34210526315789475,
+      "chance": 0.39035087719298245
+    },
+    "numeric_triple": {
+      "examples": 50,
+      "exact_match": 0.0,
+      "prefix_match": 0.0,
+      "choice_accuracy": 0.32,
+      "chance": 0.33333333333333326
+    }
+  },
+  "name_answers": 128,
+  "predicted_a_training_name_not_in_prompt": 106,
+  "predicted_an_entity_from_the_prompt": 19,
+  "examples": [
+    {
+      "task": "numeric_triple",
+      "prompt": "प्रश्न: कविता का वज़न 45 किलोग्राम है। अनीता का वज़न 40 किलो है। मनोज का वज़न 48 किलोग्राम है। सबसे हल्का कौन है? उत्तर:",
+      "answer": "अनीता",
+      "prediction": "मीना"
+    },
+    {
+      "task": "numeric_triple",
+      "prompt": "प्रश्न: सरिता का कद 178 सेंटीमीटर है। नरेश का कद 183 सेंटीमीटर है। राजेश की लंबाई 175 सेंटीमीटर है। सबसे लंबा कौन है? उत्तर:",
+      "answer": "नरेश",
+      "prediction": "सुनीता"
+    },
+    {
+      "task": "numeric_pair",
+      "prompt": "प्रश्न: उमेश 62 साल का है। कविता 43 साल की है। उमेश और कविता में से कौन ज़्यादा बड़ा है? उत्तर:",
+      "answer": "उमेश",
+      "prediction": "दोनों बराबर हैं"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: अनीता, सरिता से लंबी है। स्नेहा, कविता से लंबी है। स्नेहा, सरिता से नाटी है। सबसे नाटा कौन है? उत्तर:",
+      "answer": "कविता",
+      "prediction": "सुनीता"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: टोपी, किताब से सस्ती है। लैपटॉप, कुर्सी से महँगा है। किताब, कुर्सी से सस्ती है। कौन सी चीज़ सबसे सस्ती है? उत्तर:",
+      "answer": "टोपी",
+      "prediction": "साइकिल"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: स्नेहा, सुनील से नाटी है। नरेश, सुनील से लंबा है। सबसे नाटा कौन है? उत्तर:",
+      "answer": "स्नेहा",
+      "prediction": "जतिन"
+    },
+    {
+      "task": "numeric_triple",
+      "prompt": "प्रश्न: दिव्या 18 साल की है। मुकेश 27 साल का है। ज्योति की उम्र 64 साल है। इनमें उम्र में सबसे छोटा कौन है? उत्तर:",
+      "answer": "दिव्या",
+      "prediction": "मीना"
+    },
+    {
+      "task": "numeric_pair",
+      "prompt": "प्रश्न: गौरव की उम्र 68 साल है। सरिता की उम्र 36 साल है। गौरव और सरिता में से कौन ज़्यादा बड़ा है? उत्तर:",
+      "answer": "गौरव",
+      "prediction": "दोनों बराबर हैं"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: लैपटॉप, किताब से सस्ता है। कुर्सी, लैपटॉप से सस्ती है। टोपी, कुर्सी से सस्ती है। कौन सी चीज़ सबसे सस्ती है? उत्तर:",
+      "answer": "टोपी",
+      "prediction": "साइकिल"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: कविता, मधु से बड़ी है। मुकेश, उमेश से छोटा है। उमेश, मधु से छोटा है। इनमें उम्र में सबसे छोटा कौन है? उत्तर:",
+      "answer": "मुकेश",
+      "prediction": "मीना"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: सुनील, नरेश से हल्का है। सुनील, स्नेहा से भारी है। स्नेहा, विकास से भारी है। सबसे हल्का कौन है? उत्तर:",
+      "answer": "विकास",
+      "prediction": "मीना"
+    },
+    {
+      "task": "chain_superlative",
+      "prompt": "प्रश्न: राजेश, विकास से नाटा है। कविता, नरेश से नाटी है। नरेश, राजेश से नाटा है। इनमें सबसे नाटा कौन है? उत्तर:",
+      "answer": "कविता",
+      "prediction": "मीना"
+    }
+  ]
+}

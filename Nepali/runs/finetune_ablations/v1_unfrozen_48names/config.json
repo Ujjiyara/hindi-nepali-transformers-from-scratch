@@ -1,0 +1,47 @@
+{
+  "stage": "reasoning_finetune",
+  "init_checkpoint": "Nepali/checkpoints/best.pt",
+  "init_checkpoint_step": 10909,
+  "tokenizer": "Nepali/tokenizer/ne_unigram_16000.model",
+  "data": "Nepali/data/reasoning",
+  "train_examples": 20000,
+  "validation_examples": 1000,
+  "epochs": 2.0,
+  "loss": "cross-entropy on answer tokens and EOS only; prompt targets masked",
+  "model": {
+    "vocab_size": 16000,
+    "block_size": 512,
+    "n_layer": 10,
+    "n_head": 6,
+    "d_model": 384,
+    "d_ff": 1536,
+    "dropout": 0.1,
+    "bias": true,
+    "tie_embeddings": true,
+    "use_positional": true
+  },
+  "train": {
+    "batch_size": 32,
+    "grad_accum": 1,
+    "max_steps": 1250,
+    "weight_decay": 0.1,
+    "beta1": 0.9,
+    "beta2": 0.95,
+    "grad_clip": 1.0,
+    "eval_interval": 125,
+    "eval_batches": 16,
+    "checkpoint_interval": 250,
+    "keep_checkpoints": 2,
+    "log_interval": 25,
+    "seed": 1337,
+    "device": "auto",
+    "dtype": "auto"
+  },
+  "schedule": {
+    "max_lr": 0.0003,
+    "min_lr": 3e-05,
+    "warmup_steps": 60,
+    "max_steps": 1250
+  },
+  "checkpoint_dir": "Nepali/checkpoints/finetune"
+}

@@ -1,0 +1,27 @@
+2026-09-16 14:26:36,396 INFO 20000 train / 1000 validation examples; 300 steps = 0.48 epochs
+2026-09-16 14:26:36,956 INFO optimizer: 42 decayed tensors (24035328 params), 82 undecayed (50688 params)
+2026-09-16 14:26:38,345 INFO resumed Hindi/checkpoints/best.pt at step 15981 (523665408 tokens seen)
+2026-09-16 14:26:38,365 INFO initialised from Hindi/checkpoints/best.pt (pretrained to step 15981)
+2026-09-16 14:26:46,217 INFO step 0 (pretrained)  val answer loss 6.3632  val exact 0.000
+2026-09-16 14:27:30,772 INFO step    25/300  loss 1.2612  lr 4.17e-05  |g| 11.12  epoch 0.04  1.78s/step  eta 0h08m
+2026-09-16 14:28:17,655 INFO step    50/300  loss 0.8860  lr 8.33e-05  |g| 6.25  epoch 0.08  1.88s/step  eta 0h07m
+2026-09-16 14:28:25,098 INFO step    50  val answer loss 1.2777  val exact 0.234
+2026-09-16 14:28:25,378 INFO saved /tmp/claude-1000/-home-saksham-Saksham-IIIT-SEM-III-I-LMA-Project-individual-project-Ujjiyara/3598659a-2223-43ba-bb09-50511be40375/scratchpad/exp/ck_lowlr/best.pt (step 50)
+2026-09-16 14:29:14,737 INFO step    75/300  loss 0.8583  lr 9.92e-05  |g| 8.23  epoch 0.12  2.28s/step  eta 0h08m
+2026-09-16 14:30:00,593 INFO step   100/300  loss 0.8546  lr 9.43e-05  |g| 7.77  epoch 0.16  1.83s/step  eta 0h06m
+2026-09-16 14:30:08,708 INFO step   100  val answer loss 1.5648  val exact 0.195
+2026-09-16 14:30:56,006 INFO step   125/300  loss 0.8508  lr 8.51e-05  |g| 6.42  epoch 0.20  2.22s/step  eta 0h06m
+2026-09-16 14:31:40,083 INFO step   150/300  loss 0.7516  lr 7.28e-05  |g| 7.09  epoch 0.24  1.76s/step  eta 0h04m
+2026-09-16 14:31:47,449 INFO step   150  val answer loss 1.7654  val exact 0.207
+2026-09-16 14:32:31,977 INFO step   175/300  loss 0.8223  lr 5.85e-05  |g| 6.81  epoch 0.28  2.08s/step  eta 0h04m
+2026-09-16 14:33:12,998 INFO step   200/300  loss 0.6261  lr 4.39e-05  |g| 7.17  epoch 0.32  1.64s/step  eta 0h02m
+2026-09-16 14:33:21,992 INFO step   200  val answer loss 1.9078  val exact 0.213
+2026-09-16 14:34:04,678 INFO step   225/300  loss 0.5465  lr 3.05e-05  |g| 4.56  epoch 0.36  2.07s/step  eta 0h02m
+2026-09-16 14:34:45,180 INFO step   250/300  loss 0.6631  lr 1.97e-05  |g| 5.36  epoch 0.40  1.62s/step  eta 0h01m
+2026-09-16 14:34:55,299 INFO step   250  val answer loss 1.9942  val exact 0.184
+2026-09-16 14:35:37,992 INFO step   275/300  loss 0.5717  lr 1.26e-05  |g| 5.27  epoch 0.44  2.11s/step  eta 0h00m
+2026-09-16 14:36:06,360 INFO step   300/300  loss 0.6404  lr 1.00e-05  |g| 6.43  epoch 0.48  1.13s/step  eta 0h00m
+2026-09-16 14:36:10,504 INFO step   300  val answer loss 1.9439  val exact 0.205
+2026-09-16 14:36:10,647 INFO saved /tmp/claude-1000/-home-saksham-Saksham-IIIT-SEM-III-I-LMA-Project-individual-project-Ujjiyara/3598659a-2223-43ba-bb09-50511be40375/scratchpad/exp/ck_lowlr/step_000300.pt (step 300)
+2026-09-16 14:36:10,647 INFO finished at step 300/300, best val answer loss 1.2777
+2026-09-16 14:36:10,648 INFO done: step 300, best val answer loss 1.2777

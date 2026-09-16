@@ -1,0 +1,15 @@
+2026-09-16 14:37:35,771 INFO 20000 train / 1000 validation examples; 300 steps = 0.48 epochs
+2026-09-16 14:37:36,200 INFO optimizer: 42 decayed tensors (24035328 params), 82 undecayed (50688 params)
+2026-09-16 14:37:37,011 INFO resumed Hindi/checkpoints/best.pt at step 15981 (523665408 tokens seen)
+2026-09-16 14:37:37,025 INFO initialised from Hindi/checkpoints/best.pt (pretrained to step 15981)
+2026-09-16 14:37:42,277 INFO step 0 (pretrained)  val answer loss 6.1849  val exact 0.000
+2026-09-16 14:38:19,027 INFO step    25/300  loss 0.9742  lr 1.25e-04  |g| 10.89  epoch 0.04  1.47s/step  eta 0h06m
+2026-09-16 14:38:58,534 INFO step    50/300  loss 0.9665  lr 2.50e-04  |g| 6.85  epoch 0.08  1.58s/step  eta 0h06m
+2026-09-16 14:39:06,336 INFO step    50  val answer loss 1.6240  val exact 0.240
+2026-09-16 14:39:06,560 INFO saved /tmp/claude-1000/-home-saksham-Saksham-IIIT-SEM-III-I-LMA-Project-individual-project-Ujjiyara/3598659a-2223-43ba-bb09-50511be40375/scratchpad/exp/ck2_unfrozen/best.pt (step 50)
+2026-09-16 14:39:55,294 INFO step    75/300  loss 0.9272  lr 2.98e-04  |g| 7.87  epoch 0.12  2.27s/step  eta 0h08m
+2026-09-16 14:40:40,846 INFO step   100/300  loss 0.9409  lr 2.83e-04  |g| 7.15  epoch 0.16  1.82s/step  eta 0h06m
+2026-09-16 14:40:48,716 INFO step   100  val answer loss 2.0559  val exact 0.211
+2026-09-16 14:41:36,294 INFO step   125/300  loss 0.9923  lr 2.55e-04  |g| 8.17  epoch 0.20  2.22s/step  eta 0h06m
+2026-09-16 14:42:41,673 INFO step   150/300  loss 0.8908  lr 2.18e-04  |g| 7.61  epoch 0.24  2.62s/step  eta 0h06m
+2026-09-16 14:42:53,098 INFO step   150  val answer loss 2.0946  val exact 0.219

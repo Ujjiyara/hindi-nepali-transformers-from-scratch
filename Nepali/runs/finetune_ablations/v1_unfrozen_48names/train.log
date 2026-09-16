@@ -1,0 +1,20 @@
+2026-09-16 14:14:51,967 INFO 20000 train / 1000 validation examples; 1250 steps = 2.00 epochs
+2026-09-16 14:14:52,488 INFO optimizer: 42 decayed tensors (24035328 params), 82 undecayed (50688 params)
+2026-09-16 14:14:53,738 INFO resumed Nepali/checkpoints/best.pt at step 10909 (357466112 tokens seen)
+2026-09-16 14:14:53,749 INFO initialised from Nepali/checkpoints/best.pt (pretrained to step 10909)
+2026-09-16 14:15:01,218 INFO step 0 (pretrained)  val answer loss 7.3415  val exact 0.000
+2026-09-16 14:15:45,274 INFO step    25/1250  loss 1.1785  lr 1.25e-04  |g| 9.44  epoch 0.04  1.76s/step  eta 0h35m
+2026-09-16 14:16:30,337 INFO step    50/1250  loss 1.1868  lr 2.50e-04  |g| 7.63  epoch 0.08  1.80s/step  eta 0h36m
+2026-09-16 14:17:17,760 INFO step    75/1250  loss 1.0621  lr 3.00e-04  |g| 6.41  epoch 0.12  1.90s/step  eta 0h37m
+2026-09-16 14:18:11,063 INFO step   100/1250  loss 0.9215  lr 2.99e-04  |g| 5.34  epoch 0.16  2.13s/step  eta 0h40m
+2026-09-16 14:19:05,670 INFO step   125/1250  loss 0.9915  lr 2.98e-04  |g| 6.20  epoch 0.20  2.18s/step  eta 0h40m
+2026-09-16 14:19:13,730 INFO step   125  val answer loss 2.8276  val exact 0.180
+2026-09-16 14:19:13,918 INFO saved Nepali/checkpoints/finetune/best.pt (step 125)
+2026-09-16 14:20:14,183 INFO step   150/1250  loss 0.8643  lr 2.96e-04  |g| 7.50  epoch 0.24  2.74s/step  eta 0h50m
+2026-09-16 14:21:08,048 INFO step   175/1250  loss 0.9285  lr 2.94e-04  |g| 6.43  epoch 0.28  2.15s/step  eta 0h38m
+2026-09-16 14:22:08,263 INFO step   200/1250  loss 0.8779  lr 2.91e-04  |g| 5.13  epoch 0.32  2.41s/step  eta 0h42m
+2026-09-16 14:22:55,266 INFO step   225/1250  loss 0.8245  lr 2.88e-04  |g| 5.98  epoch 0.36  1.88s/step  eta 0h32m
+2026-09-16 14:23:39,661 INFO step   250/1250  loss 0.8105  lr 2.84e-04  |g| 4.30  epoch 0.40  1.78s/step  eta 0h29m
+2026-09-16 14:23:50,137 INFO step   250  val answer loss 3.9407  val exact 0.158
+2026-09-16 14:23:50,468 INFO saved Nepali/checkpoints/finetune/step_000250.pt (step 250)
+2026-09-16 14:24:39,269 INFO step   275/1250  loss 0.9490  lr 2.79e-04  |g| 4.61  epoch 0.44  2.38s/step  eta 0h38m
