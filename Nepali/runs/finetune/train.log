@@ -1,0 +1,129 @@
+2026-09-16 14:58:32,207 INFO 20000 train / 1000 validation examples; 750 steps = 4.80 epochs
+2026-09-16 14:58:32,736 INFO token embedding and tied output head frozen
+2026-09-16 14:58:32,736 INFO optimizer: 41 decayed tensors (17891328 params), 82 undecayed (50688 params)
+2026-09-16 14:58:33,787 INFO resumed Nepali/checkpoints/best.pt at step 10909 (357466112 tokens seen)
+2026-09-16 14:58:33,800 INFO initialised from Nepali/checkpoints/best.pt (pretrained to step 10909)
+2026-09-16 14:58:45,310 INFO step 0 (pretrained)  val answer loss 6.2923  val exact 0.000
+2026-09-16 15:00:03,633 INFO step    10/750  loss 4.1149  lr 2.00e-05  |g| 19.00  epoch 0.06  7.83s/step  eta 1h36m
+2026-09-16 15:01:24,479 INFO step    20/750  loss 1.8379  lr 4.00e-05  |g| 6.48  epoch 0.13  8.08s/step  eta 1h38m
+2026-09-16 15:02:44,182 INFO step    30/750  loss 1.2243  lr 6.00e-05  |g| 4.52  epoch 0.19  7.97s/step  eta 1h35m
+2026-09-16 15:04:04,311 INFO step    40/750  loss 1.0891  lr 8.00e-05  |g| 5.22  epoch 0.26  8.01s/step  eta 1h34m
+2026-09-16 15:05:32,159 INFO step    50/750  loss 0.9887  lr 1.00e-04  |g| 5.37  epoch 0.32  8.78s/step  eta 1h42m
+2026-09-16 15:05:43,980 INFO step    50  val answer loss 0.9284  val exact 0.359
+2026-09-16 15:05:44,108 INFO saved Nepali/checkpoints/finetune/best.pt (step 50)
+2026-09-16 15:05:44,272 INFO saved Nepali/checkpoints/finetune/step_000050.pt (step 50)
+2026-09-16 15:07:01,679 INFO step    60/750  loss 1.0420  lr 1.00e-04  |g| 4.70  epoch 0.38  8.95s/step  eta 1h42m
+2026-09-16 15:08:17,813 INFO step    70/750  loss 0.8148  lr 9.98e-05  |g| 3.57  epoch 0.45  7.61s/step  eta 1h26m
+2026-09-16 15:09:34,466 INFO step    80/750  loss 0.9439  lr 9.96e-05  |g| 4.26  epoch 0.51  7.67s/step  eta 1h25m
+2026-09-16 15:10:55,582 INFO step    90/750  loss 0.9576  lr 9.93e-05  |g| 4.05  epoch 0.58  8.11s/step  eta 1h29m
+2026-09-16 15:12:14,149 INFO step   100/750  loss 0.8296  lr 9.89e-05  |g| 3.38  epoch 0.64  7.86s/step  eta 1h25m
+2026-09-16 15:12:26,358 INFO step   100  val answer loss 0.8492  val exact 0.391
+2026-09-16 15:12:26,803 INFO saved Nepali/checkpoints/finetune/best.pt (step 100)
+2026-09-16 15:12:26,998 INFO saved Nepali/checkpoints/finetune/step_000100.pt (step 100)
+2026-09-16 15:13:45,302 INFO step   110/750  loss 0.8323  lr 9.84e-05  |g| 3.61  epoch 0.70  9.12s/step  eta 1h37m
+2026-09-16 15:15:05,485 INFO step   120/750  loss 0.8895  lr 9.79e-05  |g| 4.02  epoch 0.77  8.02s/step  eta 1h24m
+2026-09-16 15:16:26,935 INFO step   130/750  loss 0.7533  lr 9.72e-05  |g| 2.94  epoch 0.83  8.15s/step  eta 1h24m
+2026-09-16 15:17:45,475 INFO step   140/750  loss 0.9139  lr 9.65e-05  |g| 4.52  epoch 0.90  7.85s/step  eta 1h19m
+2026-09-16 15:19:09,928 INFO step   150/750  loss 0.7998  lr 9.56e-05  |g| 3.16  epoch 0.96  8.45s/step  eta 1h24m
+2026-09-16 15:19:23,102 INFO step   150  val answer loss 0.8179  val exact 0.354
+2026-09-16 15:19:23,315 INFO saved Nepali/checkpoints/finetune/step_000150.pt (step 150)
+2026-09-16 15:19:23,332 INFO pruned Nepali/checkpoints/finetune/step_000050.pt
+2026-09-16 15:20:43,409 INFO step   160/750  loss 0.7748  lr 9.47e-05  |g| 3.64  epoch 1.02  9.35s/step  eta 1h31m
+2026-09-16 15:22:02,247 INFO step   170/750  loss 0.7011  lr 9.37e-05  |g| 3.79  epoch 1.09  7.88s/step  eta 1h16m
+2026-09-16 15:23:22,813 INFO step   180/750  loss 0.7093  lr 9.27e-05  |g| 3.36  epoch 1.15  8.06s/step  eta 1h16m
+2026-09-16 15:24:41,700 INFO step   190/750  loss 0.7353  lr 9.15e-05  |g| 3.19  epoch 1.22  7.89s/step  eta 1h13m
+2026-09-16 15:26:02,328 INFO step   200/750  loss 0.7499  lr 9.03e-05  |g| 3.54  epoch 1.28  8.06s/step  eta 1h13m
+2026-09-16 15:26:12,556 INFO step   200  val answer loss 0.8213  val exact 0.410
+2026-09-16 15:26:13,061 INFO saved Nepali/checkpoints/finetune/best.pt (step 200)
+2026-09-16 15:26:13,274 INFO saved Nepali/checkpoints/finetune/step_000200.pt (step 200)
+2026-09-16 15:26:13,291 INFO pruned Nepali/checkpoints/finetune/step_000100.pt
+2026-09-16 15:27:31,953 INFO step   210/750  loss 0.7670  lr 8.90e-05  |g| 3.77  epoch 1.34  8.96s/step  eta 1h20m
+2026-09-16 15:28:51,366 INFO step   220/750  loss 0.7302  lr 8.77e-05  |g| 3.30  epoch 1.41  7.94s/step  eta 1h10m
+2026-09-16 15:30:09,349 INFO step   230/750  loss 0.7424  lr 8.62e-05  |g| 3.19  epoch 1.47  7.80s/step  eta 1h07m
+2026-09-16 15:31:27,963 INFO step   240/750  loss 0.7844  lr 8.48e-05  |g| 3.59  epoch 1.54  7.86s/step  eta 1h06m
+2026-09-16 15:32:46,181 INFO step   250/750  loss 0.6981  lr 8.32e-05  |g| 3.18  epoch 1.60  7.82s/step  eta 1h05m
+2026-09-16 15:32:58,224 INFO step   250  val answer loss 0.7761  val exact 0.373
+2026-09-16 15:32:58,431 INFO saved Nepali/checkpoints/finetune/step_000250.pt (step 250)
+2026-09-16 15:32:58,451 INFO pruned Nepali/checkpoints/finetune/step_000150.pt
+2026-09-16 15:34:18,829 INFO step   260/750  loss 0.7049  lr 8.16e-05  |g| 2.95  epoch 1.66  9.26s/step  eta 1h15m
+2026-09-16 15:35:41,229 INFO step   270/750  loss 0.7084  lr 8.00e-05  |g| 3.73  epoch 1.73  8.24s/step  eta 1h05m
+2026-09-16 15:36:58,466 INFO step   280/750  loss 0.6597  lr 7.83e-05  |g| 3.25  epoch 1.79  7.72s/step  eta 1h00m
+2026-09-16 15:38:19,826 INFO step   290/750  loss 0.6281  lr 7.65e-05  |g| 2.87  epoch 1.86  8.14s/step  eta 1h02m
+2026-09-16 15:39:36,169 INFO step   300/750  loss 0.7146  lr 7.47e-05  |g| 3.30  epoch 1.92  7.63s/step  eta 0h57m
+2026-09-16 15:39:47,430 INFO step   300  val answer loss 0.7912  val exact 0.398
+2026-09-16 15:39:47,638 INFO saved Nepali/checkpoints/finetune/step_000300.pt (step 300)
+2026-09-16 15:39:47,657 INFO pruned Nepali/checkpoints/finetune/step_000200.pt
+2026-09-16 15:41:09,638 INFO step   310/750  loss 0.6635  lr 7.29e-05  |g| 3.11  epoch 1.98  9.35s/step  eta 1h08m
+2026-09-16 15:42:21,173 INFO step   320/750  loss 0.5706  lr 7.10e-05  |g| 2.66  epoch 2.05  7.15s/step  eta 0h51m
+2026-09-16 15:43:36,047 INFO step   330/750  loss 0.6710  lr 6.91e-05  |g| 3.19  epoch 2.11  7.49s/step  eta 0h52m
+2026-09-16 15:44:54,867 INFO step   340/750  loss 0.6089  lr 6.72e-05  |g| 2.93  epoch 2.18  7.88s/step  eta 0h53m
+2026-09-16 15:46:14,525 INFO step   350/750  loss 0.5432  lr 6.52e-05  |g| 2.95  epoch 2.24  7.97s/step  eta 0h53m
+2026-09-16 15:46:26,024 INFO step   350  val answer loss 0.7983  val exact 0.373
+2026-09-16 15:46:26,241 INFO saved Nepali/checkpoints/finetune/step_000350.pt (step 350)
+2026-09-16 15:46:26,258 INFO pruned Nepali/checkpoints/finetune/step_000250.pt
+2026-09-16 15:47:41,289 INFO step   360/750  loss 0.5358  lr 6.32e-05  |g| 3.13  epoch 2.30  8.68s/step  eta 0h56m
+2026-09-16 15:49:00,319 INFO step   370/750  loss 0.6355  lr 6.12e-05  |g| 5.14  epoch 2.37  7.90s/step  eta 0h50m
+2026-09-16 15:50:18,880 INFO step   380/750  loss 0.6332  lr 5.92e-05  |g| 3.26  epoch 2.43  7.86s/step  eta 0h48m
+2026-09-16 15:51:37,016 INFO step   390/750  loss 0.6300  lr 5.72e-05  |g| 4.15  epoch 2.50  7.81s/step  eta 0h46m
+2026-09-16 15:52:44,049 INFO step   400/750  loss 0.5915  lr 5.52e-05  |g| 3.06  epoch 2.56  6.70s/step  eta 0h39m
+2026-09-16 15:52:52,554 INFO step   400  val answer loss 0.7857  val exact 0.393
+2026-09-16 15:52:52,741 INFO saved Nepali/checkpoints/finetune/step_000400.pt (step 400)
+2026-09-16 15:52:52,754 INFO pruned Nepali/checkpoints/finetune/step_000300.pt
+2026-09-16 15:53:55,276 INFO step   410/750  loss 0.6464  lr 5.32e-05  |g| 3.57  epoch 2.62  7.12s/step  eta 0h40m
+2026-09-16 15:55:00,425 INFO step   420/750  loss 0.6065  lr 5.12e-05  |g| 3.04  epoch 2.69  6.51s/step  eta 0h35m
+2026-09-16 15:56:07,026 INFO step   430/750  loss 0.5040  lr 4.92e-05  |g| 2.63  epoch 2.75  6.66s/step  eta 0h35m
+2026-09-16 15:57:10,915 INFO step   440/750  loss 0.6070  lr 4.72e-05  |g| 3.13  epoch 2.82  6.39s/step  eta 0h33m
+2026-09-16 15:58:09,469 INFO step   450/750  loss 0.6334  lr 4.52e-05  |g| 3.53  epoch 2.88  5.86s/step  eta 0h29m
+2026-09-16 15:58:19,392 INFO step   450  val answer loss 0.7889  val exact 0.391
+2026-09-16 15:58:19,631 INFO saved Nepali/checkpoints/finetune/step_000450.pt (step 450)
+2026-09-16 15:58:19,664 INFO pruned Nepali/checkpoints/finetune/step_000350.pt
+2026-09-16 15:59:26,811 INFO step   460/750  loss 0.6446  lr 4.32e-05  |g| 3.20  epoch 2.94  7.73s/step  eta 0h37m
+2026-09-16 16:00:32,503 INFO step   470/750  loss 0.4705  lr 4.13e-05  |g| 2.62  epoch 3.01  6.57s/step  eta 0h30m
+2026-09-16 16:01:31,762 INFO step   480/750  loss 0.6172  lr 3.94e-05  |g| 3.09  epoch 3.07  5.93s/step  eta 0h26m
+2026-09-16 16:02:38,583 INFO step   490/750  loss 0.5496  lr 3.75e-05  |g| 3.10  epoch 3.14  6.68s/step  eta 0h28m
+2026-09-16 16:03:40,593 INFO step   500/750  loss 0.5964  lr 3.57e-05  |g| 3.36  epoch 3.20  6.20s/step  eta 0h25m
+2026-09-16 16:03:48,668 INFO step   500  val answer loss 0.7770  val exact 0.377
+2026-09-16 16:03:48,871 INFO saved Nepali/checkpoints/finetune/step_000500.pt (step 500)
+2026-09-16 16:03:48,885 INFO pruned Nepali/checkpoints/finetune/step_000400.pt
+2026-09-16 16:04:47,392 INFO step   510/750  loss 0.5215  lr 3.39e-05  |g| 3.34  epoch 3.26  6.68s/step  eta 0h26m
+2026-09-16 16:05:56,270 INFO step   520/750  loss 0.5669  lr 3.21e-05  |g| 3.61  epoch 3.33  6.89s/step  eta 0h26m
+2026-09-16 16:06:54,545 INFO step   530/750  loss 0.5201  lr 3.04e-05  |g| 3.42  epoch 3.39  5.83s/step  eta 0h21m
+2026-09-16 16:07:54,929 INFO step   540/750  loss 0.5407  lr 2.87e-05  |g| 2.92  epoch 3.46  6.04s/step  eta 0h21m
+2026-09-16 16:09:00,060 INFO step   550/750  loss 0.4715  lr 2.71e-05  |g| 2.73  epoch 3.52  6.51s/step  eta 0h21m
+2026-09-16 16:09:06,204 INFO step   550  val answer loss 0.7850  val exact 0.375
+2026-09-16 16:09:06,378 INFO saved Nepali/checkpoints/finetune/step_000550.pt (step 550)
+2026-09-16 16:09:06,397 INFO pruned Nepali/checkpoints/finetune/step_000450.pt
+2026-09-16 16:10:14,930 INFO step   560/750  loss 0.5309  lr 2.55e-05  |g| 2.92  epoch 3.58  7.49s/step  eta 0h23m
+2026-09-16 16:11:16,720 INFO step   570/750  loss 0.4283  lr 2.40e-05  |g| 2.77  epoch 3.65  6.18s/step  eta 0h18m
+2026-09-16 16:12:21,738 INFO step   580/750  loss 0.4927  lr 2.26e-05  |g| 3.09  epoch 3.71  6.50s/step  eta 0h18m
+2026-09-16 16:13:21,479 INFO step   590/750  loss 0.5778  lr 2.12e-05  |g| 3.11  epoch 3.78  5.97s/step  eta 0h15m
+2026-09-16 16:14:22,433 INFO step   600/750  loss 0.6070  lr 1.99e-05  |g| 3.67  epoch 3.84  6.10s/step  eta 0h15m
+2026-09-16 16:14:30,944 INFO step   600  val answer loss 0.7811  val exact 0.377
+2026-09-16 16:14:31,067 INFO saved Nepali/checkpoints/finetune/step_000600.pt (step 600)
+2026-09-16 16:14:31,079 INFO pruned Nepali/checkpoints/finetune/step_000500.pt
+2026-09-16 16:15:33,516 INFO step   610/750  loss 0.5502  lr 1.87e-05  |g| 2.99  epoch 3.90  7.11s/step  eta 0h16m
+2026-09-16 16:16:34,466 INFO step   620/750  loss 0.4725  lr 1.76e-05  |g| 2.99  epoch 3.97  6.10s/step  eta 0h13m
+2026-09-16 16:17:35,690 INFO step   630/750  loss 0.4754  lr 1.65e-05  |g| 2.89  epoch 4.03  6.12s/step  eta 0h12m
+2026-09-16 16:18:39,589 INFO step   640/750  loss 0.5197  lr 1.55e-05  |g| 3.26  epoch 4.10  6.39s/step  eta 0h11m
+2026-09-16 16:19:41,484 INFO step   650/750  loss 0.4762  lr 1.45e-05  |g| 2.79  epoch 4.16  6.19s/step  eta 0h10m
+2026-09-16 16:19:50,325 INFO step   650  val answer loss 0.7820  val exact 0.375
+2026-09-16 16:19:50,505 INFO saved Nepali/checkpoints/finetune/step_000650.pt (step 650)
+2026-09-16 16:19:50,521 INFO pruned Nepali/checkpoints/finetune/step_000550.pt
+2026-09-16 16:20:53,781 INFO step   660/750  loss 0.4748  lr 1.37e-05  |g| 3.36  epoch 4.22  7.23s/step  eta 0h10m
+2026-09-16 16:21:59,702 INFO step   670/750  loss 0.4529  lr 1.29e-05  |g| 2.81  epoch 4.29  6.59s/step  eta 0h08m
+2026-09-16 16:22:59,876 INFO step   680/750  loss 0.4999  lr 1.23e-05  |g| 3.09  epoch 4.35  6.02s/step  eta 0h07m
+2026-09-16 16:23:59,051 INFO step   690/750  loss 0.4019  lr 1.17e-05  |g| 2.65  epoch 4.42  5.92s/step  eta 0h05m
+2026-09-16 16:25:03,119 INFO step   700/750  loss 0.4476  lr 1.12e-05  |g| 2.91  epoch 4.48  6.41s/step  eta 0h05m
+2026-09-16 16:25:11,857 INFO step   700  val answer loss 0.7724  val exact 0.400
+2026-09-16 16:25:12,076 INFO saved Nepali/checkpoints/finetune/step_000700.pt (step 700)
+2026-09-16 16:25:12,096 INFO pruned Nepali/checkpoints/finetune/step_000600.pt
+2026-09-16 16:26:14,755 INFO step   710/750  loss 0.3905  lr 1.08e-05  |g| 2.55  epoch 4.54  7.16s/step  eta 0h04m
+2026-09-16 16:27:17,341 INFO step   720/750  loss 0.4665  lr 1.04e-05  |g| 3.08  epoch 4.61  6.26s/step  eta 0h03m
+2026-09-16 16:28:24,146 INFO step   730/750  loss 0.4923  lr 1.02e-05  |g| 3.19  epoch 4.67  6.68s/step  eta 0h02m
+2026-09-16 16:29:27,795 INFO step   740/750  loss 0.5717  lr 1.01e-05  |g| 3.86  epoch 4.74  6.36s/step  eta 0h01m
+2026-09-16 16:30:35,214 INFO step   750/750  loss 0.4766  lr 1.00e-05  |g| 3.29  epoch 4.80  6.74s/step  eta 0h00m
+2026-09-16 16:30:43,675 INFO step   750  val answer loss 0.7792  val exact 0.402
+2026-09-16 16:30:43,850 INFO saved Nepali/checkpoints/finetune/step_000750.pt (step 750)
+2026-09-16 16:30:43,864 INFO pruned Nepali/checkpoints/finetune/step_000650.pt
+2026-09-16 16:30:43,864 INFO finished at step 750/750, best val exact match 0.410, best val answer loss 0.7724
+2026-09-16 16:30:43,866 INFO done: step 750, best val answer loss 0.7724

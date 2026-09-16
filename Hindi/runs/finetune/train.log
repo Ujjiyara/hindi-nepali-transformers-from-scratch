@@ -1,0 +1,129 @@
+2026-09-16 14:58:32,178 INFO 20000 train / 1000 validation examples; 750 steps = 4.80 epochs
+2026-09-16 14:58:32,692 INFO token embedding and tied output head frozen
+2026-09-16 14:58:32,692 INFO optimizer: 41 decayed tensors (17891328 params), 82 undecayed (50688 params)
+2026-09-16 14:58:33,863 INFO resumed Hindi/checkpoints/best.pt at step 15981 (523665408 tokens seen)
+2026-09-16 14:58:33,885 INFO initialised from Hindi/checkpoints/best.pt (pretrained to step 15981)
+2026-09-16 14:58:44,072 INFO step 0 (pretrained)  val answer loss 6.1849  val exact 0.000
+2026-09-16 15:00:11,031 INFO step    10/750  loss 3.4049  lr 2.00e-05  |g| 18.09  epoch 0.06  8.70s/step  eta 1h47m
+2026-09-16 15:01:34,074 INFO step    20/750  loss 1.4589  lr 4.00e-05  |g| 6.14  epoch 0.13  8.30s/step  eta 1h41m
+2026-09-16 15:02:57,693 INFO step    30/750  loss 1.1292  lr 6.00e-05  |g| 7.17  epoch 0.19  8.36s/step  eta 1h40m
+2026-09-16 15:04:23,820 INFO step    40/750  loss 1.0185  lr 8.00e-05  |g| 5.10  epoch 0.26  8.61s/step  eta 1h41m
+2026-09-16 15:05:47,969 INFO step    50/750  loss 0.9468  lr 1.00e-04  |g| 4.73  epoch 0.32  8.41s/step  eta 1h38m
+2026-09-16 15:05:58,963 INFO step    50  val answer loss 0.7985  val exact 0.395
+2026-09-16 15:05:59,098 INFO saved Hindi/checkpoints/finetune/best.pt (step 50)
+2026-09-16 15:05:59,248 INFO saved Hindi/checkpoints/finetune/step_000050.pt (step 50)
+2026-09-16 15:07:25,374 INFO step    60/750  loss 0.9645  lr 1.00e-04  |g| 4.43  epoch 0.38  9.74s/step  eta 1h52m
+2026-09-16 15:08:53,088 INFO step    70/750  loss 0.8191  lr 9.98e-05  |g| 4.10  epoch 0.45  8.77s/step  eta 1h39m
+2026-09-16 15:10:15,037 INFO step    80/750  loss 0.7726  lr 9.96e-05  |g| 3.72  epoch 0.51  8.19s/step  eta 1h31m
+2026-09-16 15:11:37,105 INFO step    90/750  loss 0.8513  lr 9.93e-05  |g| 4.39  epoch 0.58  8.21s/step  eta 1h30m
+2026-09-16 15:13:01,799 INFO step   100/750  loss 0.8522  lr 9.89e-05  |g| 3.73  epoch 0.64  8.47s/step  eta 1h31m
+2026-09-16 15:13:14,382 INFO step   100  val answer loss 0.7740  val exact 0.396
+2026-09-16 15:13:14,824 INFO saved Hindi/checkpoints/finetune/best.pt (step 100)
+2026-09-16 15:13:14,959 INFO saved Hindi/checkpoints/finetune/step_000100.pt (step 100)
+2026-09-16 15:14:36,551 INFO step   110/750  loss 0.7601  lr 9.84e-05  |g| 3.77  epoch 0.70  9.48s/step  eta 1h41m
+2026-09-16 15:15:56,363 INFO step   120/750  loss 0.7886  lr 9.79e-05  |g| 3.56  epoch 0.77  7.98s/step  eta 1h23m
+2026-09-16 15:17:20,575 INFO step   130/750  loss 0.7638  lr 9.72e-05  |g| 3.73  epoch 0.83  8.42s/step  eta 1h27m
+2026-09-16 15:18:47,484 INFO step   140/750  loss 0.7500  lr 9.65e-05  |g| 3.49  epoch 0.90  8.69s/step  eta 1h28m
+2026-09-16 15:20:13,056 INFO step   150/750  loss 0.7172  lr 9.56e-05  |g| 4.27  epoch 0.96  8.56s/step  eta 1h25m
+2026-09-16 15:20:25,680 INFO step   150  val answer loss 0.7670  val exact 0.385
+2026-09-16 15:20:25,892 INFO saved Hindi/checkpoints/finetune/step_000150.pt (step 150)
+2026-09-16 15:20:25,911 INFO pruned Hindi/checkpoints/finetune/step_000050.pt
+2026-09-16 15:21:51,318 INFO step   160/750  loss 0.7375  lr 9.47e-05  |g| 3.48  epoch 1.02  9.83s/step  eta 1h36m
+2026-09-16 15:23:13,776 INFO step   170/750  loss 0.7024  lr 9.37e-05  |g| 3.09  epoch 1.09  8.25s/step  eta 1h19m
+2026-09-16 15:24:37,438 INFO step   180/750  loss 0.6444  lr 9.27e-05  |g| 2.88  epoch 1.15  8.37s/step  eta 1h19m
+2026-09-16 15:26:02,504 INFO step   190/750  loss 0.6937  lr 9.15e-05  |g| 3.33  epoch 1.22  8.51s/step  eta 1h19m
+2026-09-16 15:27:27,635 INFO step   200/750  loss 0.6925  lr 9.03e-05  |g| 3.11  epoch 1.28  8.51s/step  eta 1h18m
+2026-09-16 15:27:37,483 INFO step   200  val answer loss 0.6988  val exact 0.467
+2026-09-16 15:27:37,928 INFO saved Hindi/checkpoints/finetune/best.pt (step 200)
+2026-09-16 15:27:38,111 INFO saved Hindi/checkpoints/finetune/step_000200.pt (step 200)
+2026-09-16 15:27:38,121 INFO pruned Hindi/checkpoints/finetune/step_000100.pt
+2026-09-16 15:29:00,399 INFO step   210/750  loss 0.6976  lr 8.90e-05  |g| 3.53  epoch 1.34  9.28s/step  eta 1h23m
+2026-09-16 15:30:24,303 INFO step   220/750  loss 0.6832  lr 8.77e-05  |g| 2.71  epoch 1.41  8.39s/step  eta 1h14m
+2026-09-16 15:31:46,121 INFO step   230/750  loss 0.8133  lr 8.62e-05  |g| 4.37  epoch 1.47  8.18s/step  eta 1h10m
+2026-09-16 15:33:06,096 INFO step   240/750  loss 0.7585  lr 8.48e-05  |g| 3.68  epoch 1.54  8.00s/step  eta 1h07m
+2026-09-16 15:34:25,067 INFO step   250/750  loss 0.7474  lr 8.32e-05  |g| 3.77  epoch 1.60  7.90s/step  eta 1h05m
+2026-09-16 15:34:36,221 INFO step   250  val answer loss 0.7318  val exact 0.371
+2026-09-16 15:34:36,399 INFO saved Hindi/checkpoints/finetune/step_000250.pt (step 250)
+2026-09-16 15:34:36,413 INFO pruned Hindi/checkpoints/finetune/step_000150.pt
+2026-09-16 15:35:56,429 INFO step   260/750  loss 0.6000  lr 8.16e-05  |g| 3.15  epoch 1.66  9.14s/step  eta 1h14m
+2026-09-16 15:37:25,013 INFO step   270/750  loss 0.6132  lr 8.00e-05  |g| 2.82  epoch 1.73  8.86s/step  eta 1h10m
+2026-09-16 15:38:45,819 INFO step   280/750  loss 0.6716  lr 7.83e-05  |g| 3.40  epoch 1.79  8.08s/step  eta 1h03m
+2026-09-16 15:40:07,990 INFO step   290/750  loss 0.6607  lr 7.65e-05  |g| 4.08  epoch 1.86  8.22s/step  eta 1h02m
+2026-09-16 15:41:28,535 INFO step   300/750  loss 0.6227  lr 7.47e-05  |g| 3.05  epoch 1.92  8.05s/step  eta 1h00m
+2026-09-16 15:41:39,076 INFO step   300  val answer loss 0.6739  val exact 0.422
+2026-09-16 15:41:39,276 INFO saved Hindi/checkpoints/finetune/step_000300.pt (step 300)
+2026-09-16 15:41:39,293 INFO pruned Hindi/checkpoints/finetune/step_000200.pt
+2026-09-16 15:43:06,188 INFO step   310/750  loss 0.6068  lr 7.29e-05  |g| 2.82  epoch 1.98  9.77s/step  eta 1h11m
+2026-09-16 15:44:28,068 INFO step   320/750  loss 0.6084  lr 7.10e-05  |g| 3.24  epoch 2.05  8.19s/step  eta 0h58m
+2026-09-16 15:45:50,775 INFO step   330/750  loss 0.6389  lr 6.91e-05  |g| 4.05  epoch 2.11  8.27s/step  eta 0h57m
+2026-09-16 15:47:09,485 INFO step   340/750  loss 0.5896  lr 6.72e-05  |g| 2.99  epoch 2.18  7.87s/step  eta 0h53m
+2026-09-16 15:48:30,673 INFO step   350/750  loss 0.6744  lr 6.52e-05  |g| 3.37  epoch 2.24  8.12s/step  eta 0h54m
+2026-09-16 15:48:41,113 INFO step   350  val answer loss 0.7127  val exact 0.441
+2026-09-16 15:48:41,302 INFO saved Hindi/checkpoints/finetune/step_000350.pt (step 350)
+2026-09-16 15:48:41,318 INFO pruned Hindi/checkpoints/finetune/step_000250.pt
+2026-09-16 15:50:09,071 INFO step   360/750  loss 0.5214  lr 6.32e-05  |g| 2.84  epoch 2.30  9.84s/step  eta 1h03m
+2026-09-16 15:51:28,174 INFO step   370/750  loss 0.6140  lr 6.12e-05  |g| 3.55  epoch 2.37  7.91s/step  eta 0h50m
+2026-09-16 15:52:37,788 INFO step   380/750  loss 0.6025  lr 5.92e-05  |g| 2.94  epoch 2.43  6.96s/step  eta 0h42m
+2026-09-16 15:53:47,171 INFO step   390/750  loss 0.6532  lr 5.72e-05  |g| 3.27  epoch 2.50  6.94s/step  eta 0h41m
+2026-09-16 15:54:57,705 INFO step   400/750  loss 0.6043  lr 5.52e-05  |g| 3.03  epoch 2.56  7.05s/step  eta 0h41m
+2026-09-16 15:55:06,359 INFO step   400  val answer loss 0.7024  val exact 0.455
+2026-09-16 15:55:06,550 INFO saved Hindi/checkpoints/finetune/step_000400.pt (step 400)
+2026-09-16 15:55:06,572 INFO pruned Hindi/checkpoints/finetune/step_000300.pt
+2026-09-16 15:56:10,606 INFO step   410/750  loss 0.5900  lr 5.32e-05  |g| 2.87  epoch 2.62  7.29s/step  eta 0h41m
+2026-09-16 15:57:16,326 INFO step   420/750  loss 0.5518  lr 5.12e-05  |g| 3.66  epoch 2.69  6.57s/step  eta 0h36m
+2026-09-16 15:58:22,605 INFO step   430/750  loss 0.6672  lr 4.92e-05  |g| 3.12  epoch 2.75  6.63s/step  eta 0h35m
+2026-09-16 15:59:27,778 INFO step   440/750  loss 0.5421  lr 4.72e-05  |g| 3.01  epoch 2.82  6.52s/step  eta 0h33m
+2026-09-16 16:00:34,442 INFO step   450/750  loss 0.6458  lr 4.52e-05  |g| 3.26  epoch 2.88  6.67s/step  eta 0h33m
+2026-09-16 16:00:41,278 INFO step   450  val answer loss 0.6818  val exact 0.463
+2026-09-16 16:00:41,458 INFO saved Hindi/checkpoints/finetune/step_000450.pt (step 450)
+2026-09-16 16:00:41,475 INFO pruned Hindi/checkpoints/finetune/step_000350.pt
+2026-09-16 16:01:49,136 INFO step   460/750  loss 0.5812  lr 4.32e-05  |g| 3.14  epoch 2.94  7.47s/step  eta 0h36m
+2026-09-16 16:02:54,832 INFO step   470/750  loss 0.5630  lr 4.13e-05  |g| 3.10  epoch 3.01  6.57s/step  eta 0h30m
+2026-09-16 16:03:59,643 INFO step   480/750  loss 0.4907  lr 3.94e-05  |g| 3.14  epoch 3.07  6.48s/step  eta 0h29m
+2026-09-16 16:05:00,903 INFO step   490/750  loss 0.5817  lr 3.75e-05  |g| 3.36  epoch 3.14  6.13s/step  eta 0h26m
+2026-09-16 16:06:04,902 INFO step   500/750  loss 0.4770  lr 3.57e-05  |g| 2.87  epoch 3.20  6.40s/step  eta 0h26m
+2026-09-16 16:06:12,668 INFO step   500  val answer loss 0.6889  val exact 0.412
+2026-09-16 16:06:12,860 INFO saved Hindi/checkpoints/finetune/step_000500.pt (step 500)
+2026-09-16 16:06:12,873 INFO pruned Hindi/checkpoints/finetune/step_000400.pt
+2026-09-16 16:07:17,927 INFO step   510/750  loss 0.4530  lr 3.39e-05  |g| 2.45  epoch 3.26  7.30s/step  eta 0h29m
+2026-09-16 16:08:19,917 INFO step   520/750  loss 0.5377  lr 3.21e-05  |g| 3.11  epoch 3.33  6.20s/step  eta 0h23m
+2026-09-16 16:09:20,966 INFO step   530/750  loss 0.5100  lr 3.04e-05  |g| 3.53  epoch 3.39  6.10s/step  eta 0h22m
+2026-09-16 16:10:27,650 INFO step   540/750  loss 0.5630  lr 2.87e-05  |g| 3.15  epoch 3.46  6.67s/step  eta 0h23m
+2026-09-16 16:11:31,153 INFO step   550/750  loss 0.4863  lr 2.71e-05  |g| 3.15  epoch 3.52  6.35s/step  eta 0h21m
+2026-09-16 16:11:38,548 INFO step   550  val answer loss 0.6660  val exact 0.453
+2026-09-16 16:11:38,685 INFO saved Hindi/checkpoints/finetune/step_000550.pt (step 550)
+2026-09-16 16:11:38,696 INFO pruned Hindi/checkpoints/finetune/step_000450.pt
+2026-09-16 16:12:46,150 INFO step   560/750  loss 0.5532  lr 2.55e-05  |g| 3.28  epoch 3.58  7.50s/step  eta 0h23m
+2026-09-16 16:13:54,096 INFO step   570/750  loss 0.5527  lr 2.40e-05  |g| 4.07  epoch 3.65  6.79s/step  eta 0h20m
+2026-09-16 16:15:00,097 INFO step   580/750  loss 0.5694  lr 2.26e-05  |g| 3.43  epoch 3.71  6.60s/step  eta 0h18m
+2026-09-16 16:16:07,128 INFO step   590/750  loss 0.4754  lr 2.12e-05  |g| 2.81  epoch 3.78  6.70s/step  eta 0h17m
+2026-09-16 16:17:16,826 INFO step   600/750  loss 0.4453  lr 1.99e-05  |g| 2.95  epoch 3.84  6.97s/step  eta 0h17m
+2026-09-16 16:17:22,176 INFO step   600  val answer loss 0.6732  val exact 0.426
+2026-09-16 16:17:22,287 INFO saved Hindi/checkpoints/finetune/step_000600.pt (step 600)
+2026-09-16 16:17:22,296 INFO pruned Hindi/checkpoints/finetune/step_000500.pt
+2026-09-16 16:18:29,681 INFO step   610/750  loss 0.5409  lr 1.87e-05  |g| 3.23  epoch 3.90  7.29s/step  eta 0h16m
+2026-09-16 16:19:33,811 INFO step   620/750  loss 0.4762  lr 1.76e-05  |g| 2.75  epoch 3.97  6.41s/step  eta 0h13m
+2026-09-16 16:20:36,442 INFO step   630/750  loss 0.4950  lr 1.65e-05  |g| 2.98  epoch 4.03  6.26s/step  eta 0h12m
+2026-09-16 16:21:36,452 INFO step   640/750  loss 0.4901  lr 1.55e-05  |g| 3.03  epoch 4.10  6.00s/step  eta 0h11m
+2026-09-16 16:22:46,551 INFO step   650/750  loss 0.5508  lr 1.45e-05  |g| 3.33  epoch 4.16  7.01s/step  eta 0h11m
+2026-09-16 16:22:54,903 INFO step   650  val answer loss 0.6656  val exact 0.438
+2026-09-16 16:22:55,033 INFO saved Hindi/checkpoints/finetune/step_000650.pt (step 650)
+2026-09-16 16:22:55,042 INFO pruned Hindi/checkpoints/finetune/step_000550.pt
+2026-09-16 16:24:04,147 INFO step   660/750  loss 0.4826  lr 1.37e-05  |g| 3.13  epoch 4.22  7.76s/step  eta 0h11m
+2026-09-16 16:25:04,583 INFO step   670/750  loss 0.5395  lr 1.29e-05  |g| 3.11  epoch 4.29  6.04s/step  eta 0h08m
+2026-09-16 16:26:08,179 INFO step   680/750  loss 0.4644  lr 1.23e-05  |g| 2.87  epoch 4.35  6.36s/step  eta 0h07m
+2026-09-16 16:27:13,242 INFO step   690/750  loss 0.5197  lr 1.17e-05  |g| 3.43  epoch 4.42  6.51s/step  eta 0h06m
+2026-09-16 16:28:25,521 INFO step   700/750  loss 0.4646  lr 1.12e-05  |g| 3.04  epoch 4.48  7.23s/step  eta 0h06m
+2026-09-16 16:28:32,791 INFO step   700  val answer loss 0.6605  val exact 0.449
+2026-09-16 16:28:32,977 INFO saved Hindi/checkpoints/finetune/step_000700.pt (step 700)
+2026-09-16 16:28:32,989 INFO pruned Hindi/checkpoints/finetune/step_000600.pt
+2026-09-16 16:29:35,914 INFO step   710/750  loss 0.4814  lr 1.08e-05  |g| 2.90  epoch 4.54  7.04s/step  eta 0h04m
+2026-09-16 16:30:40,321 INFO step   720/750  loss 0.4954  lr 1.04e-05  |g| 3.36  epoch 4.61  6.44s/step  eta 0h03m
+2026-09-16 16:31:08,828 INFO step   730/750  loss 0.5176  lr 1.02e-05  |g| 3.48  epoch 4.67  2.85s/step  eta 0h00m
+2026-09-16 16:31:38,188 INFO step   740/750  loss 0.5366  lr 1.01e-05  |g| 3.37  epoch 4.74  2.94s/step  eta 0h00m
+2026-09-16 16:32:08,831 INFO step   750/750  loss 0.4482  lr 1.00e-05  |g| 3.01  epoch 4.80  3.06s/step  eta 0h00m
+2026-09-16 16:32:12,887 INFO step   750  val answer loss 0.6697  val exact 0.430
+2026-09-16 16:32:12,997 INFO saved Hindi/checkpoints/finetune/step_000750.pt (step 750)
+2026-09-16 16:32:13,005 INFO pruned Hindi/checkpoints/finetune/step_000650.pt
+2026-09-16 16:32:13,005 INFO finished at step 750/750, best val exact match 0.467, best val answer loss 0.6605
+2026-09-16 16:32:13,006 INFO done: step 750, best val answer loss 0.6605
