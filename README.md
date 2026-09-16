@@ -18,7 +18,8 @@ implementation code is shared; every artifact is per-language and lives under
 `Hindi/` or `Nepali/`.
 
 **Phase 1 report:** [`report/phase1.md`](report/phase1.md)  
-**Phase 2 report:** [`report/phase2.md`](report/phase2.md)
+**Phase 2 report:** [`report/phase2.md`](report/phase2.md)  
+**Phase 3 report:** [`report/phase3.md`](report/phase3.md)
 
 ### Phase 1 result
 
@@ -78,11 +79,24 @@ LMA_Individual_project_data/
                         _stats_pipeline.json, _token_counts.json
     tokens/             train.bin, validation.bin, test.bin, _stats_pack.json
     checkpoints/        best.pt, step_*.pt          (Phase 2)
+    checkpoints/finetune/
+                        best.pt, step_*.pt          (Phase 3, reasoning finetune)
+    reasoning/          train, validation, test, test_long .jsonl  (Phase 3)
   Nepali/
     processed/          same five files
     tokens/             same four files
     checkpoints/        best.pt, step_*.pt          (Phase 2)
+    checkpoints/finetune/
+                        best.pt, step_*.pt          (Phase 3, reasoning finetune)
+    reasoning/          same four files             (Phase 3)
 ```
+
+The finetuned checkpoints are in exactly the same format as the pretraining
+ones (weights, AdamW state, schedule, step, data position, RNG, geometry), plus
+an `extra` record naming the stage and the pretrained checkpoint they started
+from, so an interrupted finetune resumes the same way. The reasoning `.jsonl`
+files are also fully reproducible from the committed generator and lexicons
+(step 12 below); the Drive copy is for convenience.
 
 The `_stats_*.json` sidecars are tiny and are included deliberately: every
 figure in the reports is generated from them, so any number can be checked
@@ -118,15 +132,22 @@ common/                     shared implementation (no data)
   train/                    LR schedule, resumable checkpoints, pretraining loop
   eval/                     perplexity/BPB, generation, BLEU/chrF/ROUGE-L,
                             attention statistics, figures
+  reasoning/                synthetic comparative-reasoning data generator (Phase 3)
+  finetune/                 answer-only finetune loop, reasoning evaluation,
+                            pretrained-vs-finetuned attention comparison, figures
   report/                   generates report/phase{1,2}.md from measured stats
 
 Hindi/                      Model H — self-contained data and artifacts
-  configs/                  scrape_sites.yaml, tokenizer.yaml, model.yaml, train.yaml
+  configs/                  scrape_sites.yaml, tokenizer.yaml, model.yaml, train.yaml,
+                            reasoning.yaml (lexicon + templates), finetune.yaml
   data/{raw,interim,processed,urls,logs}/     (git-ignored, see Drive)
   data/tokens/              packed .bin token arrays (git-ignored, see Drive)
   tokenizer/                *.model, *.vocab, sweep.json
   checkpoints/              (git-ignored, see Drive)
   runs/<name>/              config.json, metrics.jsonl, eval/results.json (committed)
+  runs/finetune/            dataset_stats.json, config.json, metrics.jsonl, train.log,
+                            eval/{pretrained,finetuned}.json, per-example predictions,
+                            eval/attention.{json,npz} (committed)
 Nepali/                     Model L — same structure, no shared files
 
 tests/                      correctness tests for attention, masking, resume, metrics
@@ -461,6 +482,127 @@ python -m common.report.phase2 \
     --out report/phase2.md
 ```
 
+### 12. Generate the reasoning datasets (Phase 3)
+
+```bash
+python -m common.reasoning.generate \
+    --config Hindi/configs/reasoning.yaml \
+    --out Hindi/data/reasoning \
+    --tokenizer Hindi/tokenizer/hi_unigram_16000.model \
+    --stats Hindi/runs/finetune/dataset_stats.json
+```
+
+and the same with `Nepali/` and `ne_unigram_16000.model`. Each language's
+`reasoning.yaml` holds its own entity names (with grammatical gender), four
+attributes (height, age, weight, price) and sentence templates written from
+that language's grammar; the generator only fills slots, so every label is
+known by construction. Output is deterministic from the seed in the config.
+
+| Split | Examples | Names | Chains |
+|---|---|---|---|
+| `train` | 20,000 | 60% of names (Hindi 138 people + 34 objects, Nepali 118 + 35) | 3–4 entities |
+| `validation` | 1,000 | disjoint 20% | 3–4 entities |
+| `test` | 2,000 | disjoint 20% | 3–4 entities |
+| `test_long` | 1,000 | test names | 5 entities (unseen length) |
+
+Four task families in equal proportion: `numeric_pair` (two stated values;
+greater / smaller / equal), `numeric_triple` (largest / smallest of three),
+`chain_superlative` (only pairwise comparisons such as "A is taller than B",
+stated in shuffled order and randomly with the "greater" or "smaller"
+adjective; find the extreme) and `chain_relation` (yes/no about two entities,
+80% of them not compared directly). Train–test leakage is prevented by
+splitting the entity names before generation and verified on every run
+(`dataset_stats.json` → `leakage`, all zero); `tests/test_reasoning_data.py`
+re-derives every label from the prompt text.
+
+### 13. Reasoning finetune
+
+```bash
+python -m common.finetune.run \
+    --init-checkpoint Hindi/checkpoints/best.pt \
+    --train-config Hindi/configs/finetune.yaml \
+    --data Hindi/data/reasoning \
+    --tokenizer Hindi/tokenizer/hi_unigram_16000.model \
+    --checkpoint-dir Hindi/checkpoints/finetune \
+    --run-dir Hindi/runs/finetune \
+    --threads 11
+```
+
+and the same for Nepali. Each model starts from **its own** pretrained
+`best.pt` (weights only; fresh AdamW state), keeps its own tokenizer unchanged,
+and is trained with cross-entropy on the answer tokens and EOS only — prompt
+targets are masked to -1. Hyperparameters are in `<Language>/configs/finetune.yaml`
+and are copied into `runs/finetune/config.json`: batch 32, 3,000 steps (4.8
+epochs), AdamW (β = 0.9/0.95, weight decay 0.1 on matrices), peak LR 3e-4 with
+100 warmup steps and cosine decay to 3e-5, gradient clip 1.0, dropout 0.1, and
+the tied token embedding / output head **frozen**. Validation (512 held-out-name
+examples) runs every 100 steps, and `best.pt` is the checkpoint with the highest
+validation exact match. Re-running the same command resumes from the newest
+`step_*.pt`.
+
+Why frozen embeddings and 3,000 steps: the first attempt, with a trainable
+embedding and 48 training names, memorised those names as an answer vocabulary
+and answered held-out questions with names absent from the prompt. The short
+runs that established this, and the fix, are kept with their logs in
+[`Hindi/runs/finetune_ablations/`](Hindi/runs/finetune_ablations/README.md).
+
+These runs were done on CPU (Intel Core Ultra 9 185H, both languages in
+parallel with 11 threads each, ~1.9 s/step): sequences are ~34 tokens, so a
+GPU is not needed. On a GPU, drop `--threads`.
+
+### 14. Reasoning evaluation
+
+```bash
+for stage in pretrained finetuned; do
+  ckpt=Hindi/checkpoints/best.pt
+  [ $stage = finetuned ] && ckpt=Hindi/checkpoints/finetune/best.pt
+  python -m common.finetune.evaluate \
+      --checkpoint $ckpt \
+      --tokenizer Hindi/tokenizer/hi_unigram_16000.model \
+      --data Hindi/data/reasoning \
+      --label "Hindi (Model H), $stage" \
+      --out Hindi/runs/finetune/eval/$stage.json
+done
+```
+
+Scores both checkpoints on the identical `test` and `test_long` examples:
+**exact match** (greedy decode to EOS equals the answer), **prefix match**
+(output starts with the answer as a whole word) and **choice accuracy** (the
+candidate answer with the highest log-probability after the prompt; the fair
+metric for a pretrained model that never learned the answer format), overall
+and by task, attribute and hop count. Per-example predictions are written to
+`<stage>_predictions.jsonl` for error analysis.
+
+### 15. Attention before and after finetuning
+
+```bash
+python -m common.finetune.attention \
+    --pretrained Hindi/checkpoints/best.pt \
+    --finetuned Hindi/checkpoints/finetune/best.pt \
+    --tokenizer Hindi/tokenizer/hi_unigram_16000.model \
+    --data Hindi/data/reasoning \
+    --tokens Hindi/data/tokens \
+    --label "Hindi (Model H)" \
+    --out Hindi/runs/finetune/eval/attention.json
+```
+
+Reruns the Phase 2 entropy and distance statistics for both checkpoints on
+400 reasoning test prompts and on held-out corpus text, and measures where the
+final prompt token (where the answer is predicted) attends: entity mentions,
+the correct entity, the question, and the first-token sink.
+
+### 16. Phase 3 figures
+
+```bash
+python -m common.finetune.figures \
+    --run Hindi/runs/finetune --run Nepali/runs/finetune --out report/figures
+```
+
+Draws the finetuning curves, accuracy overview and breakdowns by task and hop
+count, pretrained-vs-finetuned heatmaps for layers 0 and 9 of each model,
+per-head attention change, layer profiles and answer-position attention —
+all from the committed JSON, with no checkpoint needed.
+
 ---
 
 ## Notes on constraints
@@ -486,3 +628,8 @@ python -m common.report.phase2 \
 - Model H and Model L share implementation code and nothing else: separate
   corpora, tokenizers, vocabularies, token arrays, weights, optimiser states
   and checkpoints. Neither is ever initialised from the other.
+- Phase 3 keeps that separation: separate reasoning lexicons and datasets
+  (seeded with the language, so they are not translations of one another),
+  and each finetune starts from its own language's pretrained checkpoint with
+  its own tokenizer left unchanged. No existing reasoning benchmark is used;
+  all finetuning data is generated by `common/reasoning/generate.py`.
