@@ -19,7 +19,7 @@ implementation code is shared; every artifact is per-language and lives under
 
 **Phase 1 report:** [`report/phase1.md`](report/phase1.md)  
 **Phase 2 report:** [`report/phase2.md`](report/phase2.md)  
-**Phase 3 report:** [`report/phase3.md`](report/phase3.md)
+**Final report (all three phases, PDF):** [`report/final/report.pdf`](report/final/report.pdf)
 
 ### Phase 1 result
 
@@ -179,6 +179,7 @@ kaggle/                     batch training and evaluation kernels + their metada
 report/
   phase1.md                 Phase 1 report
   phase2.md                 Phase 2 report
+  final/                    consolidated LaTeX report (report.tex, generated tables/, report.pdf)
   figures/                  all plots
 ```
 
@@ -573,7 +574,7 @@ established this are kept with their logs in
 [`Hindi/runs/finetune_ablations/`](Hindi/runs/finetune_ablations/README.md).
 
 These runs were done on CPU (Intel Core Ultra 9 185H, both languages in
-parallel with 11 threads each, ~8.5 s per 128-example step, ~1h35m): sequences
+parallel with 11 threads each, about 1.5 hours per language): sequences
 are ~34 tokens, so a GPU is not needed. On a GPU, drop `--threads`.
 
 ### 14. Reasoning evaluation
@@ -628,6 +629,20 @@ Draws the finetuning curves, accuracy overview and breakdowns by task and hop
 count, pretrained-vs-finetuned heatmaps for layers 0 and 9 of each model,
 per-head attention change, layer profiles and answer-position attention —
 all from the committed JSON, with no checkpoint needed.
+
+### 17. Final report
+
+```bash
+python -m common.report.final --lang hi=Hindi --lang ne=Nepali \
+    --out report/final/tables
+cd report/final && lualatex report.tex && lualatex report.tex
+```
+
+Writes every table in the consolidated report from the committed run outputs
+(plus the Phase 1 statistics sidecars and the generated reasoning test split,
+both on Drive), then builds `report/final/report.pdf`. LuaLaTeX is required: it
+shapes the Devanagari examples through HarfBuzz, using the Noto Serif
+Devanagari font.
 
 ---
 
