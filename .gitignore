@@ -11,3 +11,8 @@ __pycache__/
 *.tmp
 .ipynb_checkpoints/
 .venv
+# LaTeX build by-products (the PDF itself is committed)
+report/final/*.aux
+report/final/*.log
+report/final/*.out
+report/final/build.out

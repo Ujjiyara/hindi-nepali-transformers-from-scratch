@@ -1,0 +1,16 @@
+\begin{tabular}{lllrrrrr}
+\toprule
+& Run & Embedding & Batch & Peak LR & Steps & Best val.\ exact & Last val.\ exact \\
+\midrule
+H & \texttt{frozen\_138names\_300steps} & frozen & 32 & 3e-04 & 300 & 0.424 (step 300) & 0.424 \\
+H & \texttt{frozen\_48names} & frozen & 32 & 3e-04 & 300 & 0.330 (step 50) & 0.225 \\
+H & \texttt{frozen\_bs32\_lr3e-4\_stopped300} & frozen & 32 & 3e-04 & 300 & 0.379 (step 100) & 0.281 \\
+H & \texttt{unfrozen\_138names\_300steps} & trained & 32 & 3e-04 & 150 & 0.240 (step 50) & 0.219 \\
+H & \texttt{unfrozen\_lr1e-4\_48names} & trained & 32 & 1e-04 & 300 & 0.234 (step 50) & 0.205 \\
+H & \texttt{v1\_unfrozen\_48names} & trained & 32 & 3e-04 & 250 & 0.191 (step 250) & 0.191 \\
+H & \texttt{final} & frozen & 128 & 1e-04 & 750 & 0.467 (step 200) & 0.430 \\
+L & \texttt{frozen\_bs32\_lr3e-4\_stopped300} & frozen & 32 & 3e-04 & 300 & 0.348 (step 100) & 0.273 \\
+L & \texttt{v1\_unfrozen\_48names} & trained & 32 & 3e-04 & 250 & 0.180 (step 125) & 0.158 \\
+L & \texttt{final} & frozen & 128 & 1e-04 & 750 & 0.410 (step 200) & 0.402 \\
+\bottomrule
+\end{tabular}

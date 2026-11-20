@@ -1,0 +1,13 @@
+\begin{tabular}{llrrrrrrrr}
+\toprule
+& & \multicolumn{2}{c}{Reasoning prompts} & \multicolumn{2}{c}{Corpus text} & \multicolumn{2}{c}{Answer pos.\ $\to$ entities} & \multicolumn{2}{c}{Gold share of entity attn.} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}
+Model & Checkpoint & Entropy & Dist. & Entropy & Dist. & All layers & Layer 9 & All layers & Layer 9 \\
+\midrule
+Model H & pretrained & 0.638 & 7.90 & 0.577 & 64.3 & 0.179 & 0.539 & 0.320 & 0.330 \\
+ & finetuned & 0.630 & 7.92 & 0.578 & 62.7 & 0.306 & 0.662 & 0.329 & 0.351 \\
+\midrule
+Model L & pretrained & 0.709 & 6.98 & 0.606 & 54.7 & 0.186 & 0.450 & 0.318 & 0.322 \\
+ & finetuned & 0.679 & 7.57 & 0.613 & 55.8 & 0.313 & 0.617 & 0.329 & 0.364 \\
+\bottomrule
+\end{tabular}
